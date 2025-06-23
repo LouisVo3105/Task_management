@@ -98,40 +98,30 @@ class UserController {
 
   async getAllUsers(req, res) {
     try {
-      const currentUser = req.user;
-      const { page = 1, limit = 10, department, role, search } = req.query;
-      
-      const query = { isActive: true };
-      
-      // Admin xem tất cả, manager xem trong phòng ban
-      if (currentUser.role === 'manager') {
-        query.department = currentUser.department;
+      const { department, role, search } = req.query;
+      const filter = { isActive: true };
+  
+      // Tối ưu hoá truy vấn
+      if (req.user.role === 'manager') {
+        filter.department = req.user.department;
       }
       
-      if (department) query.department = department;
-      if (role) query.role = role;
+      if (department) filter.department = department;
+      if (role) filter.role = role;
+      
       if (search) {
-        query.$or = [
-          { fullName: { $regex: search, $options: 'i' } },
-          { position: { $regex: search, $options: 'i' } },
-          { email: { $regex: search, $options: 'i' } }
+        filter.$or = [
+          { fullName: new RegExp(search, 'i') },
+          { email: new RegExp(search, 'i') }
         ];
       }
-      
-      const options = {
-        page: parseInt(page),
-        limit: parseInt(limit),
-        select: '-password',
-        populate: 'directSupervisor',
-        sort: { createdAt: -1 }
-      };
-      
-      const users = await User.paginate(query, options);
-      
-      res.json({ 
-        success: true, 
-        data: users 
-      });
+  
+      // Sử dụng projection thay vì select()
+      const users = await User.find(filter, '-password')
+        .populate('directSupervisor', 'fullName position')
+        .lean();
+  
+      res.json({ success: true, data: users });   
     } catch (error) {
       res.status(500).json({ 
         success: false, 

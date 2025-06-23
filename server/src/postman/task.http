@@ -1,0 +1,341 @@
+### HƯỚNG DẪN SỬ DỤNG
+# 1. Đăng nhập lấy token, copy giá trị token vào {{token}}
+# 2. Tạo chỉ tiêu (indicator), copy _id vào {{indicatorId}}
+# 3. Tạo user (nếu cần), copy _id vào {{assigneeId}}
+# 4. Tạo nhiệm vụ (task), copy _id vào {{taskId}}, tạo nhiệm vụ con thì copy _id nhiệm vụ cha vào {{parentTaskId}}
+# 5. Test các chức năng khác
+
+### 1. Đăng nhập lấy token
+POST http://localhost:3056/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "votu2003",
+  "password": "NgocTu3105"
+}
+
+### 2. Tạo chỉ tiêu mới (indicator)
+POST http://localhost:3056/api/indicators
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NGZjNGEwZjYwNDE3ZGZmMDc5N2MwZiIsInJvbGUiOiJhZG1pbiIsImRlcGFydG1lbnQiOiJQaMOybmcgSMOgbmggY2jDrW5oIiwiaWF0IjoxNzUwNjAzNDIxLCJleHAiOjE3NTA2MDcwMjF9.-1Go6bAn9UniyXouJ8_R3V16jsT8hgvIRd2nvfD3Ags
+
+{
+  "code": "C",
+  "name": "Chỉ tiêu chuyển đổi số",
+  "category": "CĐS",
+  "unit": "báo cáo",
+  "department": "Phòng CNTT"
+}
+
+
+
+### 3. Lấy danh sách chỉ tiêu
+GET http://localhost:3056/api/indicators
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NGZjNGEwZjYwNDE3ZGZmMDc5N2MwZiIsInJvbGUiOiJhZG1pbiIsImRlcGFydG1lbnQiOiJQaMOybmcgSMOgbmggY2jDrW5oIiwiaWF0IjoxNzUwNjAzNDIxLCJleHAiOjE3NTA2MDcwMjF9.-1Go6bAn9UniyXouJ8_R3V16jsT8hgvIRd2nvfD3Ags
+
+### 4. Lấy chi tiết chỉ tiêu
+GET http://localhost:3056/api/indicators/6858188622aee49e79d61cdf
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NGZjNGEwZjYwNDE3ZGZmMDc5N2MwZiIsInJvbGUiOiJhZG1pbiIsImRlcGFydG1lbnQiOiJQaMOybmcgSMOgbmggY2jDrW5oIiwiaWF0IjoxNzUwNjAzNDIxLCJleHAiOjE3NTA2MDcwMjF9.-1Go6bAn9UniyXouJ8_R3V16jsT8hgvIRd2nvfD3Ags
+
+### 5. Cập nhật chỉ tiêu
+PUT http://localhost:3056/api/indicators/6858188622aee49e79d61cdf
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NGZjNGEwZjYwNDE3ZGZmMDc5N2MwZiIsInJvbGUiOiJhZG1pbiIsImRlcGFydG1lbnQiOiJQaMOybmcgSMOgbmggY2jDrW5oIiwiaWF0IjoxNzUwNjAzNDIxLCJleHAiOjE3NTA2MDcwMjF9.-1Go6bAn9UniyXouJ8_R3V16jsT8hgvIRd2nvfD3Ags
+
+{
+  "code": "C",
+  "category": "CĐS",
+  "name": "Cristiano Ronaldo",
+  "unit":"báo cáo",
+  "department": "Phòng CNTT"
+}
+
+(Sửa lại bây h phải đầy đủ các trường mới cho cập nhật
+-> Sửa thành chỉ cần mã dự án và trường cần thay đổi là được)
+
+### 6. Xóa (lưu trữ) chỉ tiêu
+DELETE http://localhost:3056/api/indicators/6858188622aee49e79d61cdf
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NGZjNGEwZjYwNDE3ZGZmMDc5N2MwZiIsInJvbGUiOiJhZG1pbiIsImRlcGFydG1lbnQiOiJQaMOybmcgSMOgbmggY2jDrW5oIiwiaWF0IjoxNzUwNjAzNDIxLCJleHAiOjE3NTA2MDcwMjF9.-1Go6bAn9UniyXouJ8_R3V16jsT8hgvIRd2nvfD3Ags
+
+### 7. Tạo nhiệm vụ mới (level1)
+POST http://localhost:3056/api/tasks
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NGZjNGEwZjYwNDE3ZGZmMDc5N2MwZiIsInJvbGUiOiJhZG1pbiIsImRlcGFydG1lbnQiOiJQaMOybmcgSMOgbmggY2jDrW5oIiwiaWF0IjoxNzUwNjAzNDIxLCJleHAiOjE3NTA2MDcwMjF9.-1Go6bAn9UniyXouJ8_R3V16jsT8hgvIRd2nvfD3Ags
+
+{
+  "title": "Test Task Level 1",
+  "description": "Mô tả nhiệm vụ cấp 1",
+  "type": "level1",
+  "indicatorId": "68581a09ca0cb538dbf501da",
+  "assigneeId": "6852f5500cffeb18f8a19ddd",
+  "startDate": "2024-06-01T00:00:00.000Z",
+  "endDate": "2024-06-10T00:00:00.000Z"
+}
+
+### 8. Tạo nhiệm vụ mới (level2)
+POST http://localhost:3056/api/tasks
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NGZjNGEwZjYwNDE3ZGZmMDc5N2MwZiIsInJvbGUiOiJhZG1pbiIsImRlcGFydG1lbnQiOiJQaMOybmcgSMOgbmggY2jDrW5oIiwiaWF0IjoxNzUwNjAzNDIxLCJleHAiOjE3NTA2MDcwMjF9.-1Go6bAn9UniyXouJ8_R3V16jsT8hgvIRd2nvfD3Ags
+
+{
+  "title": "Test Task Level 2",
+  "description": "Mô tả nhiệm vụ cấp 2",
+  "type": "level2",
+  "indicatorId": "68581a09ca0cb538dbf501da",
+  "parentTaskId": "68581e4a9d18a853071cf04b",
+  "assigneeId": "68541994c35de46f7598ce91",
+  "startDate": "2024-06-02T00:00:00.000Z",
+  "endDate": "2024-06-09T00:00:00.000Z"
+}
+
+### 9. Lấy danh sách nhiệm vụ chờ duyệt
+GET http://localhost:3056/api/tasks?status=pending
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NGZjNGEwZjYwNDE3ZGZmMDc5N2MwZiIsInJvbGUiOiJhZG1pbiIsImRlcGFydG1lbnQiOiJQaMOybmcgSMOgbmggY2jDrW5oIiwiaWF0IjoxNzUwNjAzNDIxLCJleHAiOjE3NTA2MDcwMjF9.-1Go6bAn9UniyXouJ8_R3V16jsT8hgvIRd2nvfD3Ags
+
+### 10. Lấy chi tiết nhiệm vụ
+GET http://localhost:3056/api/tasks/68581e4a9d18a853071cf04b
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NGZjNGEwZjYwNDE3ZGZmMDc5N2MwZiIsInJvbGUiOiJhZG1pbiIsImRlcGFydG1lbnQiOiJQaMOybmcgSMOgbmggY2jDrW5oIiwiaWF0IjoxNzUwNjAzNDIxLCJleHAiOjE3NTA2MDcwMjF9.-1Go6bAn9UniyXouJ8_R3V16jsT8hgvIRd2nvfD3Ags
+
+### 11. Nộp nhiệm vụ
+PATCH http://localhost:3056/api/tasks/68581e4a9d18a853071cf04b/submit
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NGZjNGEwZjYwNDE3ZGZmMDc5N2MwZiIsInJvbGUiOiJhZG1pbiIsImRlcGFydG1lbnQiOiJQaMOybmcgSMOgbmggY2jDrW5oIiwiaWF0IjoxNzUwNjAzNDIxLCJleHAiOjE3NTA2MDcwMjF9.-1Go6bAn9UniyXouJ8_R3V16jsT8hgvIRd2nvfD3Ags
+
+{
+  "report": "Báo cáo hoàn thành nhiệm vụ"
+}
+
+### 12. Duyệt nhiệm vụ
+POST http://localhost:3056/api/tasks/{{taskId}}/review
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "approved": true,
+  "feedback": "Tốt!"
+}
+
+### AUTH
+
+# Đăng nhập
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "admin123"
+}
+
+### Lưu accessToken vào biến
+@accessToken = {{login.response.body.data.accessToken}}
+@refreshToken = {{login.response.body.data.refreshToken}}
+
+# Làm mới token
+POST http://localhost:3000/auth/refresh-token
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
+
+# Đăng xuất
+POST http://localhost:3000/auth/logout
+Authorization: Bearer {{accessToken}}
+
+### USER
+
+# Tạo user mới
+POST http://localhost:3000/users
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "username": "user1",
+  "password": "user123",
+  "email": "user1@example.com",
+  "fullName": "Người dùng 1",
+  "gender": "Nam",
+  "position": "Nhân viên",
+  "phoneNumber": "0123456789",
+  "department": "Phòng Kế toán",
+  "role": "user",
+  "directSupervisor": "{{supervisorId}}"
+}
+
+# Lấy thông tin user hiện tại
+GET http://localhost:3000/users/me
+Authorization: Bearer {{accessToken}}
+
+# Lấy danh sách user
+GET http://localhost:3000/users?department=&role=&search=
+Authorization: Bearer {{accessToken}}
+
+# Lấy danh sách cấp dưới
+GET http://localhost:3000/users/subordinates
+Authorization: Bearer {{accessToken}}
+
+# Cập nhật user
+PUT http://localhost:3000/users/{{userId}}
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "fullName": "Người dùng 1 cập nhật",
+  "position": "Trưởng phòng"
+}
+
+# Xóa user
+DELETE http://localhost:3000/users/{{userId}}
+Authorization: Bearer {{accessToken}}
+
+### INDICATOR
+
+# Tạo chỉ tiêu
+POST http://localhost:3000/indicators
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "code": "CT001",
+  "name": "Chỉ tiêu 1",
+  "description": "Mô tả chỉ tiêu 1",
+  "category": "KHCN",
+  "unit": "Báo cáo",
+  "department": "Phòng Kế toán",
+  "notes": "Ghi chú"
+}
+
+# Lấy danh sách chỉ tiêu
+GET http://localhost:3000/indicators?page=1&limit=10
+Authorization: Bearer {{accessToken}}
+
+# Lấy chi tiết chỉ tiêu
+GET http://localhost:3000/indicators/{{indicatorId}}
+Authorization: Bearer {{accessToken}}
+
+# Cập nhật chỉ tiêu
+PUT http://localhost:3000/indicators/{{indicatorId}}
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "name": "Chỉ tiêu 1 cập nhật"
+}
+
+# Xóa chỉ tiêu
+DELETE http://localhost:3000/indicators/{{indicatorId}}
+Authorization: Bearer {{accessToken}}
+
+### TASK
+
+# Tạo task mới
+POST http://localhost:3000/tasks
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "title": "Nhiệm vụ 1",
+  "description": "Mô tả nhiệm vụ 1",
+  "indicator": "{{indicatorId}}",
+  "assigner": "{{assignerId}}",
+  "assignee": "{{assigneeId}}",
+  "startDate": "2024-06-01",
+  "endDate": "2024-06-30",
+  "priority": "high",
+  "notes": "Ghi chú nhiệm vụ",
+  "subTasks": [
+    {
+      "title": "Subtask 1",
+      "description": "Mô tả subtask 1",
+      "assignee": "{{assigneeId}}",
+      "startDate": "2024-06-01",
+      "endDate": "2024-06-15"
+    }
+  ]
+}
+
+# Lấy danh sách task
+GET http://localhost:3000/tasks?page=1&limit=10
+Authorization: Bearer {{accessToken}}
+
+# Lấy chi tiết task
+GET http://localhost:3000/tasks/{{taskId}}
+Authorization: Bearer {{accessToken}}
+
+# Cập nhật task
+PUT http://localhost:3000/tasks/{{taskId}}
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "title": "Nhiệm vụ 1 cập nhật"
+}
+
+# Xóa task
+DELETE http://localhost:3000/tasks/{{taskId}}
+Authorization: Bearer {{accessToken}}
+
+# Thêm subtask
+POST http://localhost:3000/tasks/{{taskId}}/subtasks
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "title": "Subtask mới",
+  "description": "Mô tả subtask mới",
+  "assignee": "{{assigneeId}}",
+  "startDate": "2024-06-10",
+  "endDate": "2024-06-20"
+}
+
+# Nộp task
+PATCH http://localhost:3000/tasks/{{taskId}}/submit
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "report": "Báo cáo hoàn thành nhiệm vụ"
+}
+
+# Nộp subtask
+PATCH http://localhost:3000/tasks/{{taskId}}/subtasks/{{subTaskId}}/submit
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "report": "Báo cáo hoàn thành subtask"
+}
+
+# Review task
+PATCH http://localhost:3000/tasks/{{taskId}}/review
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "approved": true,
+  "feedback": "Đạt yêu cầu"
+}
+
+# Review subtask
+PATCH http://localhost:3000/tasks/{{taskId}}/subtasks/{{subTaskId}}/review
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "approved": false,
+  "feedback": "Cần bổ sung"
+}
+
+# Cập nhật subtask
+PUT http://localhost:3000/tasks/{{taskId}}/subtasks/{{subTaskId}}
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "progress": 50,
+  "report": "Đã hoàn thành 50%"
+}
+
+# Xóa subtask
+DELETE http://localhost:3000/tasks/{{taskId}}/subtasks/{{subTaskId}}
+Authorization: Bearer {{accessToken}} 

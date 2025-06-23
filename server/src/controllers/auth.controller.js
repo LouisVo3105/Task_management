@@ -4,6 +4,8 @@ const User = require('../models/user.model');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
+
+
 class AuthController {
   async login(req, res) {
     try {
@@ -67,18 +69,12 @@ class AuthController {
 
   async logout(req, res) {
     try {
-      // Trong hệ thống JWT stateless, logout thường xử lý ở client
-      // Nhưng có thể thêm blacklist token nếu cần
-      res.json({ 
-        success: true, 
-        message: 'Logged out successfully' 
-      });
+      const token = req.headers.authorization.split(' ')[1];
+      tokenBlacklist.add(token);
+      
+      res.json({ success: true, message: 'Logged out successfully' });
     } catch (error) {
-      res.status(500).json({ 
-        success: false, 
-        message: 'Error logging out',
-        error: error.message 
-      });
+      res.status(500).json({ success: false, message: 'Error logging out' });
     }
   }
 

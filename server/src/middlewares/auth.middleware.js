@@ -1,8 +1,25 @@
 const jwt = require('jsonwebtoken');
 
+const tokenBlacklist = new Set();
+
+const verifyRefreshToken = (req, res, next) => {
+  const { refreshToken } = req.body;
+  if (!refreshToken) return res.status(401).json({ message: 'Refresh token required' });
+
+  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+    if (err) return res.status(403).json({ message: 'Invalid refresh token' });
+    req.user = user;
+    next();
+  });
+};
+
 const authMiddleware = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
+  
+  if (tokenBlacklist.has(token)) {
+    return res.status(401).json({ message: 'Token revoked' });
+  }
   
   if (!token) {
     return res.status(401).json({ 
@@ -31,4 +48,4 @@ const authMiddleware = (req, res, next) => {
   }
 };
 
-module.exports = authMiddleware;
+module.exports = {authMiddleware, verifyRefreshToken};
