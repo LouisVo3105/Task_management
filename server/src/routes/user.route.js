@@ -10,11 +10,12 @@ const {
 // Protected routes
 router.use(authMiddleware);
 
-router.post('/', validateCreateUser, UserController.createUser);
-router.get('/me', UserController.getUserProfile);
-router.get('/', UserController.getAllUsers);
-router.get('/subordinates', UserController.getSubordinates);
-router.put('/:id', validateUpdateUser, UserController.updateUser);
-router.delete('/:id', UserController.deleteUser);
+router.post('/create', validateCreateUser, UserController.createUser.bind(UserController));
+router.get('/me', UserController.getUserProfile.bind(UserController));
+router.get('/all', UserController.getAllUsers.bind(UserController));
+router.get('/subordinates', UserController.getSubordinates.bind(UserController));
+router.put('/:id', validateUpdateUser, UserController.updateUser.bind(UserController));
+router.delete('/:id', UserController.deleteUser.bind(UserController));
+router.delete('/permanent/:id', UserController.deleteUserPermanently.bind(UserController));
 
 module.exports = router;

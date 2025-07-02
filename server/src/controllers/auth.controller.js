@@ -3,6 +3,7 @@
 const User = require('../models/user.model');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { tokenBlacklist } = require('../middlewares/auth.middleware');
 
 
 
@@ -49,13 +50,8 @@ class AuthController {
         data: {
           accessToken,
           refreshToken,
-          user: {
-            id: user._id,
-            fullName: user.fullName,
-            role: user.role,
-            position: user.position,
-            department: user.department
-          }
+          id: user._id,
+          role: user.role
         }
       });
     } catch (error) {

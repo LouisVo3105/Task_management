@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
 
-
 const userSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
@@ -19,7 +18,7 @@ const userSchema = new mongoose.Schema({
   directSupervisor: { 
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'User',
-    required: function() { return this.role === 'user'; }
+    required: function() { return ['user', 'manager'].includes(this.role); } // Bắt buộc với user và manager
   },
   isActive: { type: Boolean, default: true },
   createdAt: { type: Date, default: Date.now },
@@ -30,6 +29,7 @@ const userSchema = new mongoose.Schema({
 userSchema.index({ department: 1 });
 userSchema.index({ role: 1 });
 userSchema.index({ isActive: 1 });
+userSchema.index({ directSupervisor: 1, isActive: 1 }); // Thêm index cho directSupervisor
 
 userSchema.plugin(mongoosePaginate);
 

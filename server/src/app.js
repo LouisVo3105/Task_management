@@ -1,9 +1,11 @@
 require('dotenv').config();
+const cors = require('cors');
 const express = require('express');
 const app = express();
 const morgan = require('morgan');
 const { default: helmet } = require('helmet');
 const compression = require('compression');
+
 const userRoute = require('./routes/user.route');
 const taskRoute = require('./routes/task.route');
 const authRoute = require('./routes/auth.route');
@@ -11,6 +13,11 @@ const indicatorRoute = require('./routes/indicator.route'); // Thêm dòng này
 const Database = require('./dbs/database');
 
 const db = Database.getInstance();
+
+app.use(cors({
+  origin:['http://localhost:5173', 'http://127.0.0.1:5173'],
+  credentials: true
+}));
 
 // Middleware
 app.use(morgan('dev'));

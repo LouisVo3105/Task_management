@@ -1,0 +1,202 @@
+### Đăng nhập (lấy accessToken và refreshToken)
+POST http://localhost:3056/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "votu2003",
+  "password": "NgocTu3105"
+}
+
+###
+@accessToken:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NGZjNGEwZjYwNDE3ZGZmMDc5N2MwZiIsInJvbGUiOiJhZG1pbiIsImRlcGFydG1lbnQiOiJQaMOybmcgSMOgbmggY2jDrW5oIiwiaWF0IjoxNzUxMTY3OTIyLCJleHAiOjE3NTExNzE1MjJ9.9spEOEo_u2mzs-6b9SHOVBfmst1ZgWfmiW5gSSBNbTE
+@refreshToken:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NGZjNGEwZjYwNDE3ZGZmMDc5N2MwZiIsImlhdCI6MTc1MTE2NzkyMiwiZXhwIjoxNzUxNzcyNzIyfQ.F2A7isiKOhlYVuvQ1nVz3Pljcl_tBGhkul3DSkIfbGM
+### Đăng xuất (cần accessToken)
+POST http://localhost:3000/api/auth/logout
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NGZjNGEwZjYwNDE3ZGZmMDc5N2MwZiIsInJvbGUiOiJhZG1pbiIsImRlcGFydG1lbnQiOiJQaMOybmcgSMOgbmggY2jDrW5oIiwiaWF0IjoxNzUwODQwMDU2LCJleHAiOjE3NTA4NDM2NTZ9.K2Ub_6vUFMgegZXX-kRoI-m__zP7n9t0YdLZlbTywNg
+
+### Làm mới accessToken
+POST http://localhost:3056/api/auth/refresh-token
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
+
+### Lấy thông tin user hiện tại
+GET http://localhost:3056/api/users/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NWJiOGEyZmEwMTkzMWI0NWMxNDIwNSIsInJvbGUiOiJtYW5hZ2VyIiwiZGVwYXJ0bWVudCI6IklUIiwiaWF0IjoxNzUxMjUyNzQ4LCJleHAiOjE3NTEyNTYzNDh9.r1NvuZfgwM-dCaqhch2ATNEc8nuThQVIQzltBuv_YX0
+
+### Tạo user mới (chỉ admin/manager)
+POST http://localhost:3056/api/users/create
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NGZjNGEwZjYwNDE3ZGZmMDc5N2MwZiIsInJvbGUiOiJhZG1pbiIsImRlcGFydG1lbnQiOiJQaMOybmcgSMOgbmggY2jDrW5oIiwiaWF0IjoxNzUwOTE4NjMwLCJleHAiOjE3NTA5MjIyMzB9.urjXOG0iN6iluTqjZvbnNsJJDWM4jLLIDldSRryhjiQ
+Content-Type: application/json
+
+{
+  "username": "user3",
+  "password": "user123",
+  "fullName": "User One",
+  "email": "user4@example.com",
+  "role": "user",
+  "position": "Quản lý",
+  "phoneNumber": "01234567789",
+  "department": "IT",
+  "gender": "Nam",
+  "directSupervisor": "685bb8a2fa01931b45c14205"
+}
+
+### Lấy danh sách user
+GET http://localhost:3056/api/users/all
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NGZjNGEwZjYwNDE3ZGZmMDc5N2MwZiIsInJvbGUiOiJhZG1pbiIsImRlcGFydG1lbnQiOiJQaMOybmcgSMOgbmggY2jDrW5oIiwiaWF0IjoxNzUxMzUyMjcwLCJleHAiOjE3NTEzNTU4NzB9.e8UiKKywr3pRDbqU-6Dl5R5Bz7c4M07Pxdit2-F4gNo
+
+### Cập nhật user (chỉ admin/manager hoặc chính user)
+PUT http://localhost:3000/api/users/{{userId}}
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "fullName": "User One Updated"
+}
+
+### Xóa user (chỉ admin/manager)
+DELETE http://localhost:3000/api/users/{{userId}}
+Authorization: Bearer {{accessToken}}
+
+### Lấy cấp dưới (manager)
+GET http://localhost:3056/api/users/subordinates
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NGZjNGEwZjYwNDE3ZGZmMDc5N2MwZiIsInJvbGUiOiJhZG1pbiIsImRlcGFydG1lbnQiOiJQaMOybmcgSMOgbmggY2jDrW5oIiwiaWF0IjoxNzUwODQwMDU2LCJleHAiOjE3NTA4NDM2NTZ9.K2Ub_6vUFMgegZXX-kRoI-m__zP7n9t0YdLZlbTywNg
+
+### Tạo chỉ tiêu (admin/manager)
+POST http://localhost:3056/api/indicators
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NGZjNGEwZjYwNDE3ZGZmMDc5N2MwZiIsInJvbGUiOiJhZG1pbiIsImRlcGFydG1lbnQiOiJQaMOybmcgSMOgbmggY2jDrW5oIiwiaWF0IjoxNzUwOTE4NjMwLCJleHAiOjE3NTA5MjIyMzB9.urjXOG0iN6iluTqjZvbnNsJJDWM4jLLIDldSRryhjiQ
+Content-Type: application/json
+
+{
+  "code": "CT001",
+  "name": "Chỉ tiêu 1"
+}
+
+### Lấy danh sách chỉ tiêu
+GET http://localhost:3056/api/indicators
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NGZjNGEwZjYwNDE3ZGZmMDc5N2MwZiIsInJvbGUiOiJhZG1pbiIsImRlcGFydG1lbnQiOiJQaMOybmcgSMOgbmggY2jDrW5oIiwiaWF0IjoxNzUxMTY3OTIyLCJleHAiOjE3NTExNzE1MjJ9.9spEOEo_u2mzs-6b9SHOVBfmst1ZgWfmiW5gSSBNbTE
+
+###
+# Response mới sẽ bao gồm thông tin trạng thái:
+# {
+#   "success": true,
+#   "message": "Lấy danh sách chỉ tiêu thành công",
+#   "data": {
+#     "docs": [
+#       {
+#         "_id": "...",
+#         "code": "CT001",
+#         "name": "Chỉ tiêu 1",
+#         "status": {
+#           "completed": 2,
+#           "total": 5,
+#           "percentage": 40,
+#           "overallStatus": "in_progress"
+#         }
+#       }
+#     ],
+#     "totalDocs": 1,
+#     "limit": 10,
+#     "page": 1,
+#     "totalPages": 1
+#   }
+# }
+# 
+# overallStatus có thể là:
+# - "no_tasks": Chưa có nhiệm vụ nào
+# - "not_started": Có nhiệm vụ nhưng chưa hoàn thành nhiệm vụ nào
+# - "in_progress": Đang thực hiện (có ít nhất 1 nhiệm vụ hoàn thành)
+# - "completed": Hoàn thành tất cả nhiệm vụ
+
+### Cập nhật chỉ tiêu
+PUT http://localhost:3056/api/indicators/685bba940d89abf38664a61e
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NGZjNGEwZjYwNDE3ZGZmMDc5N2MwZiIsInJvbGUiOiJhZG1pbiIsImRlcGFydG1lbnQiOiJQaMOybmcgSMOgbmggY2jDrW5oIiwiaWF0IjoxNzUwODQwMDU2LCJleHAiOjE3NTA4NDM2NTZ9.K2Ub_6vUFMgegZXX-kRoI-m__zP7n9t0YdLZlbTywNg
+Content-Type: application/json
+
+{
+  "name": "Chỉ tiêu 1 cập nhật"
+}
+
+### Xóa chỉ tiêu
+DELETE http://localhost:3056/api/indicators/{{indicatorId}}
+Authorization: Bearer {{accessToken}}
+
+### Lấy nhiệm vụ theo chỉ tiêu
+GET http://localhost:3056/api/indicators/68636abd707a2a0446e58508/tasks
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NGZjNGEwZjYwNDE3ZGZmMDc5N2MwZiIsInJvbGUiOiJhZG1pbiIsImRlcGFydG1lbnQiOiJQaMOybmcgSMOgbmggY2jDrW5oIiwiaWF0IjoxNzUxMzU0ODI5LCJleHAiOjE3NTEzNTg0Mjl9.cJE-uuLeFV0ifdSGBQI_eKHRZGjg3jt8WE5kRTy4QDM
+
+### Tạo nhiệm vụ (admin/manager)
+POST http://localhost:3056/api/tasks
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NGZjNGEwZjYwNDE3ZGZmMDc5N2MwZiIsInJvbGUiOiJhZG1pbiIsImRlcGFydG1lbnQiOiJQaMOybmcgSMOgbmggY2jDrW5oIiwiaWF0IjoxNzUwOTE4NjMwLCJleHAiOjE3NTA5MjIyMzB9.urjXOG0iN6iluTqjZvbnNsJJDWM4jLLIDldSRryhjiQ
+Content-Type: application/json
+
+{
+  "code": "TASK001",
+  "title": "Nhiệm vụ 1",
+  "endDate": "2024-12-31",
+  "indicatorId": "685ce6d4fdb9856adb3ddbf8",
+  "notes": "Ghi chú nhiệm vụ",
+  "assignerId": "684fc4a0f60417dff0797c0f",
+  "managerIds": ["684fc4a0f60417dff0797c0f","685bb8a2fa01931b45c14205"]
+}
+
+### Tạo nhiệm vụ con (admin/manager)
+POST http://localhost:3056/api/tasks
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NGZjNGEwZjYwNDE3ZGZmMDc5N2MwZiIsInJvbGUiOiJhZG1pbiIsImRlcGFydG1lbnQiOiJQaMOybmcgSMOgbmggY2jDrW5oIiwiaWF0IjoxNzUwOTE4NjMwLCJleHAiOjE3NTA5MjIyMzB9.urjXOG0iN6iluTqjZvbnNsJJDWM4jLLIDldSRryhjiQ
+Content-Type: application/json
+
+{
+  "code": "STASK003",
+  "title": "Nhiệm vụ 1",
+  "endDate": "2024-12-31",
+  "indicatorId": "685ce6d4fdb9856adb3ddbf8",
+  "notes": "Ghi chú nhiệm vụ",
+  "parentTaskId": "685ce96d88a44cf6856337f3",
+  "assigneeId": "685ce673fdb9856adb3ddbed",
+  "assignerId": "685bb8a2fa01931b45c14205"
+}
+
+### Cập nhật nhiệm vụ
+PUT http://localhost:3056/api/tasks/685ceae17b28f8ad7abefde9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NWJiOGEyZmEwMTkzMWI0NWMxNDIwNSIsInJvbGUiOiJtYW5hZ2VyIiwiZGVwYXJ0bWVudCI6IklUIiwiaWF0IjoxNzUwOTIzNzA3LCJleHAiOjE3NTA5MjczMDd9.uZNqEGv514LVaPtQWzB5uJYLpNQTCavOrTloNQT8qck
+Content-Type: application/json
+
+{
+  "status": "approved"
+}
+
+### Xóa nhiệm vụ
+DELETE http://localhost:3000/api/tasks/{{taskId}}
+Authorization: Bearer {{accessToken}}
+
+### Lấy nhiệm vụ con
+GET http://localhost:3056/api/tasks/685ce96d88a44cf6856337f3/subtasks
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NGZjNGEwZjYwNDE3ZGZmMDc5N2MwZiIsInJvbGUiOiJhZG1pbiIsImRlcGFydG1lbnQiOiJQaMOybmcgSMOgbmggY2jDrW5oIiwiaWF0IjoxNzUxMTY3OTIyLCJleHAiOjE3NTExNzE1MjJ9.9spEOEo_u2mzs-6b9SHOVBfmst1ZgWfmiW5gSSBNbTE
+
+### Lấy chi tiết nhiệm vụ
+GET http://localhost:3056/api/tasks/6863fd070cf080606ee50c1c
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NGZjNGEwZjYwNDE3ZGZmMDc5N2MwZiIsInJvbGUiOiJhZG1pbiIsImRlcGFydG1lbnQiOiJQaMOybmcgSMOgbmggY2jDrW5oIiwiaWF0IjoxNzUxMzg2NDUzLCJleHAiOjE3NTEzOTAwNTN9.h-_vSGHQtXL4_SI-PRFYKmKAou2N6ztjP-8FqAKxZtU
+
+### Lấy nhiệm vụ chờ duyệt (theo assigner)
+GET http://localhost:3056/api/tasks/pending/684fc4a0f60417dff0797c0f
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NWJiOGEyZmEwMTkzMWI0NWMxNDIwNSIsInJvbGUiOiJtYW5hZ2VyIiwiZGVwYXJ0bWVudCI6IklUIiwiaWF0IjoxNzUwOTIzNzA3LCJleHAiOjE3NTA5MjczMDd9.uZNqEGv514LVaPtQWzB5uJYLpNQTCavOrTloNQT8qck
+
+### Nộp nhiệm vụ
+PATCH http://localhost:3056/api/tasks/685ceae17b28f8ad7abefde9/submit
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NWNlNjczZmRiOTg1NmFkYjNkZGJlZCIsInJvbGUiOiJ1c2VyIiwiZGVwYXJ0bWVudCI6IklUIiwiaWF0IjoxNzUwOTIzNzU2LCJleHAiOjE3NTA5MjczNTZ9.95kOJyeszAp4F2B0YTP3ceo8NxzQbdQoxTHQqc3zw00
+Content-Type: application/json
+
+{
+  "submitNote":"Tôi đã hoàn thành nhiệm vụ",
+  "submitLink":"https://abcxyz.com"
+}
+### Lấy nhiệm vụ chưa hoàn thành (theo user)
+GET http://localhost:3056/api/tasks/incomplete/685bb8a2fa01931b45c14205
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NWJiOGEyZmEwMTkzMWI0NWMxNDIwNSIsInJvbGUiOiJtYW5hZ2VyIiwiZGVwYXJ0bWVudCI6IklUIiwiaWF0IjoxNzUwODg1ODg4LCJleHAiOjE3NTA4ODk0ODh9.xvMZWzPKdyTDadYo-KjsGdr11r5yrzssgIpS4NueU_g
+
+# Hướng dẫn:
+# 1. Đăng nhập để lấy accessToken và refreshToken, copy vào {{accessToken}} và {{refreshToken}}.
+# 2. Với các API cần id, hãy thay {{userId}}, {{indicatorId}}, {{taskId}}, {{assignerId}} bằng id thực tế từ response. 

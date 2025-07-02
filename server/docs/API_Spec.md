@@ -1,360 +1,544 @@
 # API Specification
 
-## Ghi chú Đánh giá
+**Base URL**: `http://localhost:3056/api`
 
-- **Xác thực không nhất quán**: Dự án sử dụng cả `express-validator` (trong `task.route.js`, `indicator.route.js`) và middleware tùy chỉnh (trong `user.route.js`). Nên thống nhất sử dụng một phương thức xác thực duy nhất.
-- **Tuyến đường phê duyệt bị trùng lặp**: `POST /api/tasks/:taskId/review` và `POST /api/tasks/:taskId/subtasks/:subTaskId/review` cùng trỏ đến `TaskController.reviewTask`. Điều này có thể dẫn đến logic phức tạp trong controller. Nên xem xét tách thành các hàm riêng biệt.
-- **Thiếu API lấy danh sách công việc**: Không có API để lấy danh sách tất cả các công việc.
-- **Logic nghiệp vụ trong Controller**: Logic nghiệp vụ có vẻ được đặt trực tiếp trong các controller thay vì tách ra một lớp `Service`. Điều này làm giảm khả năng tái sử dụng và gây khó khăn cho việc viết unit test.
-- **Xử lý kết nối Database**: Cần có cơ chế xử lý khi mất kết nối tới cơ sở dữ liệu trong quá trình ứng dụng đang chạy.
+## 1. Authentication
 
----
+### 1.1. Login
 
-## 1. Auth API
-
-| Method | Endpoint            | Input (Body/Query)                 | Output (Success) | Error/Note             | Access |
-| ------ | ------------------- | ---------------------------------- | ---------------- | ---------------------- | ------ |
-| POST   | /auth/login         | `{ username, password }`           | Token, user info | 401: Sai thông tin     | Public |
-| POST   | /auth/logout        | Header: Authorization Bearer token | `{ success }`    | 401: Không token       | Auth   |
-| POST   | /auth/refresh-token | `{ refreshToken }`                 | New access token | 401: Token lỗi/hết hạn | Public |
-
-### Chi tiết các endpoint
-
-#### 1.1. Đăng nhập
-
-- **Request Body:**
-
-```json
-{
-  "username": "string",
-  "password": "string"
-}
-```
-
-- **Response Body:**
-
-```json
-{
-  "success": true,
-  "data": {
-    "accessToken": "string",
-    "refreshToken": "string",
-    "user": {
-      "id": "ObjectId",
-      "fullName": "string",
-      "role": "admin|manager|user",
-      "position": "string",
-      "department": "string"
-    }
+- **Endpoint**: `POST /auth/login`
+- **Description**: Authenticates a user and returns access and refresh tokens.
+- **Access**: Public
+- **Request Body**:
+  ```json
+  {
+    "username": "votu2003",
+    "password": "NgocTu3105"
   }
-}
-```
-
-#### 1.2. Làm mới token
-
-- **Request Body:**
-
-```json
-{
-  "refreshToken": "string"
-}
-```
-
-- **Response Body:**
-
-```json
-{
-  "success": true,
-  "data": {
-    "accessToken": "string"
-  }
-}
-```
-
----
-
-## 2. User API
-
-| Method | Endpoint            | Input (Body/Query)        | Output (Success) | Error/Note                           | Access                    |
-| ------ | ------------------- | ------------------------- | ---------------- | ------------------------------------ | ------------------------- |
-| POST   | /users/             | Thông tin user, password  | User info        | 403: Không đủ quyền                  | Admin/Manager             |
-| GET    | /users/me           | -                         | User info        | 404: Không tìm thấy                  | Auth                      |
-| GET    | /users/             | `?department,role,search` | List users       | 403: Manager chỉ xem phòng mình      | Auth                      |
-| GET    | /users/subordinates | -                         | List users       | -                                    | Auth                      |
-| PUT    | /users/:id          | Thông tin update          | User info        | 403/404: Không đủ quyền              | Admin/Manager/User (self) |
-| DELETE | /users/:id          | -                         | User info        | 403: Chỉ admin, không xóa chính mình | Admin                     |
-
-### Chi tiết các endpoint
-
-#### 2.1. Tạo user mới
-
-- **Request Body:**
-
-```json
-{
-  "username": "string",
-  "password": "string",
-  "email": "string",
-  "fullName": "string",
-  "gender": "Nam|Nữ|Khác",
-  "position": "string",
-  "phoneNumber": "string",
-  "department": "string",
-  "role": "admin|manager|user",
-  "directSupervisor": "ObjectId (bắt buộc nếu role là user)"
-}
-```
-
-- **Response Body:**
-
-```json
-{
-  "success": true,
-  "message": "User created successfully",
-  "data": {
-    "username": "string",
-    "email": "string",
-    "fullName": "string",
-    "gender": "string",
-    "position": "string",
-    "phoneNumber": "string",
-    "department": "string",
-    "role": "string",
-    "directSupervisor": "ObjectId",
-    "isActive": true,
-    "createdAt": "date",
-    "updatedAt": "date"
-  }
-}
-```
-
-- **Giải thích các trường:**
-  - `role`: Quyền của user (`admin`, `manager`, `user`)
-  - `directSupervisor`: ID của người quản lý trực tiếp (bắt buộc nếu là user thường)
-
-#### 2.2. Cập nhật user
-
-- **Request Body:**
-  - Các trường giống tạo user, trừ `username` không được cập nhật.
-
-#### 2.3. Lấy thông tin user hiện tại
-
-- **Response Body:**
-  - Như response của tạo user, có thêm trường `directSupervisor` dạng object nếu populate.
-
-#### 2.4. Lấy danh sách user
-
-- **Query:**
-  - `department`, `role`, `search` (lọc theo phòng ban, vai trò, tìm kiếm tên/email)
-- **Response Body:**
-
-```json
-{
-  "success": true,
-  "data": [
-    {
-      "_id": "ObjectId",
-      "username": "string",
-      "email": "string",
-      "fullName": "string",
-      "gender": "string",
-      "position": "string",
-      "phoneNumber": "string",
-      "department": "string",
-      "role": "string",
-      "directSupervisor": {
-        "_id": "ObjectId",
-        "fullName": "string",
-        "position": "string"
+  ```
+- **Success Response (200)**:
+  ```json
+  {
+    "success": true,
+    "message": "Login successful",
+    "data": {
+      "user": {
+        "_id": "684fc4a0f60417dff0797c0f",
+        "username": "votu2003",
+        "role": "admin",
+        "department": "Phòng Hành chính"
       },
-      "isActive": true
+      "accessToken": "...",
+      "refreshToken": "..."
     }
-  ]
-}
-```
+  }
+  ```
 
----
+### 1.2. Logout
 
-## 3. Task API
+- **Endpoint**: `POST /auth/logout`
+- **Description**: Logs out the user by invalidating the session.
+- **Access**: Authenticated
+- **Headers**:
+  - `Authorization`: `Bearer <accessToken>`
+- **Success Response (200)**:
+  ```json
+  {
+    "success": true,
+    "message": "Logged out successfully"
+  }
+  ```
 
-| Method | Endpoint                                  | Input (Body/Query)                                          | Output (Success) | Error/Note               | Access                  |
-| ------ | ----------------------------------------- | ----------------------------------------------------------- | ---------------- | ------------------------ | ----------------------- |
-| POST   | /tasks/                                   | Thông tin task, indicatorId, subTasks                       | Task info        | 403: Không đủ quyền      | Admin/Manager           |
-| PUT    | /tasks/:taskId                            | Thông tin update                                            | Task info        | 403/404: Không đủ quyền  | Assigner/Admin          |
-| DELETE | /tasks/:taskId                            | -                                                           | Success          | 403/404: Không đủ quyền  | Assigner/Admin          |
-| PATCH  | /tasks/:taskId/submit                     | `{ report }`                                                | Task info        | 403: Không phải assignee | Assignee                |
-| PATCH  | /tasks/:taskId/subtasks/:subTaskId/submit | `{ report }`                                                | SubTask info     | 403: Không phải assignee | Assignee                |
-| PATCH  | /tasks/:taskId/review                     | `{ approved, feedback }`                                    | Task info        | 403: Không phải assigner | Assigner/Admin          |
-| PATCH  | /tasks/:taskId/subtasks/:subTaskId/review | `{ approved, feedback }`                                    | SubTask info     | 403: Không phải assigner | Assigner/Admin          |
-| GET    | /tasks/                                   | `?page,limit,status,assigneeId,indicatorId,priority,search` | List tasks       | -                        | Auth                    |
-| GET    | /tasks/:id                                | -                                                           | Task detail      | 404: Không tìm thấy      | Auth                    |
-| POST   | /tasks/:taskId/subtasks                   | Thông tin subtask                                           | SubTask info     | 403: Không đủ quyền      | Assigner/Admin          |
-| PUT    | /tasks/:taskId/subtasks/:subTaskId        | Thông tin update                                            | SubTask info     | 403: Không đủ quyền      | Assignee/Assigner/Admin |
-| DELETE | /tasks/:taskId/subtasks/:subTaskId        | -                                                           | Success          | 403: Không đủ quyền      | Assigner/Admin          |
+### 1.3. Refresh Access Token
 
-### Chi tiết các endpoint
-
-#### 3.1. Tạo task mới
-
-- **Request Body:**
-
-```json
-{
-  "title": "string",
-  "description": "string",
-  "indicator": "ObjectId",
-  "assigner": "ObjectId",
-  "assignee": "ObjectId",
-  "startDate": "date",
-  "endDate": "date",
-  "priority": "low|medium|high",
-  "notes": "string",
-  "subTasks": [
-    {
-      "title": "string",
-      "description": "string",
-      "assignee": "ObjectId",
-      "startDate": "date",
-      "endDate": "date"
+- **Endpoint**: `POST /auth/refresh-token`
+- **Description**: Issues a new access token using a valid refresh token.
+- **Access**: Public
+- **Request Body**:
+  ```json
+  {
+    "refreshToken": "..."
+  }
+  ```
+- **Success Response (200)**:
+  ```json
+  {
+    "success": true,
+    "message": "Token refreshed successfully",
+    "data": {
+      "accessToken": "..."
     }
-  ]
-}
-```
-
-- **Response Body:**
-
-```json
-{
-  "success": true,
-  "message": "Nhiệm vụ đã được tạo",
-  "data": {
-    "title": "string",
-    "description": "string",
-    "indicator": "ObjectId",
-    "assigner": "ObjectId",
-    "assignee": "ObjectId",
-    "startDate": "date",
-    "endDate": "date",
-    "progress": 0,
-    "report": "string",
-    "feedback": "string",
-    "notes": "string",
-    "status": "pending|in_progress|submitted|approved|rejected",
-    "priority": "low|medium|high",
-    "subTasks": [
-      {
-        "title": "string",
-        "description": "string",
-        "assignee": "ObjectId",
-        "startDate": "date",
-        "endDate": "date",
-        "progress": 0,
-        "report": "string",
-        "feedback": "string",
-        "status": "pending|in_progress|submitted|approved|rejected"
-      }
-    ],
-    "createdAt": "date",
-    "updatedAt": "date"
   }
-}
-```
-
-- **Giải thích các trường:**
-  - `indicator`: ID chỉ tiêu liên quan
-  - `assigner`: Người giao việc
-  - `assignee`: Người nhận việc
-  - `subTasks`: Danh sách công việc con
-
-#### 3.2. Thêm/Cập nhật subtask
-
-- **Request Body:**
-
-```json
-{
-  "title": "string",
-  "description": "string",
-  "assignee": "ObjectId",
-  "startDate": "date",
-  "endDate": "date"
-}
-```
-
-#### 3.3. Nộp task/chấm điểm/review
-
-- **Nộp:**
-
-```json
-{ "report": "string" }
-```
-
-- **Review:**
-
-```json
-{ "approved": true, "feedback": "string" }
-```
+  ```
 
 ---
 
-## 4. Indicator API
+## 2. Users
 
-| Method | Endpoint        | Input (Body/Query)                              | Output (Success) | Error/Note          | Access |
-| ------ | --------------- | ----------------------------------------------- | ---------------- | ------------------- | ------ |
-| POST   | /indicators/    | code, name, category, unit, department, ...     | Indicator info   | 403: Chỉ admin      | Admin  |
-| PUT    | /indicators/:id | Thông tin update                                | Indicator info   | 403: Chỉ admin      | Admin  |
-| DELETE | /indicators/:id | -                                               | Indicator info   | 403: Chỉ admin      | Admin  |
-| GET    | /indicators/    | `?page,limit,category,department,status,search` | List indicators  | -                   | Auth   |
-| GET    | /indicators/all | `?page,limit,category,department,search`        | List indicators  | -                   | Auth   |
-| GET    | /indicators/:id | -                                               | Indicator detail | 404: Không tìm thấy | Auth   |
+All user routes require authentication.
 
-### Chi tiết các endpoint
+### 2.1. Get Current User Profile
 
-#### 4.1. Tạo chỉ tiêu
-
-- **Request Body:**
-
-```json
-{
-  "code": "string",
-  "name": "string",
-  "description": "string",
-  "category": "KHCN|ĐMST|CĐS",
-  "unit": "string",
-  "department": "string",
-  "notes": "string"
-}
-```
-
-- **Response Body:**
-
-```json
-{
-  "success": true,
-  "message": "Chỉ tiêu đã được tạo thành công",
-  "data": {
-    "code": "string",
-    "name": "string",
-    "description": "string",
-    "category": "KHCN|ĐMST|CĐS",
-    "unit": "string",
-    "department": "string",
-    "notes": "string",
-    "status": "active|completed|archived",
-    "createdBy": "ObjectId",
-    "createdAt": "date",
-    "updatedAt": "date"
+- **Endpoint**: `GET /users/me`
+- **Description**: Retrieves the profile of the currently authenticated user.
+- **Access**: Authenticated
+- **Headers**:
+  - `Authorization`: `Bearer <accessToken>`
+- **Success Response (200)**:
+  ```json
+  {
+    "success": true,
+    "message": "User profile fetched successfully",
+    "data": {
+      "_id": "685bb8a2fa01931b45c14205",
+      "username": "manager1",
+      "email": "manager1@example.com",
+      "fullName": "Manager One"
+      // ... other user fields
+    }
   }
-}
-```
+  ```
 
-- **Giải thích các trường:**
-  - `category`: Danh mục chỉ tiêu (`KHCN`, `ĐMST`, `CĐS`)
-  - `status`: Trạng thái chỉ tiêu
+### 2.2. Create New User
+
+- **Endpoint**: `POST /users/create`
+- **Description**: Creates a new user.
+- **Access**: `admin`, `manager`
+- **Headers**:
+  - `Authorization`: `Bearer <accessToken>`
+- **Request Body**:
+  ```json
+  {
+    "username": "user3",
+    "password": "user123",
+    "fullName": "User One",
+    "email": "user4@example.com",
+    "role": "user",
+    "position": "Quản lý",
+    "phoneNumber": "01234567789",
+    "department": "IT",
+    "gender": "Nam",
+    "directSupervisor": "685bb8a2fa01931b45c14205"
+  }
+  ```
+- **Success Response (201)**:
+  ```json
+  {
+    "success": true,
+    "message": "User created successfully",
+    "data": {
+      // user object
+    }
+  }
+  ```
+
+### 2.3. Get All Users
+
+- **Endpoint**: `GET /users/all`
+- **Description**: Retrieves a list of all users. Can be filtered by query parameters.
+- **Access**: Authenticated
+- **Headers**:
+  - `Authorization`: `Bearer <accessToken>`
+- **Query Parameters**:
+  - `page`: number
+  - `limit`: number
+  - `department`: string
+  - `role`: string
+  - `search`: string (searches `fullName` and `email`)
+- **Success Response (200)**:
+  ```json
+  {
+    "success": true,
+    "message": "Users fetched successfully",
+    "data": {
+      "docs": [
+        // array of user objects
+      ],
+      "totalDocs": 15,
+      "limit": 10,
+      "page": 1,
+      "totalPages": 2
+    }
+  }
+  ```
+
+### 2.4. Get Subordinates
+
+- **Endpoint**: `GET /users/subordinates`
+- **Description**: Retrieves a list of users who are direct subordinates of the current user (manager).
+- **Access**: `manager`
+- **Headers**:
+  - `Authorization`: `Bearer <accessToken>`
+- **Success Response (200)**:
+  ```json
+  {
+    "success": true,
+    "message": "Subordinates fetched successfully",
+    "data": [
+      // array of user objects
+    ]
+  }
+  ```
+
+### 2.5. Update User
+
+- **Endpoint**: `PUT /users/:id`
+- **Description**: Updates a user's information.
+- **Access**: `admin`, `manager`, or the user themselves.
+- **Headers**:
+  - `Authorization`: `Bearer <accessToken>`
+- **Request Body**:
+  ```json
+  {
+    "fullName": "User One Updated",
+    "email": "new.email@example.com"
+    // other fields to update
+  }
+  ```
+- **Success Response (200)**:
+  ```json
+  {
+    "success": true,
+    "message": "User updated successfully",
+    "data": {
+      // updated user object
+    }
+  }
+  ```
+
+### 2.6. Delete User
+
+- **Endpoint**: `DELETE /users/:id`
+- **Description**: Deletes a user.
+- **Access**: `admin`, `manager`
+- **Headers**:
+  - `Authorization`: `Bearer <accessToken>`
+- **Success Response (200)**:
+  ```json
+  {
+    "success": true,
+    "message": "User deleted successfully"
+  }
+  ```
 
 ---
 
-**Lưu ý:**
+## 3. Indicators
 
-- Các endpoint (trừ login, refresh-token) đều yêu cầu header Authorization: Bearer <token>.
-- Các lỗi trả về dạng `{ success: false, message, error? }`.
-- Các trường input/output chi tiết có thể xem thêm ở phần model hoặc liên hệ backend để biết thêm chi tiết.
+All indicator routes require `admin` or `manager` role.
+
+### 3.1. Create Indicator
+
+- **Endpoint**: `POST /indicators`
+- **Description**: Creates a new performance indicator.
+- **Headers**:
+  - `Authorization`: `Bearer <accessToken>`
+- **Request Body**:
+  ```json
+  {
+    "code": "CT001",
+    "name": "Chỉ tiêu 1"
+  }
+  ```
+- **Success Response (201)**:
+  ```json
+  {
+    "success": true,
+    "message": "Indicator created successfully",
+    "data": {
+      // indicator object
+    }
+  }
+  ```
+
+### 3.2. Get All Indicators
+
+- **Endpoint**: `GET /indicators`
+- **Description**: Retrieves a list of all indicators with their task completion status.
+- **Headers**:
+  - `Authorization`: `Bearer <accessToken>`
+- **Query Parameters**:
+  - `page`: number
+  - `limit`: number
+  - `search`: string (searches `name` and `code`)
+- **Success Response (200)**:
+  ```json
+  {
+    "success": true,
+    "message": "Lấy danh sách chỉ tiêu thành công",
+    "data": {
+      "docs": [
+        {
+          "_id": "...",
+          "code": "CT001",
+          "name": "Chỉ tiêu 1",
+          "status": {
+            "completed": 2,
+            "total": 5,
+            "percentage": 40,
+            "overallStatus": "in_progress"
+          }
+        }
+      ],
+      "totalDocs": 1,
+      "limit": 10,
+      "page": 1,
+      "totalPages": 1
+    }
+  }
+  ```
+- **`overallStatus` values**:
+  - `no_tasks`: No tasks associated with the indicator.
+  - `not_started`: Tasks exist, but none are completed.
+  - `in_progress`: At least one task is completed.
+  - `completed`: All tasks are completed.
+
+### 3.3. Update Indicator
+
+- **Endpoint**: `PUT /indicators/:id`
+- **Description**: Updates an indicator's information.
+- **Headers**:
+  - `Authorization`: `Bearer <accessToken>`
+- **Request Body**:
+  ```json
+  {
+    "name": "Chỉ tiêu 1 đã cập nhật"
+  }
+  ```
+- **Success Response (200)**:
+  ```json
+  {
+    "success": true,
+    "message": "Indicator updated successfully",
+    "data": {
+      // updated indicator object
+    }
+  }
+  ```
+
+### 3.4. Delete Indicator
+
+- **Endpoint**: `DELETE /indicators/:id`
+- **Description**: Deletes an indicator.
+- **Headers**:
+  - `Authorization`: `Bearer <accessToken>`
+- **Success Response (200)**:
+  ```json
+  {
+    "success": true,
+    "message": "Indicator deleted successfully"
+  }
+  ```
+
+### 3.5. Get Tasks by Indicator
+
+- **Endpoint**: `GET /indicators/:id/tasks`
+- **Description**: Retrieves all tasks associated with a specific indicator.
+- **Headers**:
+  - `Authorization`: `Bearer <accessToken>`
+- **Success Response (200)**:
+  ```json
+  {
+    "success": true,
+    "message": "Tasks for indicator fetched successfully",
+    "data": {
+      "docs": [
+        // array of task objects
+      ]
+      // pagination fields
+    }
+  }
+  ```
+
+---
+
+## 4. Tasks
+
+All task routes require authentication.
+
+### 4.1. Create Task
+
+- **Endpoint**: `POST /tasks`
+- **Description**: Creates a new task or subtask.
+- **Access**: `admin`, `manager`
+- **Headers**:
+  - `Authorization`: `Bearer <accessToken>`
+- **Request Body (for a main task)**:
+  ```json
+  {
+    "code": "TASK001",
+    "title": "Nhiệm vụ 1",
+    "endDate": "2024-12-31",
+    "indicatorId": "685ce6d4fdb9856adb3ddbf8",
+    "notes": "Ghi chú nhiệm vụ",
+    "assignerId": "684fc4a0f60417dff0797c0f",
+    "managerIds": ["684fc4a0f60417dff0797c0f", "685bb8a2fa01931b45c14205"]
+  }
+  ```
+- **Request Body (for a subtask)**:
+  ```json
+  {
+    "code": "STASK003",
+    "title": "Nhiệm vụ con 1",
+    "endDate": "2024-12-31",
+    "indicatorId": "685ce6d4fdb9856adb3ddbf8",
+    "notes": "Ghi chú nhiệm vụ con",
+    "parentTaskId": "685ce96d88a44cf6856337f3",
+    "assigneeId": "685ce673fdb9856adb3ddbed",
+    "assignerId": "685bb8a2fa01931b45c14205"
+  }
+  ```
+- **Success Response (201)**:
+  ```json
+  {
+    "success": true,
+    "message": "Task created successfully",
+    "data": {
+      // task object
+    }
+  }
+  ```
+
+### 4.2. Update Task
+
+- **Endpoint**: `PUT /tasks/:id`
+- **Description**: Updates a task's information or status.
+- **Access**: `admin`, `manager` (with `canManageTask` permission)
+- **Headers**:
+  - `Authorization`: `Bearer <accessToken>`
+- **Request Body**:
+  ```json
+  {
+    "title": "Updated task title",
+    "status": "approved"
+    // other fields to update
+  }
+  ```
+- **Success Response (200)**:
+  ```json
+  {
+    "success": true,
+    "message": "Task updated successfully",
+    "data": {
+      // updated task object
+    }
+  }
+  ```
+
+### 4.3. Delete Task
+
+- **Endpoint**: `DELETE /tasks/:id`
+- **Description**: Deletes a task.
+- **Access**: `admin`, `manager` (with `canManageTask` permission)
+- **Headers**:
+  - `Authorization`: `Bearer <accessToken>`
+- **Success Response (200)**:
+  ```json
+  {
+    "success": true,
+    "message": "Task deleted successfully"
+  }
+  ```
+
+### 4.4. Get Task Details
+
+- **Endpoint**: `GET /tasks/:id`
+- **Description**: Retrieves the details of a single task.
+- **Access**: Authenticated
+- **Headers**:
+  - `Authorization`: `Bearer <accessToken>`
+- **Success Response (200)**:
+  ```json
+  {
+    "success": true,
+    "message": "Task detail fetched successfully",
+    "data": {
+      // task object with populated fields
+    }
+  }
+  ```
+
+### 4.5. Get Subtasks
+
+- **Endpoint**: `GET /tasks/:id/subtasks`
+- **Description**: Retrieves all subtasks for a given parent task.
+- **Access**: Authenticated
+- **Headers**:
+  - `Authorization`: `Bearer <accessToken>`
+- **Success Response (200)**:
+  ```json
+  {
+    "success": true,
+    "message": "Subtasks fetched successfully",
+    "data": {
+      "docs": [
+        // array of subtask objects
+      ]
+      // pagination fields
+    }
+  }
+  ```
+
+### 4.6. Submit Task for Review
+
+- **Endpoint**: `PATCH /tasks/:id/submit`
+- **Description**: Allows an assignee to submit a completed task.
+- **Access**: Authenticated (assignee of the task)
+- **Headers**:
+  - `Authorization`: `Bearer <accessToken>`
+- **Request Body**:
+  ```json
+  {
+    "submitNote": "Tôi đã hoàn thành nhiệm vụ",
+    "submitLink": "https://example.com/submission"
+  }
+  ```
+- **Success Response (200)**:
+  ```json
+  {
+    "success": true,
+    "message": "Task submitted successfully",
+    "data": {
+      // updated task object with 'submitted' status
+    }
+  }
+  ```
+
+### 4.7. Get Pending Tasks (for an assigner)
+
+- **Endpoint**: `GET /tasks/pending/:assignerId`
+- **Description**: Retrieves tasks that are pending review by a specific assigner.
+- **Access**: Authenticated
+- **Headers**:
+  - `Authorization`: `Bearer <accessToken>`
+- **Success Response (200)**:
+  ```json
+  {
+    "success": true,
+    "message": "Pending tasks fetched successfully",
+    "data": {
+      "docs": [
+        // array of task objects with status 'submitted'
+      ]
+      // pagination fields
+    }
+  }
+  ```
+
+### 4.8. Get Incomplete Tasks (for a user)
+
+- **Endpoint**: `GET /tasks/incomplete/:userId`
+- **Description**: Retrieves all tasks assigned to a user that are not yet completed.
+- **Access**: Authenticated
+- **Headers**:
+  - `Authorization`: `Bearer <accessToken>`
+- **Success Response (200)**:
+  ```json
+  {
+    "success": true,
+    "message": "Incomplete tasks fetched successfully",
+    "data": [
+      // array of task objects
+    ]
+  }
+  ```

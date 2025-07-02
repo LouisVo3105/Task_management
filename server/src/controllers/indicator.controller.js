@@ -1,15 +1,12 @@
-'use strict';
-
 const Indicator = require('../models/indicator.model');
+const Task = require('../models/task.model');
 const { validationResult } = require('express-validator');
 
 class IndicatorController {
-  // Response chuẩn hóa
   #sendResponse(res, status, success, message, data = null, errors = null) {
     return res.status(status).json({ success, message, data, errors });
   }
 
-  // Tạo chỉ tiêu mới (chỉ admin)
   async createIndicator(req, res) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -17,29 +14,20 @@ class IndicatorController {
     }
 
     try {
-      if (req.user.role !== 'admin') {
-        return this.#sendResponse(res, 403, false, 'Chỉ admin có quyền tạo chỉ tiêu');
-      }
-
-      const { code, name, description, category, unit, department, notes } = req.body;
-
+      const { code, name } = req.body;
       const existingIndicator = await Indicator.findOne({ code });
       if (existingIndicator) {
         return this.#sendResponse(res, 409, false, 'Mã chỉ tiêu đã tồn tại');
       }
 
-      const indicator = new Indicator({
-        code, name, description, category, unit, department, notes, createdBy: req.user.id
-      });
-
+      const indicator = new Indicator({ code, name });
       await indicator.save();
-      this.#sendResponse(res, 201, true, 'Chỉ tiêu đã được tạo thành công', indicator);
+      this.#sendResponse(res, 201, true, 'Chỉ tiêu đã được tạo', indicator);
     } catch (error) {
       this.#sendResponse(res, 500, false, 'Lỗi khi tạo chỉ tiêu', null, error.message);
     }
   }
 
-  // Cập nhật chỉ tiêu (chỉ admin)
   async updateIndicator(req, res) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -47,20 +35,11 @@ class IndicatorController {
     }
 
     try {
-      if (req.user.role !== 'admin') {
-        return this.#sendResponse(res, 403, false, 'Chỉ admin có quyền cập nhật chỉ tiêu');
-      }
-
       const { id } = req.params;
       const updateData = req.body;
       delete updateData.code; // Không cho phép cập nhật mã chỉ tiêu
 
-      const indicator = await Indicator.findByIdAndUpdate(
-        id, 
-        updateData,
-        { new: true, runValidators: true }
-      );
-
+      const indicator = await Indicator.findByIdAndUpdate(id, updateData, { new: true });
       if (!indicator) {
         return this.#sendResponse(res, 404, false, 'Không tìm thấy chỉ tiêu');
       }
@@ -71,111 +50,142 @@ class IndicatorController {
     }
   }
 
-  // Xóa chỉ tiêu (soft delete, chỉ admin)
   async deleteIndicator(req, res) {
     try {
-      if (req.user.role !== 'admin') {
-        return this.#sendResponse(res, 403, false, 'Chỉ admin có quyền xóa chỉ tiêu');
-      }
-
       const { id } = req.params;
-      const indicator = await Indicator.findByIdAndUpdate(
-        id, 
-        { status: 'archived' },
-        { new: true }
-      );
-
+      const indicator = await Indicator.findByIdAndDelete(id);
       if (!indicator) {
         return this.#sendResponse(res, 404, false, 'Không tìm thấy chỉ tiêu');
       }
 
-      this.#sendResponse(res, 200, true, 'Đã lưu chỉ tiêu vào kho lưu trữ', indicator);
+      await Task.deleteMany({ indicator: id }); // Xóa các nhiệm vụ liên quan
+      this.#sendResponse(res, 200, true, 'Xóa chỉ tiêu thành công');
     } catch (error) {
-      this.#sendResponse(res, 500, false, 'Lỗi khi lưu trữ chỉ tiêu', null, error.message);
+      this.#sendResponse(res, 500, false, 'Lỗi khi xóa chỉ tiêu', null, error.message);
     }
   }
 
-  // Lấy danh sách chỉ tiêu (active)
   async getIndicators(req, res) {
     try {
-      const { page = 1, limit = 10, category, department, status, search } = req.query;
-      const query = {};
-
-      // Lọc theo trạng thái nếu được chỉ định, mặc định là 'active'
-      if (status && status !== 'all') {
-        query.status = status;
-      } else if (!status) {
-        query.status = 'active'; // Mặc định chỉ lấy active nếu không có status
-      }
-
-      if (category) query.category = category;
-      if (department) query.department = department;
-      if (search) {
-        query.$or = [
-          { code: { $regex: search, $options: 'i' } },
-          { name: { $regex: search, $options: 'i' } }
-        ];
-      }
-
+      const { page = 1, limit = 10 } = req.query;
       const options = {
         page: parseInt(page),
         limit: parseInt(limit),
         sort: { createdAt: -1 },
-        select: 'code name category unit department status createdAt'
+        select: 'code name _id'
       };
 
-      const indicators = await Indicator.paginate(query, options);
-      this.#sendResponse(res, 200, true, 'Lấy danh sách chỉ tiêu thành công', indicators);
+      const indicators = await Indicator.paginate({}, options);
+      
+      // Tính toán trạng thái hoàn thành cho từng chỉ tiêu
+      const indicatorsWithStatus = await Promise.all(
+        indicators.docs.map(async (indicator) => {
+          // Lấy tất cả nhiệm vụ thuộc chỉ tiêu này (cả nhiệm vụ chính và nhiệm vụ con)
+          const tasks = await Task.find({ 
+            indicator: indicator._id,
+            parentTask: null // Chỉ lấy nhiệm vụ chính
+          }).lean();
+
+          let completedTasks = 0;
+          let totalTasks = 0;
+
+          // Tính toán cho nhiệm vụ chính
+          for (const task of tasks) {
+            totalTasks++;
+            if (task.status === 'approved') {
+              completedTasks++;
+            } else if (task.subTasks && task.subTasks.length > 0) {
+              // Nếu có nhiệm vụ con, tính toán dựa trên nhiệm vụ con
+              const subTasks = task.subTasks;
+              const completedSubTasks = subTasks.filter(subTask => subTask.status === 'approved').length;
+              
+              if (completedSubTasks === subTasks.length && subTasks.length > 0) {
+                completedTasks++;
+              }
+            }
+          }
+
+          // Tính phần trăm hoàn thành
+          const completionPercentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+          
+          // Xác định trạng thái tổng thể
+          let overallStatus = 'not_started';
+          if (totalTasks === 0) {
+            overallStatus = 'no_tasks';
+          } else if (completedTasks === totalTasks) {
+            overallStatus = 'completed';
+          } else if (completedTasks > 0) {
+            overallStatus = 'in_progress';
+          }
+
+          return {
+            ...indicator.toObject(),
+            status: {
+              completed: completedTasks,
+              total: totalTasks,
+              percentage: completionPercentage,
+              overallStatus: overallStatus
+            }
+          };
+        })
+      );
+
+      // Cập nhật lại data trong response
+      const responseData = {
+        ...indicators,
+        docs: indicatorsWithStatus
+      };
+
+      this.#sendResponse(res, 200, true, 'Lấy danh sách chỉ tiêu thành công', responseData);
     } catch (error) {
       this.#sendResponse(res, 500, false, 'Lỗi khi lấy danh sách chỉ tiêu', null, error.message);
     }
   }
 
-  // Lấy tất cả chỉ tiêu (bất kể trạng thái)
-  async getAllIndicators(req, res) {
-    try {
-      const { page = 1, limit = 10, category, department, search } = req.query;
-      const query = {};
-
-      if (category) query.category = category;
-      if (department) query.department = department;
-      if (search) {
-        query.$or = [
-          { code: { $regex: search, $options: 'i' } },
-          { name: { $regex: search, $options: 'i' } }
-        ];
-      }
-
-      const options = {
-        page: parseInt(page),
-        limit: parseInt(limit),
-        sort: { createdAt: -1 },
-        select: 'code name category unit department status createdAt',
-        populate: { path: 'createdBy', select: 'fullName position' }
-      };
-
-      const indicators = await Indicator.paginate(query, options);
-      this.#sendResponse(res, 200, true, 'Lấy tất cả chỉ tiêu thành công', indicators);
-    } catch (error) {
-      this.#sendResponse(res, 500, false, 'Lỗi khi lấy tất cả chỉ tiêu', null, error.message);
-    }
-  }
-
-  // Lấy chi tiết chỉ tiêu
-  async getIndicatorDetail(req, res) {
+  async getIndicatorTasks(req, res) {
     try {
       const { id } = req.params;
-      const indicator = await Indicator.findById(id)
-        .populate('createdBy', 'fullName position')
-        .select('-__v');
-
+      const indicator = await Indicator.findById(id);
       if (!indicator) {
         return this.#sendResponse(res, 404, false, 'Không tìm thấy chỉ tiêu');
       }
 
-      this.#sendResponse(res, 200, true, 'Lấy chi tiết chỉ tiêu thành công', indicator);
+      const tasks = await Task.find({ indicator: id, parentTask: null })
+        .select('title endDate _id status subTasks')
+        .lean();
+
+      let completedTasks = 0;
+      let totalTasks = 0;
+
+      // Tính toán progress với logic nhất quán
+      for (const task of tasks) {
+        totalTasks++;
+        if (task.status === 'approved') {
+          completedTasks++;
+        } else if (task.subTasks && task.subTasks.length > 0) {
+          // Nếu có nhiệm vụ con, tính toán dựa trên nhiệm vụ con
+          const subTasks = task.subTasks;
+          const completedSubTasks = subTasks.filter(subTask => subTask.status === 'approved').length;
+          
+          if (completedSubTasks === subTasks.length && subTasks.length > 0) {
+            completedTasks++;
+          }
+        }
+      }
+
+      const progress = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+
+      this.#sendResponse(res, 200, true, 'Lấy danh sách nhiệm vụ thành công', { 
+        tasks, 
+        progress,
+        status: {
+          completed: completedTasks,
+          total: totalTasks,
+          percentage: progress
+        }
+      });
     } catch (error) {
-      this.#sendResponse(res, 500, false, 'Lỗi khi lấy chi tiết chỉ tiêu', null, error.message);
+      this.#sendResponse(res, 500, false, 'Lỗi khi lấy danh sách nhiệm vụ', null, error.message);
     }
   }
 }

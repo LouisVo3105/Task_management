@@ -1,4 +1,6 @@
 const jwt = require('jsonwebtoken');
+const Task = require('../models/task.model');
+const mongoose = require('mongoose');
 
 const tokenBlacklist = new Set();
 
@@ -11,6 +13,13 @@ const verifyRefreshToken = (req, res, next) => {
     req.user = user;
     next();
   });
+};
+
+const roleMiddleware = (roles) => (req, res, next) => {
+  if (!roles.includes(req.user.role)) {
+    return res.status(403).json({ success: false, message: 'Không có quyền truy cập' });
+  }
+  next();
 };
 
 const authMiddleware = (req, res, next) => {
@@ -48,4 +57,29 @@ const authMiddleware = (req, res, next) => {
   }
 };
 
-module.exports = {authMiddleware, verifyRefreshToken};
+const canManageTask = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const userRole = req.user.role;
+    const taskId = req.params.id;
+    if (userRole === 'admin') return next();
+
+    // Tìm task chính
+    let task = await Task.findById(taskId).select('managers');
+    // Nếu không có, tìm task cha chứa subtask
+    if (!task) {
+      task = await Task.findOne({ 'subTasks._id': new mongoose.Types.ObjectId(taskId) }).select('managers');
+      if (!task) {
+        return res.status(404).json({ success: false, message: 'Không tìm thấy nhiệm vụ' });
+      }
+    }
+    if (task.managers.some(managerId => managerId.toString() === userId)) {
+      return next();
+    }
+    return res.status(403).json({ success: false, message: 'Bạn không có quyền thao tác với nhiệm vụ này' });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: 'Lỗi kiểm tra quyền', error: error.message });
+  }
+};
+
+module.exports = {authMiddleware, verifyRefreshToken, tokenBlacklist, roleMiddleware, canManageTask};
