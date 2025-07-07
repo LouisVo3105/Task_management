@@ -36,7 +36,6 @@ function ManageUser() {
       setUsers(data.data || []);
     } catch (err) {
       setError(err.message);
-      console.error('Lỗi khi lấy danh sách user:', err);
     }
     setLoading(false);
   };
@@ -89,7 +88,6 @@ function ManageUser() {
       fetchUsers();
     } catch (err) {
       setError(err.message);
-      console.error('Lỗi khi tạo/cập nhật user:', err);
     }
     setLoading(false);
   };
@@ -109,7 +107,6 @@ function ManageUser() {
       fetchUsers();
     } catch (err) {
       setError(err.message);
-      console.error('Lỗi khi cập nhật trạng thái user:', err);
     }
     setLoading(false);
   };
@@ -129,7 +126,6 @@ function ManageUser() {
       fetchUsers();
     } catch (err) {
       setError(err.message);
-      console.error('Lỗi khi xóa user vĩnh viễn:', err);
     }
     setLoading(false);
   };
@@ -155,12 +151,11 @@ function ManageUser() {
       if (data.success) fetchUsers();
     } catch (err) {
       setImportResult({ success: false, message: 'Lỗi import file' });
-      console.error('Lỗi khi import CSV:', err);
     }
     setImportLoading(false);
   };
 
-  // Export user handler
+  // Export user list
   const handleExport = async (type) => {
     try {
       const res = await fetch(`${API_URL}/export?type=${type}`, {
@@ -190,26 +185,27 @@ function ManageUser() {
       <Typography variant="h4" className="mb-4">Quản lý người dùng</Typography>
       {error && <Typography color="red" className="mb-2">{error}</Typography>}
       {loading && <Spinner className="mx-auto" />}
-      <div className="flex justify-end mb-4 gap-2">
+      <div className="flex justify-end mb-4">
         {canEdit && (
           <>
+            {/* Export buttons */}
             <button
-              className="block rounded-md bg-teal-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-teal-700 mr-2"
-              onClick={() => setImportDialog(true)}
-            >
-              Import
-            </button>
-            <button
-              className="block rounded-md bg-teal-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-teal-700 mr-2"
+              className="block rounded-md bg-blue-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700 mr-2"
               onClick={() => handleExport('csv')}
             >
               Export CSV
             </button>
             <button
-              className="block rounded-md bg-teal-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-teal-700 mr-2"
+              className="block rounded-md bg-green-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-green-700 mr-2"
               onClick={() => handleExport('xlsx')}
             >
               Export Excel
+            </button>
+            <button
+              className="block rounded-md bg-teal-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-teal-700 mr-2"
+              onClick={() => setImportDialog(true)}
+            >
+              Import CSV
             </button>
             <button
               className="block rounded-md bg-teal-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-teal-700"
@@ -373,29 +369,22 @@ function ManageUser() {
       {importDialog && (
         <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.2)' }}>
           <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
-            <div className="text-xl font-semibold mb-4">Import người dùng</div>
-            {/* Custom file input */}
-            <label className="flex items-center gap-3 mb-4 cursor-pointer">
-              <span className="px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700 transition text-sm font-medium">Chọn file CSV</span>
-              <input
-                type="file"
-                accept=".csv"
-                onChange={e => setImportFile(e.target.files[0])}
-                style={{ display: 'none' }}
-              />
-              <span className="text-gray-700 text-sm">
-                {importFile ? importFile.name : 'Chưa chọn file'}
-              </span>
-            </label>
+            <div className="text-xl font-semibold mb-4">Import người dùng từ CSV</div>
+            <input
+              type="file"
+              accept=".csv"
+              onChange={e => setImportFile(e.target.files[0])}
+              className="mb-4"
+            />
             <div className="flex justify-end gap-2 mt-4">
               <button
-                className="rounded-md bg-gray-400 px-4 py-2 text-white hover:bg-gray-500 transition"
+                className="rounded-md bg-gray-400 px-4 py-2 text-white"
                 onClick={() => { setImportDialog(false); setImportFile(null); setImportResult(null); }}
               >
                 Đóng
               </button>
               <button
-                className={`rounded-md px-4 py-2 text-white transition ${importLoading || !importFile ? 'bg-teal-300 cursor-not-allowed' : 'bg-teal-600 hover:bg-teal-700'}`}
+                className="rounded-md bg-teal-600 px-4 py-2 text-white"
                 onClick={handleImportCSV}
                 disabled={importLoading || !importFile}
               >
@@ -407,24 +396,19 @@ function ManageUser() {
                 <div className={importResult.success ? 'text-green-600' : 'text-red-600'}>
                   {importResult.message}
                 </div>
-                {(() => {
-                  const errors = importResult?.errors || importResult?.data?.errors || [];
-                  return errors.length > 0 && (
-                    <div className="mt-2 bg-red-50 border border-red-200 rounded p-2">
-                      <div className="font-semibold text-red-700 mb-1">
-                        Chi tiết lỗi ({errors.length}):
-                      </div>
-                      <ul className="text-xs max-h-40 overflow-auto list-disc pl-4">
-                        {errors.map((err, idx) => (
-                          <li key={idx} className="mb-1">
-                            <div><b>Dòng dữ liệu:</b> {JSON.stringify(err.row)}</div>
-                            <div><b>Lỗi:</b> {err.error}</div>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  );
-                })()}
+                {importResult.errors && importResult.errors.length > 0 && (
+                  <details className="mt-2">
+                    <summary>Chi tiết lỗi ({importResult.errors.length})</summary>
+                    <ul className="text-xs max-h-40 overflow-auto">
+                      {importResult.errors.map((err, idx) => (
+                        <li key={idx}>
+                          <b>Dòng:</b> {JSON.stringify(err.row)}<br />
+                          <b>Lỗi:</b> {err.error}
+                        </li>
+                      ))}
+                    </ul>
+                  </details>
+                )}
               </div>
             )}
           </div>
@@ -434,4 +418,4 @@ function ManageUser() {
   );
 }
 
-export default ManageUser;
+export default ManageUser; 

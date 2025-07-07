@@ -9,7 +9,8 @@ const compression = require('compression');
 const userRoute = require('./routes/user.route');
 const taskRoute = require('./routes/task.route');
 const authRoute = require('./routes/auth.route');
-const indicatorRoute = require('./routes/indicator.route'); // Thêm dòng này
+const indicatorRoute = require('./routes/indicator.route');
+const analysisRoute = require('./routes/analysis.route');
 const Database = require('./dbs/database');
 
 const db = Database.getInstance();
@@ -32,7 +33,9 @@ db.connect().catch(err => console.error('Failed to connect to DB:', err));
 app.use('/api/auth', authRoute);
 app.use('/api/users', userRoute);
 app.use('/api/tasks', taskRoute);
-app.use('/api/indicators', indicatorRoute); // Thêm dòng này
+app.use('/api/indicators', indicatorRoute);
+app.use('/api/analysis', analysisRoute);
+
 
 // Xử lý lỗi
 app.use((err, req, res, next) => {

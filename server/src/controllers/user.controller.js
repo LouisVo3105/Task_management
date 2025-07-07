@@ -2,6 +2,10 @@ const User = require('../models/user.model');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
+const csv = require('csv-parser');
+const fs = require('fs');
+const xlsx = require('xlsx');
+const { Parser: CsvParser } = require('json2csv');
 
 class UserController {
   #sendResponse(res, status, success, message, data = null, errors = null) {
@@ -13,17 +17,16 @@ class UserController {
       const { username, password, directSupervisor, ...userData } = req.body;
       const currentUser = req.user;
       
-      // Phân quyền: Chỉ admin hoặc manager cùng phòng ban được tạo user
+
       if (currentUser.role === 'user') {
         return this.#sendResponse(res, 403, false, 'Không có quyền tạo người dùng');
       }
       
-      // Manager chỉ được tạo user trong cùng phòng ban
+
       if (currentUser.role === 'manager' && userData.department !== currentUser.department) {
         return this.#sendResponse(res, 403, false, 'Chỉ được tạo người dùng trong cùng phòng ban');
       }
-      
-      // Kiểm tra username và email đã tồn tại
+
       const existingUser = await User.findOne({ 
         $or: [{ username }, { email: userData.email }] 
       });
@@ -32,7 +35,7 @@ class UserController {
         return this.#sendResponse(res, 409, false, 'Tên đăng nhập hoặc email đã tồn tại');
       }
       
-      // Kiểm tra sự tồn tại của directSupervisor nếu cần
+
       if (['user', 'manager'].includes(userData.role)) {
         const supervisor = await User.findById(directSupervisor);
         if (!supervisor || !supervisor.isActive) {
@@ -40,7 +43,6 @@ class UserController {
         }
       }
       
-      // Mã hóa mật khẩu
       const hashedPassword = await bcrypt.hash(password, 10);
       
       const user = new User({
@@ -52,8 +54,7 @@ class UserController {
       });
       
       await user.save();
-      
-      // Trả về dữ liệu user không bao gồm mật khẩu
+
       const userResponse = user.toObject();
       delete userResponse.password;
       
@@ -109,7 +110,7 @@ class UserController {
       let users = await User.find(filter, '-password')
         .populate('directSupervisor', 'fullName position')
         .lean();
-      // Đảm bảo user hiện tại luôn có trong danh sách
+
       const currentUserId = req.user.id;
       const isCurrentUserInList = users.some(u => u._id.toString() === currentUserId);
       if (!isCurrentUserInList) {
@@ -272,6 +273,126 @@ class UserController {
       res.json({ success: true, message: 'User permanently deleted.' });
     } catch (error) {
       res.status(500).json({ success: false, message: 'Error deleting user permanently', error: error.message });
+    }
+  }
+
+  async importUsersFromCSV(req, res) {
+    if (!req.file) {
+      return this.#sendResponse(res, 400, false, 'Không có file được upload');
+    }
+    const results = [];
+    const errors = [];
+    const filePath = req.file.path;
+    const currentUser = req.user;
+    const baseFields = ['username','password','email','fullName','position','phoneNumber','department','role'];
+    const ext = filePath.split('.').pop().toLowerCase();
+    let rows = [];
+    try {
+      if (ext === 'xlsx') {
+        const workbook = xlsx.readFile(filePath);
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
+        rows = xlsx.utils.sheet_to_json(sheet, { defval: '' });
+      } else {
+        const csvRows = await new Promise((resolve, reject) => {
+          const arr = [];
+          fs.createReadStream(filePath)
+            .pipe(csv())
+            .on('data', (row) => arr.push(row))
+            .on('end', () => resolve(arr))
+            .on('error', reject);
+        });
+        rows = csvRows;
+      }
+    } catch (e) {
+      fs.unlinkSync(filePath);
+      return this.#sendResponse(res, 400, false, 'Lỗi đọc file: ' + e.message);
+    }
+    for (const row of rows) {
+      const missing = baseFields.filter(f => !row[f] || row[f].toString().trim() === '');
+      if (missing.length > 0) {
+        errors.push({ row, error: `Thiếu trường: ${missing.join(', ')}` });
+        continue;
+      }
+      if ((row.role === 'user' || row.role === 'manager') && (!row.directSupervisor || row.directSupervisor.toString().trim() === '')) {
+        errors.push({ row, error: 'Thiếu directSupervisor cho user/manager' });
+        continue;
+      }
+      if (!['admin','manager','user'].includes(row.role)) {
+        errors.push({ row, error: 'Vai trò không hợp lệ' });
+        continue;
+      }
+      results.push(row);
+    }
+    let success = 0;
+    for (const userData of results) {
+      try { 
+        const existingUser = await User.findOne({ $or: [{ username: userData.username }, { email: userData.email }] });
+        if (existingUser) {
+          errors.push({ row: userData, error: 'Username hoặc email đã tồn tại' });
+          continue;
+        }
+        if (['user','manager'].includes(userData.role)) {
+          const supervisor = await User.findById(userData.directSupervisor);
+          if (!supervisor || !supervisor.isActive) {
+            errors.push({ row: userData, error: 'Supervisor không tồn tại hoặc không hoạt động' });
+            continue;
+          }
+        }
+        const hashedPassword = await bcrypt.hash(userData.password, 10);
+        const user = new User({
+          ...userData,
+          password: hashedPassword,
+          createdBy: currentUser.id
+        });
+        await user.save();
+        success++;
+      } catch (err) {
+        errors.push({ row: userData, error: err.message });
+      }
+    }
+    fs.unlinkSync(filePath);
+    this.#sendResponse(res, 200, true, `Đã import ${success} user, lỗi: ${errors.length}`, { success, errors });
+  }
+
+  async exportUsers(req, res) {
+    try {
+      const type = (req.query.type || 'csv').toLowerCase();
+      const users = await User.find({}, '-password -__v').lean();
+      if (!users || users.length === 0) {
+        return res.status(404).json({ success: false, message: 'Không có dữ liệu người dùng' });
+      }
+      // Chuyển đổi dữ liệu cho export
+      const exportData = users.map(u => ({
+        username: u.username,
+        email: u.email,
+        fullName: u.fullName,
+        position: u.position,
+        phoneNumber: u.phoneNumber,
+        department: u.department,
+        role: u.role,
+        directSupervisor: u.directSupervisor ? (u.directSupervisor.fullName || u.directSupervisor) : '',
+        isActive: u.isActive,
+        createdAt: u.createdAt,
+      }));
+      if (type === 'xlsx') {
+        const wb = xlsx.utils.book_new();
+        const ws = xlsx.utils.json_to_sheet(exportData);
+        xlsx.utils.book_append_sheet(wb, ws, 'Users');
+        const buffer = xlsx.write(wb, { type: 'buffer', bookType: 'xlsx' });
+        res.setHeader('Content-Disposition', 'attachment; filename="users.xlsx"');
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        return res.end(buffer);
+      } else {
+        // Mặc định là CSV
+        const csvParser = new CsvParser({ header: true });
+        const csv = csvParser.parse(exportData);
+        res.setHeader('Content-Disposition', 'attachment; filename="users.csv"');
+        res.setHeader('Content-Type', 'text/csv');
+        return res.end(csv);
+      }
+    } catch (error) {
+      res.status(500).json({ success: false, message: 'Lỗi export user', error: error.message });
     }
   }
 }

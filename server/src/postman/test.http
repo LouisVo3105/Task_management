@@ -200,3 +200,13 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NWJiOGEyZ
 # Hướng dẫn:
 # 1. Đăng nhập để lấy accessToken và refreshToken, copy vào {{accessToken}} và {{refreshToken}}.
 # 2. Với các API cần id, hãy thay {{userId}}, {{indicatorId}}, {{taskId}}, {{assignerId}} bằng id thực tế từ response. 
+
+
+### Get overall stat
+GET http://localhost:3056/api/analysis/overall-stats
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NGZjNGEwZjYwNDE3ZGZmMDc5N2MwZiIsInJvbGUiOiJhZG1pbiIsImRlcGFydG1lbnQiOiJQaMOybmcgSMOgbmggY2jDrW5oIiwiaWF0IjoxNzUxODUyOTA5LCJleHAiOjE3NTE4NTY1MDl9.KM2n3x7g9WtsM0yIfscPAp7GEnR-a2xDD67WLq3sZj8
+
+
+### Get user performance
+GET http://localhost:3056/api/analysis/user-performance
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NGZjNGEwZjYwNDE3ZGZmMDc5N2MwZiIsInJvbGUiOiJhZG1pbiIsImRlcGFydG1lbnQiOiJQaMOybmcgSMOgbmggY2jDrW5oIiwiaWF0IjoxNzUxODUyOTA5LCJleHAiOjE3NTE4NTY1MDl9.KM2n3x7g9WtsM0yIfscPAp7GEnR-a2xDD67WLq3sZj8

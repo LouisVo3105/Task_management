@@ -77,7 +77,6 @@ const CreateTaskModal = ({ open, onClose, onCreated, indicatorId }) => {
 
   if (!open) return null;
 
-  // Chuẩn bị options cho react-select
   const managerOptions = users.map(u => ({ value: u._id, label: `${u.fullName} (${u.email})` }));
   const selectedManagers = managerOptions.filter(opt => managerIds.includes(opt.value));
 

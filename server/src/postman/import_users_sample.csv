@@ -1,0 +1,4 @@
+username,password,email,fullName,position,phoneNumber,department,role,directSupervisor,gender
+user1234,Password123,user1234@example.com,Nguyen Van A,Nhân viên,0912345678,Phòng Kỹ thuật,user,684fc4a0f60417dff0797c0f,Nam
+user2345,Password123,user2345@example.com,Tran Thi B,Nhân viên,0987654321,Phòng Kỹ thuật,user,684fc4a0f60417dff0797c0f,Nữ
+manager1234,Password123,manager11234@example.com,Le Van C,Trưởng phòng,0911222333,Phòng Kỹ thuật,manager,684fc4a0f60417dff0797c0f,Nam

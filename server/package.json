@@ -20,9 +20,13 @@
   "dependencies": {
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
+    "csv-parser": "^3.2.0",
     "express-validator": "^7.2.1",
+    "json2csv": "^6.0.0-alpha.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.15.2",
-    "mongoose-paginate-v2": "^1.9.1"
+    "mongoose-paginate-v2": "^1.9.1",
+    "multer": "^2.0.1",
+    "xlsx": "^0.18.5"
   }
 }
