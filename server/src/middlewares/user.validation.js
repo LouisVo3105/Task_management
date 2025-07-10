@@ -1,11 +1,23 @@
 const { body, validationResult } = require('express-validator');
+const { mapPosition, getStandardPositions } = require('../utils/position-mapper');
 
 exports.validateCreateUser = [
   body('username').trim().notEmpty().isLength({ min: 3 }).withMessage('Tên đăng nhập phải có ít nhất 3 ký tự'),
   body('password').isLength({ min: 6 }).withMessage('Mật khẩu phải có ít nhất 6 ký tự'),
   body('email').isEmail().normalizeEmail().withMessage('Email không hợp lệ'),
   body('fullName').trim().notEmpty().withMessage('Tên đầy đủ là bắt buộc'),
-  body('position').trim().notEmpty().withMessage('Vị trí là bắt buộc'),
+  body('position')
+    .trim()
+    .notEmpty()
+    .withMessage('Vị trí là bắt buộc')
+    .custom((value) => {
+      const mappedPosition = mapPosition(value);
+      const standardPositions = getStandardPositions();
+      if (!standardPositions.includes(mappedPosition)) {
+        throw new Error(`Vị trí không hợp lệ. Các vị trí hợp lệ: ${standardPositions.join(', ')}`);
+      }
+      return true;
+    }),
   body('phoneNumber').isMobilePhone().withMessage('Số điện thoại không hợp lệ'),
   body('department').trim().notEmpty().withMessage('Phòng ban là bắt buộc'),
   body('role').isIn(['admin', 'manager', 'user']).withMessage('Vai trò không hợp lệ'),
@@ -29,7 +41,20 @@ exports.validateCreateUser = [
 
 exports.validateUpdateUser = [
   body('fullName').optional().trim().notEmpty().withMessage('Tên đầy đủ không được để trống'),
-  body('position').optional().trim().notEmpty().withMessage('Vị trí không được để trống'),
+  body('position')
+    .optional()
+    .trim()
+    .notEmpty()
+    .withMessage('Vị trí không được để trống')
+    .custom((value) => {
+      if (!value) return true; // Skip validation if not provided
+      const mappedPosition = mapPosition(value);
+      const standardPositions = getStandardPositions();
+      if (!standardPositions.includes(mappedPosition)) {
+        throw new Error(`Vị trí không hợp lệ. Các vị trí hợp lệ: ${standardPositions.join(', ')}`);
+      }
+      return true;
+    }),
   body('phoneNumber').optional().isMobilePhone().withMessage('Số điện thoại không hợp lệ'),
   body('department').optional().trim().notEmpty().withMessage('Phòng ban không được để trống'),
   body('role').optional().isIn(['admin', 'manager', 'user']).withMessage('Vai trò không hợp lệ'),

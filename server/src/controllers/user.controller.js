@@ -1,4 +1,5 @@
 const User = require('../models/user.model');
+const Department = require('../models/department.model');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
@@ -6,6 +7,7 @@ const csv = require('csv-parser');
 const fs = require('fs');
 const xlsx = require('xlsx');
 const { Parser: CsvParser } = require('json2csv');
+const { mapPosition, getStandardPositions, getPositionKeywords } = require('../utils/position-mapper');
 
 class UserController {
   #sendResponse(res, status, success, message, data = null, errors = null) {
@@ -43,6 +45,11 @@ class UserController {
         }
       }
       
+      // Mapping position từ input thành position chuẩn
+      if (userData.position) {
+        userData.position = mapPosition(userData.position);
+      }
+      
       const hashedPassword = await bcrypt.hash(password, 10);
       
       const user = new User({
@@ -69,7 +76,8 @@ class UserController {
       const userId = req.user.id;
       const user = await User.findById(userId)
         .select('-password')
-        .populate('directSupervisor', 'fullName position');
+        .populate('directSupervisor', 'fullName position')
+        .populate('department', 'name description');
       
       if (!user) {
         return res.status(404).json({ 
@@ -109,6 +117,7 @@ class UserController {
       }
       let users = await User.find(filter, '-password')
         .populate('directSupervisor', 'fullName position')
+        .populate('department', 'name description')
         .lean();
 
       const currentUserId = req.user.id;
@@ -117,6 +126,7 @@ class UserController {
         const currentUser = await User.findOne({ _id: currentUserId })
           .select('-password')
           .populate('directSupervisor', 'fullName position')
+          .populate('department', 'name description')
           .lean();
         if (currentUser) {
           users.push(currentUser);
@@ -163,11 +173,18 @@ class UserController {
         updateData.password = await bcrypt.hash(updateData.password, 10);
       }
       
+      // Mapping position từ input thành position chuẩn
+      if (updateData.position) {
+        updateData.position = mapPosition(updateData.position);
+      }
+      
       const updatedUser = await User.findByIdAndUpdate(
         id, 
         { ...updateData, updatedAt: Date.now() },
         { new: true, runValidators: true }
-      ).select('-password');
+      ).select('-password')
+       .populate('directSupervisor', 'fullName position')
+       .populate('department', 'name description');
       
       if (!updatedUser) {
         return res.status(404).json({ 
@@ -327,6 +344,16 @@ class UserController {
     let success = 0;
     for (const userData of results) {
       try { 
+        // Map tên department sang ObjectId nếu cần
+        if (userData.department && !/^[0-9a-fA-F]{24}$/.test(userData.department)) {
+          const dept = await Department.findOne({ name: userData.department.trim() });
+          if (!dept) {
+            errors.push({ row: userData, error: `Phòng ban "${userData.department}" không tồn tại` });
+            continue;
+          }
+          userData.department = dept._id;
+        }
+
         const existingUser = await User.findOne({ $or: [{ username: userData.username }, { email: userData.email }] });
         if (existingUser) {
           errors.push({ row: userData, error: 'Username hoặc email đã tồn tại' });
@@ -358,7 +385,10 @@ class UserController {
   async exportUsers(req, res) {
     try {
       const type = (req.query.type || 'csv').toLowerCase();
-      const users = await User.find({}, '-password -__v').lean();
+      const users = await User.find({}, '-password -__v')
+        .populate('department', 'name')
+        .populate('directSupervisor', 'fullName')
+        .lean();
       if (!users || users.length === 0) {
         return res.status(404).json({ success: false, message: 'Không có dữ liệu người dùng' });
       }
@@ -369,7 +399,7 @@ class UserController {
         fullName: u.fullName,
         position: u.position,
         phoneNumber: u.phoneNumber,
-        department: u.department,
+        department: u.department?.name || '', // Xuất tên phòng ban
         role: u.role,
         directSupervisor: u.directSupervisor ? (u.directSupervisor.fullName || u.directSupervisor) : '',
         isActive: u.isActive,
@@ -393,6 +423,20 @@ class UserController {
       }
     } catch (error) {
       res.status(500).json({ success: false, message: 'Lỗi export user', error: error.message });
+    }
+  }
+
+  async getPositions(req, res) {
+    try {
+      const standardPositions = getStandardPositions();
+      const positionKeywords = getPositionKeywords();
+      
+      this.#sendResponse(res, 200, true, 'Lấy danh sách position thành công', {
+        positions: standardPositions,
+        keywords: positionKeywords
+      });
+    } catch (error) {
+      this.#sendResponse(res, 500, false, 'Lỗi khi lấy danh sách position', null, error.message);
     }
   }
 }

@@ -10,9 +10,22 @@ class Database {
   async connect() {
     if (!this.connection) {
       try {
-        this.connection = await mongoose.connect(process.env.MONGO_URI, {
+        this.connection = await mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/task_management', {
           useNewUrlParser: true,
           useUnifiedTopology: true,
+          // Tăng connection pool size
+          maxPoolSize: 100,
+          minPoolSize: 5,
+          // Tăng timeout
+          serverSelectionTimeoutMS: 5000,
+          socketTimeoutMS: 45000,
+          // Tối ưu cho production
+          autoIndex: false,
+          // Tăng write concern timeout
+          wtimeoutMS: 10000,
+          // Tăng read preference timeout
+          readPreference: 'primary',
+          readConcern: { level: 'local' }
         });
         console.log('Connected to MongoDB');
       } catch (error) {

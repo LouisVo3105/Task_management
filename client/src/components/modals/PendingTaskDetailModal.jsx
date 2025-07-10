@@ -2,12 +2,11 @@ import React from "react";
 import { Button, Typography } from "@material-tailwind/react";
 
 const PendingTaskDetailModal = ({ open, onClose, task }) => {
-  console.log('PendingTaskDetailModal render', { open, task });
   if (!open || !task) return null;
 
   const details = [
-    { label: task.parentTask ? "Mã nhiệm vụ con" : "Mã nhiệm vụ", value: task.code },
     { label: "Tiêu đề", value: task.title },
+    { label: "Nội dung", value: task.content },
     task.parentTask && { label: "Nhiệm vụ cha", value: task.parentTask.title || task.parentTask },
     { label: "Chỉ tiêu", value: task.indicator?.name },
     { label: "Người thực hiện", value: task.assignee?.fullName },

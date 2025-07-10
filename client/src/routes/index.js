@@ -8,6 +8,7 @@ import TaskPage from "../pages/TaskPage/TaskPage";
 import TaskDetailPage from "../pages/TaskPage/TaskDetailPage";
 import PendingTaskDetailPage from "../pages/TaskPage/PendingTaskDetailPage";
 import SubmitMainTaskPage from "../pages/TaskPage/SubmitMainTaskPage";
+import OverdueTasksPage from "../pages/TaskPage/OverdueTasksPage";
 import HomePage from "../pages/HomePage/HomePage";
 
 const routes = [
@@ -56,6 +57,12 @@ const routes = [
   {
     path: '/tasks/:taskId/submit',
     page: SubmitMainTaskPage,
+    layout: UserLayout,
+    protectedRole: null,
+  },
+  {
+    path: '/overdue-tasks',
+    page: OverdueTasksPage,
     layout: UserLayout,
     protectedRole: null,
   },

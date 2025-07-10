@@ -17,20 +17,17 @@ export function AuthProvider({ children }) {
     setLoading(true);
     setError(null);
     try {
-      console.log('LOGIN: sending', { username, password });
       const res = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
       });
-      console.log('LOGIN: response', res.status);
       if (!res.ok) throw new Error('Đăng nhập thất bại');
       const data = await res.json();
-      console.log('LOGIN: data', data);
       setAccessToken(data.data.accessToken);
       setRefreshToken(data.data.refreshToken);
-      localStorage.setItem('accessToken', data.data.accessToken);
-      localStorage.setItem('refreshToken', data.data.refreshToken);
+      sessionStorage.setItem('accessToken', data.data.accessToken);
+      sessionStorage.setItem('refreshToken', data.data.refreshToken);
       await fetchUserInfo(data.data.accessToken);
       setLoading(false);
       return true;
@@ -47,17 +44,14 @@ export function AuthProvider({ children }) {
     if (!token) return;
     setLoading(true);
     try {
-      console.log('FETCH USER INFO: sending', token);
       const res = await fetch(`${API_URL}/users/me`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log('FETCH USER INFO: response', res.status);
       if (!res.ok) throw new Error('Không lấy được thông tin user');
       const data = await res.json();
       const userData = data.data ? data.data : data;
-      console.log('FETCH USER INFO: data', userData);
       setUser(userData);
-      localStorage.setItem('user', JSON.stringify(userData));
+      sessionStorage.setItem('user', JSON.stringify(userData));
       setLoading(false);
     } catch (err) {
       setError(err.message);
@@ -70,12 +64,10 @@ export function AuthProvider({ children }) {
   const logout = async () => {
     try {
       if (accessToken) {
-        console.log('LOGOUT: sending', accessToken);
         const res = await fetch(LOGOUT_API_URL, {
           method: 'POST',
           headers: { Authorization: `Bearer ${accessToken}` },
         });
-        console.log('LOGOUT: response', res.status);
       }
     } catch (err) {
       console.error('LOGOUT: error', err);
@@ -83,15 +75,15 @@ export function AuthProvider({ children }) {
     setUser(null);
     setAccessToken(null);
     setRefreshToken(null);
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('user');
+    sessionStorage.removeItem('accessToken');
+    sessionStorage.removeItem('refreshToken');
+    sessionStorage.removeItem('user');
   };
 
   // Khởi tạo từ localStorage nếu có
   const init = () => {
-    const token = localStorage.getItem('accessToken');
-    const userData = localStorage.getItem('user');
+    const token = sessionStorage.getItem('accessToken');
+    const userData = sessionStorage.getItem('user');
     if (token && userData) {
       setAccessToken(token);
       setUser(JSON.parse(userData));

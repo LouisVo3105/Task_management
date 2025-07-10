@@ -4,7 +4,12 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "migrate:remove-code": "node run-migration.js",
+    "migrate:add-enddate": "node run-migration-enddate.js",
+    "migrate:assigner-to-leader": "node run-migrate-assigner-to-leader.js",
+    "seed:departments": "node run-seed-departments.js",
+    "update:overdue": "node src/utils/update-overdue-status.js"
   },
   "keywords": [],
   "author": "",

@@ -3,8 +3,8 @@ import { Button, Input, Typography } from "@material-tailwind/react";
 import ReactDOM from "react-dom";
 
 const CreateIndicatorModal = ({ open, onClose, onCreated }) => {
-  const [code, setCode] = useState("");
   const [name, setName] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -12,25 +12,25 @@ const CreateIndicatorModal = ({ open, onClose, onCreated }) => {
     setLoading(true);
     setError("");
     try {
-      const token = localStorage.getItem("accessToken");
+      const token = sessionStorage.getItem('accessToken');
       const res = await fetch("http://localhost:3056/api/indicators", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ code, name }),
+        body: JSON.stringify({ name, endDate }),
       });
       const data = await res.json();
       if (data.success) {
-        setCode("");
         setName("");
+        setEndDate("");
         onCreated && onCreated();
         onClose();
       } else {
         setError(data.message || "Tạo chỉ tiêu thất bại");
       }
-    } catch (e) {
+    } catch {
       setError("Lỗi kết nối máy chủ");
     }
     setLoading(false);
@@ -44,15 +44,16 @@ const CreateIndicatorModal = ({ open, onClose, onCreated }) => {
         <div className="text-xl font-semibold mb-4">Tạo chỉ tiêu mới</div>
         <div className="space-y-4">
           <Input
-            label="Mã chỉ tiêu"
-            value={code}
-            onChange={e => setCode(e.target.value)}
-            required
-          />
-          <Input
             label="Tên chỉ tiêu"
             value={name}
             onChange={e => setName(e.target.value)}
+            required
+          />
+          <Input
+            label="Deadline chỉ tiêu"
+            type="date"
+            value={endDate}
+            onChange={e => setEndDate(e.target.value)}
             required
           />
           {error && <Typography color="red" className="text-sm">{error}</Typography>}
@@ -69,7 +70,7 @@ const CreateIndicatorModal = ({ open, onClose, onCreated }) => {
           <Button
             className="bg-teal-600 text-white"
             onClick={handleCreate}
-            disabled={loading || !code || !name}
+            disabled={loading || !name || !endDate}
           >
             {loading ? "Đang tạo..." : "Tạo chỉ tiêu"}
           </Button>

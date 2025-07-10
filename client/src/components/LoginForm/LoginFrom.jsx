@@ -9,7 +9,6 @@ const LoginForm = ({ onLoginSuccess }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const success = await login(username, password);
-    console.log('LOGINFORM: login result', success);
     if (success && onLoginSuccess) {
       onLoginSuccess();
     }

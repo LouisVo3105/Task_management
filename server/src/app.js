@@ -11,6 +11,7 @@ const taskRoute = require('./routes/task.route');
 const authRoute = require('./routes/auth.route');
 const indicatorRoute = require('./routes/indicator.route');
 const analysisRoute = require('./routes/analysis.route');
+const departmentRoute = require('./routes/department.route');
 const Database = require('./dbs/database');
 
 const db = Database.getInstance();
@@ -24,7 +25,9 @@ app.use(cors({
 app.use(morgan('dev'));
 app.use(helmet());
 app.use(compression());
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
+app.use('/uploads', express.static('uploads'));
 
 // Kết nối database
 db.connect().catch(err => console.error('Failed to connect to DB:', err));
@@ -35,6 +38,7 @@ app.use('/api/users', userRoute);
 app.use('/api/tasks', taskRoute);
 app.use('/api/indicators', indicatorRoute);
 app.use('/api/analysis', analysisRoute);
+app.use('/api/departments', departmentRoute);
 
 
 // Xử lý lỗi

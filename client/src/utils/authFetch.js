@@ -1,6 +1,6 @@
 export async function authFetch(url, options = {}) {
-  let accessToken = localStorage.getItem('accessToken');
-  let refreshToken = localStorage.getItem('refreshToken');
+  let accessToken = sessionStorage.getItem('accessToken');
+  let refreshToken = sessionStorage.getItem('refreshToken');
 
   // Thêm Authorization header nếu có accessToken
   const opts = {
@@ -24,15 +24,15 @@ export async function authFetch(url, options = {}) {
   const refreshData = await refreshRes.json();
   if (!refreshRes.ok || !refreshData.data?.accessToken) {
     // Xóa token, logout
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('user');
+    sessionStorage.removeItem('accessToken');
+    sessionStorage.removeItem('refreshToken');
+    sessionStorage.removeItem('user');
     window.location.href = '/';
     throw new Error('Refresh token failed, please login again');
   }
   // Lưu accessToken mới
   accessToken = refreshData.data.accessToken;
-  localStorage.setItem('accessToken', accessToken);
+  sessionStorage.setItem('accessToken', accessToken);
   // Retry request với accessToken mới
   const retryOpts = {
     ...options,

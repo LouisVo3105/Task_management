@@ -1,15 +1,13 @@
 import Landing from "../../assets/Landing.jpg"
 
-const DefaultPage =()=>{
+const DefaultPage = () => {
   return (
-  <div>
-    <img 
-    className="w-full h-160"
-    src ={Landing} 
-    alt="Landing Pic"
-    ></img>
-  </div>
-);
+      <img
+        className="w-full h-full"
+        src={Landing}
+        alt="Landing Pic"
+      />
+  );
 }
 
 export default DefaultPage;

@@ -14,7 +14,7 @@ function Footer() {
               color="blue-gray"
               className="font-normal transition-colors hover:text-blue-500 focus:text-blue-500"
             >
-              About Us
+              Về chúng tôi
             </Typography>
           </li>
           <li>
@@ -24,7 +24,7 @@ function Footer() {
               color="blue-gray"
               className="font-normal transition-colors hover:text-blue-500 focus:text-blue-500"
             >
-              License
+              Bản quyền
             </Typography>
           </li>
           <li>
@@ -34,7 +34,7 @@ function Footer() {
               color="blue-gray"
               className="font-normal transition-colors hover:text-blue-500 focus:text-blue-500"
             >
-              Contact Us
+              Liên hệ
             </Typography>
           </li>
         </ul>

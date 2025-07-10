@@ -2,11 +2,15 @@ import React, { useState, useEffect } from "react";
 
 const EditIndicatorModal = ({ open, onClose, indicator, onUpdated }) => {
   const [name, setName] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (indicator) setName(indicator.name || "");
+    if (indicator) {
+      setName(indicator.name || "");
+      setEndDate(indicator.endDate ? indicator.endDate.slice(0, 10) : "");
+    }
   }, [indicator]);
 
   const handleSubmit = async (e) => {
@@ -18,9 +22,9 @@ const EditIndicatorModal = ({ open, onClose, indicator, onUpdated }) => {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`,
         },
-        body: JSON.stringify({ name }),
+        body: JSON.stringify({ name, endDate }),
       });
       if (!res.ok) {
         const data = await res.json();
@@ -54,6 +58,16 @@ const EditIndicatorModal = ({ open, onClose, indicator, onUpdated }) => {
               className="w-full border rounded px-3 py-2"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block mb-1 font-medium">Deadline chỉ tiêu</label>
+            <input
+              type="date"
+              className="w-full border rounded px-3 py-2"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
               required
             />
           </div>

@@ -1,5 +1,6 @@
 import React from "react";
 import { useAuth } from '../../utils/useAuth';
+import { mapPositionLabel } from '../../utils/positionLabel';
 
 const UserInfo = () => {
   const { user } = useAuth();
@@ -26,11 +27,11 @@ const UserInfo = () => {
           </div>
           <div className="space-y-1">
             <label className="block mb-1 text-sm font-semibold antialiased text-stone-800">Chức vụ</label>
-            <div className="py-2 px-2.5 bg-gray-100 rounded-lg">{user.position}</div>
+            <div className="py-2 px-2.5 bg-gray-100 rounded-lg">{mapPositionLabel(user.position)}</div>
           </div>
           <div className="space-y-1">
             <label className="block mb-1 text-sm font-semibold antialiased text-stone-800">Phòng ban</label>
-            <div className="py-2 px-2.5 bg-gray-100 rounded-lg">{user.department}</div>
+            <div className="py-2 px-2.5 bg-gray-100 rounded-lg">{typeof user.department === 'object' && user.department !== null ? user.department.name : user.department}</div>
           </div>
           <div className="space-y-1">
             <label className="block mb-1 text-sm font-semibold antialiased text-stone-800">Số điện thoại</label>

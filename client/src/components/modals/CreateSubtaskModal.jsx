@@ -8,70 +8,62 @@ import {
 } from "@material-tailwind/react";
 import ReactSelect from "react-select";
 
-const CreateSubtaskModal = ({ open, onClose, onCreated, parentTaskId, indicatorId, managers }) => {
-  const [code, setCode] = useState("");
+const CreateSubtaskModal = ({ open, onClose, onCreated, parentTaskId, supporters = [] }) => {
   const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
   const [endDate, setEndDate] = useState("");
   const [notes, setNotes] = useState("");
-  const [assignerId, setAssignerId] = useState("");
   const [assigneeId, setAssigneeId] = useState("");
-  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [fileObj, setFileObj] = useState(null);
+  const [fileName, setFileName] = useState("");
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const token = localStorage.getItem("accessToken");
-        const res = await fetch("http://localhost:3056/api/users/all", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const data = await res.json();
-        setUsers(data.data?.docs || data.data || []);
-      } catch {
-        setUsers([]);
-      }
-    };
-    if (open) fetchUsers();
   }, [open]);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFileName(file.name);
+      setFileObj(file);
+    }
+  };
 
   const handleCreate = async () => {
     setLoading(true);
     setError("");
     try {
-      const token = localStorage.getItem("accessToken");
-      const res = await fetch("http://localhost:3056/api/tasks", {
+      const formData = new FormData();
+      formData.append('title', title);
+      formData.append('content', content);
+      formData.append('endDate', endDate ? new Date(endDate).toISOString() : "");
+      formData.append('assigneeId', assigneeId);
+      formData.append('notes', notes);
+      if (fileObj) formData.append('file', fileObj);
+      const res = await fetch(`http://localhost:3056/api/tasks/${parentTaskId}/subtasks`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`,
         },
-        body: JSON.stringify({
-          code,
-          title,
-          endDate,
-          indicatorId,
-          notes,
-          assignerId,
-          assigneeId,
-          parentTaskId,
-        }),
+        body: formData,
       });
       const data = await res.json();
       if (data.success) {
-        setCode("");
         setTitle("");
+        setContent("");
         setEndDate("");
         setNotes("");
-        setAssignerId("");
         setAssigneeId("");
+        setFileObj(null);
+        setFileName("");
         onCreated && onCreated();
         onClose();
       } else {
         setError(data.message || "Tạo nhiệm vụ con thất bại");
       }
-    } catch (e) {
-      setError("Lỗi kết nối máy chủ");
+    } catch {
+      setError("Lỗi kết nối máy chủ. Vui lòng thử lại.");
     }
     setLoading(false);
   };
@@ -79,7 +71,7 @@ const CreateSubtaskModal = ({ open, onClose, onCreated, parentTaskId, indicatorI
   if (!open) return null;
 
   // Chuẩn bị options cho react-select (nếu muốn dùng cho assignee)
-  const assigneeOptions = users.map(u => ({ value: u._id, label: `${u.fullName} (${u.email})` }));
+  const assigneeOptions = (supporters || []).map(u => ({ value: u._id, label: `${u.fullName} (${u.email})` }));
   const selectedAssignee = assigneeOptions.find(opt => opt.value === assigneeId) || null;
 
   return (
@@ -87,15 +79,43 @@ const CreateSubtaskModal = ({ open, onClose, onCreated, parentTaskId, indicatorI
       <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
         <div className="text-xl font-semibold mb-4">Tạo nhiệm vụ con</div>
         <div className="space-y-4">
-          <Input label="Mã nhiệm vụ con" value={code} onChange={e => setCode(e.target.value)} required />
-          <Input label="Tiêu đề" value={title} onChange={e => setTitle(e.target.value)} required />
-          <Input label="Ngày kết thúc" type="date" value={endDate} onChange={e => setEndDate(e.target.value)} required />
-          <Input label="Ghi chú" value={notes} onChange={e => setNotes(e.target.value)} />
-          <MTSelect label="Người giao" value={assignerId} onChange={setAssignerId} required>
-            {managers.map(u => (
-              <Option key={u._id} value={u._id}>{u.fullName} ({u.email})</Option>
-            ))}
-          </MTSelect>
+          {/* Tiêu đề */}
+          <div>
+            <div className="mb-1 font-medium text-sm">Tiêu đề:</div>
+            <Input
+              label="Nhập tiêu đề..."
+              value={title}
+              onChange={e => setTitle(e.target.value)}
+              required
+            />
+          </div>
+          {/* Nội dung */}
+          <div>
+            <div className="mb-1 font-medium text-sm">Nội dung:</div>
+            <textarea
+              placeholder="Nhập nội dung nhiệm vụ..."
+              value={content}
+              onChange={e => setContent(e.target.value)}
+              required
+              rows={3}
+              className="w-full border border-gray-300 rounded px-3 py-2 focus:border-teal-600 focus:ring-1 focus:ring-teal-200 outline-none"
+            />
+          </div>
+          {/* Ngày kết thúc */}
+          <div>
+            <div className="mb-1 font-medium text-sm">Ngày kết thúc:</div>
+            <Input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} required />
+          </div>
+          {/* Ghi chú */}
+          <div>
+            <div className="mb-1 font-medium text-sm">Ghi chú:</div>
+            <Input
+              label="Nhập ghi chú..."
+              value={notes}
+              onChange={e => setNotes(e.target.value)}
+            />
+          </div>
+          {/* Người thực hiện */}
           <div>
             <div className="mb-1 font-medium text-sm">Người thực hiện:</div>
             <ReactSelect
@@ -104,17 +124,30 @@ const CreateSubtaskModal = ({ open, onClose, onCreated, parentTaskId, indicatorI
               onChange={opt => setAssigneeId(opt ? opt.value : "")}
               placeholder="Chọn người thực hiện..."
               classNamePrefix="react-select"
-              styles={{
-                menu: base => ({ ...base, zIndex: 9999 }),
-                control: base => ({ ...base, minHeight: 40 }),
-              }}
+              styles={{ menu: base => ({ ...base, zIndex: 9999 }), control: base => ({ ...base, minHeight: 40 }) }}
             />
+          </div>
+          <div className="mb-3">
+            <label className="block text-sm font-medium mb-1">File đính kèm (tùy chọn):</label>
+            <label
+              htmlFor="subtask-file-upload"
+              className="cursor-pointer inline-block px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700 transition"
+            >
+              Chọn file
+            </label>
+            <input
+              id="subtask-file-upload"
+              type="file"
+              onChange={handleFileChange}
+              className="hidden"
+            />
+            {fileName && <div className="text-xs text-green-600 mt-1">Đã chọn: {fileName}</div>}
           </div>
           {error && <Typography color="red" className="text-sm">{error}</Typography>}
         </div>
         <div className="flex justify-end gap-2 mt-6">
           <Button variant="text" color="gray" onClick={onClose}>Hủy</Button>
-          <Button className="bg-teal-600 text-white" onClick={handleCreate} disabled={loading || !code || !title || !endDate || !assignerId || !assigneeId}>
+          <Button className="bg-teal-600 text-white" onClick={handleCreate} disabled={loading || !title || !content || !endDate || !assigneeId}>
             {loading ? "Đang tạo..." : "Tạo nhiệm vụ con"}
           </Button>
         </div>

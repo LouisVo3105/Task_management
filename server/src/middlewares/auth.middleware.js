@@ -16,6 +16,12 @@ const verifyRefreshToken = (req, res, next) => {
 };
 
 const roleMiddleware = (roles) => (req, res, next) => {
+  if (!roles || !Array.isArray(roles)) {
+    return res.status(500).json({ success: false, message: 'Cấu hình middleware roleMiddleware sai' });
+  }
+  if (!req.user || !req.user.role) {
+    return res.status(401).json({ success: false, message: 'Chưa xác thực hoặc thiếu thông tin quyền' });
+  }
   if (!roles.includes(req.user.role)) {
     return res.status(403).json({ success: false, message: 'Không có quyền truy cập' });
   }
@@ -62,18 +68,20 @@ const canManageTask = async (req, res, next) => {
     const userId = req.user.id;
     const userRole = req.user.role;
     const taskId = req.params.id;
-    if (userRole === 'admin') return next();
+    
+    // Admin và Director có toàn quyền thao tác với tất cả nhiệm vụ
+    if (userRole === 'admin' || userRole === 'director') return next();
 
     // Tìm task chính
-    let task = await Task.findById(taskId).select('managers');
+    let task = await Task.findById(taskId).select('leader');
     // Nếu không có, tìm task cha chứa subtask
     if (!task) {
-      task = await Task.findOne({ 'subTasks._id': new mongoose.Types.ObjectId(taskId) }).select('managers');
+      task = await Task.findOne({ 'subTasks._id': new mongoose.Types.ObjectId(taskId) }).select('leader');
       if (!task) {
         return res.status(404).json({ success: false, message: 'Không tìm thấy nhiệm vụ' });
       }
     }
-    if (task.managers.some(managerId => managerId.toString() === userId)) {
+    if (task.leader && task.leader.toString() === userId) {
       return next();
     }
     return res.status(403).json({ success: false, message: 'Bạn không có quyền thao tác với nhiệm vụ này' });

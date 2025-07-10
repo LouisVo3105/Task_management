@@ -2,6 +2,7 @@ import { useAuth } from '../../utils/useAuth';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Logo from '../../assets/logo.svg';
+import { mapPositionLabel } from '../../utils/positionLabel';
 
 const Header = ({ onLoginClick }) => {
   const { user } = useAuth();
@@ -17,21 +18,25 @@ const Header = ({ onLoginClick }) => {
       <div className="flex flex-1 items-center justify-end md:justify-between">
         <nav aria-label="Global" className="hidden md:block">
           <ul className="flex items-center gap-6 text-sm">
-            <li>
-              <a className="text-gray-500 transition hover:text-gray-500/75" href="#"> About </a>
-            </li>
           </ul>
         </nav>
 
         <div className="flex items-center gap-4">
           <div className="sm:flex sm:gap-4">
             {user ? (
-              <span
-                className="block rounded-md px-5 py-2.5 text-lg font-medium text-teal-800 cursor-pointer hover:shadow-lg transition"
-                onClick={() => navigate('/me')}
-              >
-                {user.fullName}
-              </span>
+              <>
+                <span
+                  className="block rounded-md px-5 py-2.5 text-lg font-medium text-black select-none ml-2"
+                >
+                  {mapPositionLabel(user.position)} - {typeof user.department === 'object' && user.department !== null ? user.department.name : user.department}
+                </span>
+                <span
+                  className="block rounded-md px-5 py-2.5 text-lg font-medium text-teal-800 cursor-pointer hover:shadow-lg transition"
+                  onClick={() => navigate('/me')}
+                >
+                  {user.fullName}
+                </span>
+              </>
             ) : (
               <button
                 className="block rounded-md bg-teal-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-teal-700"

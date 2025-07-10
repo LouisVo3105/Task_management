@@ -6,21 +6,25 @@ import {
 import DetailList from "../DetailList/DetailList";
 import SubmitTaskModal from "./SubmitTaskModal";
 import ApproveTaskModal from "./ApproveTaskModal";
+import StatusDot from "../StatusDot";
+import { formatDate, formatDateTime } from "../../utils/formatDate";
 
-const SubtaskDetailModal = ({ open, handleOpen, subtaskId }) => {
+const SubtaskDetailModal = ({ open, handleOpen, subtaskId, parentTaskId }) => {
   const [subtask, setSubtask] = useState(null);
   const [loading, setLoading] = useState(false);
   const [openSubmit, setOpenSubmit] = useState(false);
   const [openApprove, setOpenApprove] = useState(false);
+  const [submissions, setSubmissions] = useState([]);
+  const [loadingSubmissions, setLoadingSubmissions] = useState(false);
 
   // Giả sử user lấy từ localStorage (hoặc context nếu có)
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const user = JSON.parse(sessionStorage.getItem('user') || '{}');
+  const token = sessionStorage.getItem('accessToken');
 
   const fetchSubtask = async () => {
     if (!subtaskId) return;
     setLoading(true);
     try {
-      const token = localStorage.getItem("accessToken");
       const res = await fetch(`http://localhost:3056/api/tasks/${subtaskId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -42,15 +46,38 @@ const SubtaskDetailModal = ({ open, handleOpen, subtaskId }) => {
     // eslint-disable-next-line
   }, [subtaskId, open]);
 
+  useEffect(() => {
+    const fetchSubmissions = async () => {
+      if (!open || !parentTaskId || !subtaskId) return;
+      setLoadingSubmissions(true);
+      try {
+        const res = await fetch(`http://localhost:3056/api/tasks/${parentTaskId}/subtasks/${subtaskId}/submissions`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        if (data.success) {
+          setSubmissions(data.data || []);
+        } else {
+          setSubmissions([]);
+        }
+      } catch {
+        setSubmissions([]);
+      }
+      setLoadingSubmissions(false);
+    };
+    fetchSubmissions();
+  }, [open, parentTaskId, subtaskId]);
+
   const details = subtask ? [
     { label: "Mã nhiệm vụ con", value: subtask.code },
     { label: "Tiêu đề", value: subtask.title },
+    { label: "Nội dung", value: subtask.content },
     { label: "Nhiệm vụ cha", value: subtask.parentTask?.title || "N/A" },
     { label: "Chỉ tiêu", value: subtask.indicator?.name || "N/A" },
     { label: "Người thực hiện", value: subtask.assignee?.fullName || "N/A" },
     { label: "Người giao", value: subtask.assigner?.fullName || "N/A" },
-    { label: "Ngày hết hạn", value: new Date(subtask.endDate).toLocaleDateString() },
-    { label: "Trạng thái", value: subtask.status },
+    { label: "Ngày hết hạn", value: formatDate(subtask.endDate) },
+    { label: "Trạng thái", value: <StatusDot status={subtask.status} size="medium" /> },
     { label: "Ghi chú", value: subtask.notes, fullWidth: true },
     { label: "Link nộp bài", value: subtask.submitLink ? <a href={subtask.submitLink} target="_blank" rel="noopener noreferrer" className="text-teal-500 hover:underline">{subtask.submitLink}</a> : "Chưa có", fullWidth: true },
     { label: "Ghi chú nộp bài", value: subtask.submitNote, fullWidth: true },
@@ -75,6 +102,56 @@ const SubtaskDetailModal = ({ open, handleOpen, subtaskId }) => {
         ) : subtask ? (
           <>
             <DetailList items={details} />
+            {/* Lịch sử nộp bài */}
+            <div className="mt-6">
+              <div className="font-semibold mb-2">Lịch sử nộp bài</div>
+              {loadingSubmissions ? (
+                <Typography>Đang tải lịch sử nộp...</Typography>
+              ) : submissions.length === 0 ? (
+                <Typography className="text-gray-500">Chưa có lịch sử nộp bài.</Typography>
+              ) : (
+                <div className="border rounded p-2 max-h-60 overflow-y-auto bg-gray-50">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr>
+                        <th className="text-left py-1 pr-2">Thời gian</th>
+                        <th className="text-left py-1 pr-2">Ghi chú</th>
+                        <th className="text-left py-1 pr-2">File</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {submissions.map((s, idx) => (
+                        <tr key={idx} className="border-t">
+                          <td className="py-1 pr-2 whitespace-nowrap">{formatDateTime(s.submittedAt)}</td>
+                          <td className="py-1 pr-2">{s.note || <span className="text-gray-400">Không có</span>}</td>
+                          <td className="py-1 pr-2">
+                            {s.link ? (
+                              <a href={s.link} target="_blank" rel="noopener noreferrer" className="text-teal-600 hover:underline">Xem file</a>
+                            ) : s.file ? (
+                              (typeof s.file === 'string' && (s.file.startsWith('http') || s.file.startsWith('/') || s.file.includes('uploads'))) ? (
+                                <a
+                                  href={s.file.startsWith('http') ? s.file : `http://localhost:3056/${s.file.replace(/\\/g, "/")}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  download={s.fileName || `nopbai_${idx + 1}`}
+                                  className="text-teal-600 hover:underline"
+                                >
+                                  Tải file
+                                </a>
+                              ) : (
+                                <span className="text-gray-400">Không có</span>
+                              )
+                            ) : (
+                              <span className="text-gray-400">Không có</span>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
             <div className="flex justify-end gap-2 mt-6">
               {canSubmit && (
                 <Button className="bg-teal-600 text-white" onClick={() => setOpenSubmit(true)}>Nộp</Button>

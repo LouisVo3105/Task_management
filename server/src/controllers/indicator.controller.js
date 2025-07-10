@@ -14,13 +14,8 @@ class IndicatorController {
     }
 
     try {
-      const { code, name } = req.body;
-      const existingIndicator = await Indicator.findOne({ code });
-      if (existingIndicator) {
-        return this.#sendResponse(res, 409, false, 'Mã chỉ tiêu đã tồn tại');
-      }
-
-      const indicator = new Indicator({ code, name });
+      const { name, endDate } = req.body;
+      const indicator = new Indicator({ name, endDate, creator: req.user.id });
       await indicator.save();
       this.#sendResponse(res, 201, true, 'Chỉ tiêu đã được tạo', indicator);
     } catch (error) {
@@ -37,7 +32,6 @@ class IndicatorController {
     try {
       const { id } = req.params;
       const updateData = req.body;
-      delete updateData.code; // Không cho phép cập nhật mã chỉ tiêu
 
       const indicator = await Indicator.findByIdAndUpdate(id, updateData, { new: true });
       if (!indicator) {
@@ -72,7 +66,7 @@ class IndicatorController {
         page: parseInt(page),
         limit: parseInt(limit),
         sort: { createdAt: -1 },
-        select: 'code name _id'
+        select: 'name endDate _id createdAt'
       };
 
       const indicators = await Indicator.paginate({}, options);
@@ -94,15 +88,8 @@ class IndicatorController {
             totalTasks++;
             if (task.status === 'approved') {
               completedTasks++;
-            } else if (task.subTasks && task.subTasks.length > 0) {
-              // Nếu có nhiệm vụ con, tính toán dựa trên nhiệm vụ con
-              const subTasks = task.subTasks;
-              const completedSubTasks = subTasks.filter(subTask => subTask.status === 'approved').length;
-              
-              if (completedSubTasks === subTasks.length && subTasks.length > 0) {
-                completedTasks++;
-              }
             }
+            // Bỏ logic tính subtask - chỉ tính nhiệm vụ chính đã approved
           }
 
           // Tính phần trăm hoàn thành
@@ -151,7 +138,8 @@ class IndicatorController {
       }
 
       const tasks = await Task.find({ indicator: id, parentTask: null })
-        .select('title endDate _id status subTasks')
+        .select('title endDate _id status subTasks department createdAt')
+        .populate({ path: 'department', select: '_id name' })
         .lean();
 
       let completedTasks = 0;
@@ -162,15 +150,8 @@ class IndicatorController {
         totalTasks++;
         if (task.status === 'approved') {
           completedTasks++;
-        } else if (task.subTasks && task.subTasks.length > 0) {
-          // Nếu có nhiệm vụ con, tính toán dựa trên nhiệm vụ con
-          const subTasks = task.subTasks;
-          const completedSubTasks = subTasks.filter(subTask => subTask.status === 'approved').length;
-          
-          if (completedSubTasks === subTasks.length && subTasks.length > 0) {
-            completedTasks++;
-          }
         }
+        // Bỏ logic tính subtask - chỉ tính nhiệm vụ chính đã approved
       }
 
       const progress = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;

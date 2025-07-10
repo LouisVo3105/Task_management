@@ -11,7 +11,7 @@ const ApproveTaskModal = ({ open, onClose, onApproved, taskId }) => {
     setLoading(true);
     setError("");
     try {
-      const token = localStorage.getItem("accessToken");
+      const token = sessionStorage.getItem('accessToken');
       const res = await fetch(`http://localhost:3056/api/tasks/${taskId}`, {
         method: "PUT",
         headers: {

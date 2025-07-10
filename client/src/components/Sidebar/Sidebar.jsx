@@ -17,7 +17,8 @@ import {
   UsersIcon,
   PowerIcon,
   UserCircleIcon,
-  ChevronDownIcon
+  ChevronDownIcon,
+  ExclamationTriangleIcon
 } from "@heroicons/react/24/solid";
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../utils/useAuth';
@@ -41,7 +42,7 @@ export default function Sidebar() {
     <Card className="h-[calc(100vh-2rem)] w-full max-w-[20rem] p-4 shadow-xl shadow-blue-gray-900/5 font-sans">
       <div className="mb-2 p-4">
         <Typography variant="h5" color="blue-gray" className="font-bold text-lg">
-          Menu
+          Danh mục
         </Typography>
       </div>
       <List className="gap-2">
@@ -90,6 +91,14 @@ export default function Sidebar() {
                   <UsersIcon className="h-5 w-5" />
                 </ListItemPrefix>
                 Quản lý người dùng
+              </ListItem>
+              <ListItem onClick={() => navigate('/overdue-tasks')}>
+                <ListItemPrefix>
+                  <ExclamationTriangleIcon className="h-5 w-5 text-red-500" />
+                </ListItemPrefix>
+                <Typography color="red" className="font-medium">
+                  Nhiệm vụ quá deadline
+                </Typography>
               </ListItem>
             </List>
           </AccordionBody>
