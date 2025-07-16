@@ -14,13 +14,13 @@ services:
 
   app:
     build: .
-    container_name: task-management-app
+    container_name: nq57_task_management_app
     ports:
       - "3056:3056"
     depends_on:
       - mongodb
     environment:
-      - MONGODB_URI=mongodb://admin:password@mongodb:27017/task_management?authSource=admin
+      - MONGODB_URI=mongodb://localhost:27017/nq57_task_management
     volumes:
       - ./uploads:/usr/src/app/uploads
 

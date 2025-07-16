@@ -5,6 +5,13 @@ const app = express();
 const morgan = require('morgan');
 const { default: helmet } = require('helmet');
 const compression = require('compression');
+const jwt = require('jsonwebtoken');
+const Task = require('./models/task.model');
+const Indicator = require('./models/indicator.model');
+const { registerSSE } = require('./services/sse.service');
+const lastNotified = {}; // { [userId_taskType_taskId]: lastNotifyDate }
+const JWT_SECRET = process.env.JWT_SECRET || 'your-secret';
+const { updateOverdueStatus } = require('./middlewares/task.middleware');
 
 const userRoute = require('./routes/user.route');
 const taskRoute = require('./routes/task.route');
@@ -12,6 +19,8 @@ const authRoute = require('./routes/auth.route');
 const indicatorRoute = require('./routes/indicator.route');
 const analysisRoute = require('./routes/analysis.route');
 const departmentRoute = require('./routes/department.route');
+const commentRoute = require('./routes/comment.route');
+const notificationRoute = require('./routes/notification.route');
 const Database = require('./dbs/database');
 
 const db = Database.getInstance();
@@ -39,7 +48,18 @@ app.use('/api/tasks', taskRoute);
 app.use('/api/indicators', indicatorRoute);
 app.use('/api/analysis', analysisRoute);
 app.use('/api/departments', departmentRoute);
+app.use('/api/comments', commentRoute);
+app.use('/api/notifications', notificationRoute);
 
+// Đăng ký SSE
+registerSSE(app);
+
+// Tự động kiểm tra nhiệm vụ quá deadline mỗi giờ
+setInterval(() => {
+  updateOverdueStatus({}, { }, () => {
+    console.log(`[OverdueCheck] Đã kiểm tra và cập nhật trạng thái quá deadline cho nhiệm vụ lúc ${new Date().toISOString()}`);
+  });
+}, 60 * 60 * 1000); // mỗi giờ
 
 // Xử lý lỗi
 app.use((err, req, res, next) => {

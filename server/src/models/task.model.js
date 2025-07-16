@@ -1,6 +1,36 @@
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
 
+// Schema cho lịch sử duyệt
+const approvalHistorySchema = new mongoose.Schema({
+  action: { 
+    type: String, 
+    enum: ['approve', 'reject'], 
+    required: true 
+  },
+  comment: { type: String, required: true },
+  reviewer: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  reviewedAt: { type: Date, default: Date.now }
+}, { _id: true });
+
+// Schema cho submission với thông tin duyệt
+const submissionSchema = new mongoose.Schema({
+  file: { type: String, required: true },
+  fileName: { type: String },
+  link: { type: String },
+  note: { type: String },
+  submittedAt: { type: Date, default: Date.now },
+  // Thông tin duyệt cho submission này
+  approvalStatus: { 
+    type: String, 
+    enum: ['pending', 'approved', 'rejected'], 
+    default: 'pending' 
+  },
+  approvalComment: { type: String }, // Lý do từ chối hoặc nhận xét khi duyệt
+  reviewer: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  reviewedAt: { type: Date }
+}, { _id: true });
+
 const subTaskSchema = new mongoose.Schema({
   
   title: { type: String, required: true },
@@ -17,14 +47,9 @@ const subTaskSchema = new mongoose.Schema({
   fileName: { type: String },
   submitNote: { type: String },
   submitLink: { type: String },
-  submissions: [
-    {
-      file: { type: String, required: true },
-      link: { type: String },
-      note: { type: String },
-      submittedAt: { type: Date, default: Date.now }
-    }
-  ]
+  submissions: [submissionSchema],
+  approvalHistory: [approvalHistorySchema],
+  overdueNotified: { type: Boolean, default: false }
 }, { _id: true, timestamps: true });
 
 const taskSchema = new mongoose.Schema({
@@ -48,14 +73,9 @@ const taskSchema = new mongoose.Schema({
   subTasks: [subTaskSchema],
   leader: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   supporters: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }],
-  submissions: [
-    {
-      file: { type: String, required: true },
-      link: { type: String },
-      note: { type: String },
-      submittedAt: { type: Date, default: Date.now }
-    }
-  ]
+  submissions: [submissionSchema],
+  approvalHistory: [approvalHistorySchema],
+  overdueNotified: { type: Boolean, default: false }
 }, { timestamps: { createdAt: true, updatedAt: false } });
 
 taskSchema.index({ indicator: 1 });

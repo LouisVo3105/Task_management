@@ -16,6 +16,7 @@ const verifyRefreshToken = (req, res, next) => {
 };
 
 const roleMiddleware = (roles) => (req, res, next) => {
+  console.log('roleMiddleware - req.user:', req.user); // DEBUG LOG
   if (!roles || !Array.isArray(roles)) {
     return res.status(500).json({ success: false, message: 'Cấu hình middleware roleMiddleware sai' });
   }
@@ -69,8 +70,10 @@ const canManageTask = async (req, res, next) => {
     const userRole = req.user.role;
     const taskId = req.params.id;
     
-    // Admin và Director có toàn quyền thao tác với tất cả nhiệm vụ
-    if (userRole === 'admin' || userRole === 'director') return next();
+    // Admin có toàn quyền thao tác với tất cả nhiệm vụ
+    if (userRole === 'admin') return next();
+    // Nếu là Giám đốc thì cũng có toàn quyền
+    if (req.user && req.user.position === 'Giam doc') return next();
 
     // Tìm task chính
     let task = await Task.findById(taskId).select('leader');

@@ -13,14 +13,47 @@ const CreateSubtaskModal = ({ open, onClose, onCreated, parentTaskId, supporters
   const [content, setContent] = useState("");
   const [endDate, setEndDate] = useState("");
   const [notes, setNotes] = useState("");
+  const [leaderId, setLeaderId] = useState("");
   const [assigneeId, setAssigneeId] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [fileObj, setFileObj] = useState(null);
   const [fileName, setFileName] = useState("");
+  const [departmentUsers, setDepartmentUsers] = useState([]);
 
   useEffect(() => {
-  }, [open]);
+    if (leaderId) {
+      // Tìm leader trong supporters
+      const leader = (supporters || []).find(u => u._id === leaderId);
+      // Lấy departmentId từ leader
+      const departmentId = leader?.department?._id || leader?.department;
+      if (departmentId) {
+        const fetchUsers = async () => {
+          try {
+            const res = await fetch(`http://localhost:3056/api/departments/${departmentId}/supporters`, {
+              headers: { Authorization: `Bearer ${sessionStorage.getItem('accessToken')}` }
+            });
+            const data = await res.json();
+            if (data.success && Array.isArray(data.data)) {
+              setDepartmentUsers(data.data);
+            } else {
+              setDepartmentUsers([]);
+            }
+          } catch {
+            setDepartmentUsers([]);
+          }
+        };
+        fetchUsers();
+        setAssigneeId("");
+      } else {
+        setDepartmentUsers([]);
+        setAssigneeId("");
+      }
+    } else {
+      setDepartmentUsers([]);
+      setAssigneeId("");
+    }
+  }, [leaderId]);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -70,8 +103,11 @@ const CreateSubtaskModal = ({ open, onClose, onCreated, parentTaskId, supporters
 
   if (!open) return null;
 
-  // Chuẩn bị options cho react-select (nếu muốn dùng cho assignee)
-  const assigneeOptions = (supporters || []).map(u => ({ value: u._id, label: `${u.fullName} (${u.email})` }));
+  // Options cho leader
+  const leaderOptions = (supporters || []).map(u => ({ value: u._id, label: `${u.fullName} (${u.email})` }));
+  const selectedLeader = leaderOptions.find(opt => opt.value === leaderId) || null;
+  // Options cho assignee
+  const assigneeOptions = (departmentUsers || []).map(u => ({ value: u._id, label: `${u.fullName} (${u.email})` }));
   const selectedAssignee = assigneeOptions.find(opt => opt.value === assigneeId) || null;
 
   return (
@@ -115,6 +151,18 @@ const CreateSubtaskModal = ({ open, onClose, onCreated, parentTaskId, supporters
               onChange={e => setNotes(e.target.value)}
             />
           </div>
+          {/* Người chủ trì */}
+          <div>
+            <div className="mb-1 font-medium text-sm">Người chủ trì:</div>
+            <ReactSelect
+              options={leaderOptions}
+              value={selectedLeader}
+              onChange={opt => setLeaderId(opt ? opt.value : "")}
+              placeholder="Chọn người chủ trì..."
+              classNamePrefix="react-select"
+              styles={{ menu: base => ({ ...base, zIndex: 9999 }), control: base => ({ ...base, minHeight: 40 }) }}
+            />
+          </div>
           {/* Người thực hiện */}
           <div>
             <div className="mb-1 font-medium text-sm">Người thực hiện:</div>
@@ -124,6 +172,7 @@ const CreateSubtaskModal = ({ open, onClose, onCreated, parentTaskId, supporters
               onChange={opt => setAssigneeId(opt ? opt.value : "")}
               placeholder="Chọn người thực hiện..."
               classNamePrefix="react-select"
+              isDisabled={!leaderId || assigneeOptions.length === 0}
               styles={{ menu: base => ({ ...base, zIndex: 9999 }), control: base => ({ ...base, minHeight: 40 }) }}
             />
           </div>

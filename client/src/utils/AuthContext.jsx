@@ -11,6 +11,7 @@ export function AuthProvider({ children }) {
   const [refreshToken, setRefreshToken] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [participatedIndicators, setParticipatedIndicators] = useState([]);
 
   // Đăng nhập
   const login = async (username, password) => {
@@ -29,6 +30,7 @@ export function AuthProvider({ children }) {
       sessionStorage.setItem('accessToken', data.data.accessToken);
       sessionStorage.setItem('refreshToken', data.data.refreshToken);
       await fetchUserInfo(data.data.accessToken);
+      await fetchParticipatedIndicators(data.data.accessToken);
       setLoading(false);
       return true;
     } catch (err) {
@@ -88,6 +90,22 @@ export function AuthProvider({ children }) {
       setAccessToken(token);
       setUser(JSON.parse(userData));
     }
+    fetchParticipatedIndicators(token);
+  };
+
+  const fetchParticipatedIndicators = async (token = accessToken) => {
+    if (!token) return;
+    try {
+      const res = await fetch('http://localhost:3056/api/indicators/participated', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (!res.ok) throw new Error('Không lấy được danh sách chỉ tiêu');
+      const data = await res.json();
+      setParticipatedIndicators(data.data || []);
+      sessionStorage.setItem('participatedIndicators', JSON.stringify(data.data || []));
+    } catch (err) {
+      console.error('FETCH PARTICIPATED INDICATORS: error', err);
+    }
   };
 
   return (
@@ -101,6 +119,8 @@ export function AuthProvider({ children }) {
       logout,
       fetchUserInfo,
       init,
+      participatedIndicators,
+      fetchParticipatedIndicators,
     }}>
       {children}
     </AuthContext.Provider>

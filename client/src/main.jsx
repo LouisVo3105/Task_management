@@ -3,11 +3,15 @@ import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import './index.css'
 import { ThemeProvider } from "@material-tailwind/react";
+import { NotificationProvider } from './components/NotificationProvider/index.jsx';
+import { SSEProvider } from "./utils/SSEContext";
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
     <ThemeProvider>
-    <App />
+        <NotificationProvider>
+            <SSEProvider>
+                <App />
+            </SSEProvider>
+        </NotificationProvider>
     </ThemeProvider>
-  </React.StrictMode>,
 )

@@ -3,6 +3,7 @@ const positionLabelMap = {
   "Giam doc": "Giám đốc",
   "Pho Giam doc": "Phó Giám đốc",
   "Truong phong": "Trưởng phòng",
+  "Chuyen vien": "Chuyên viên",
   "Nhan vien": "Nhân viên"
 };
 

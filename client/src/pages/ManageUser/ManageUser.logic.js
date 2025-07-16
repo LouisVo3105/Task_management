@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../utils/useAuth';
 import { authFetch } from '../../utils/authFetch';
+import { useSSEContext } from "@utils/SSEContext";
 
 const API_URL = 'http://localhost:3056/api/users';
 const DEPT_API_URL = 'http://localhost:3056/api/departments';
@@ -37,6 +38,12 @@ export function useManageUserLogic() {
   };
 
   useEffect(() => { fetchUsers(); }, []);
+
+  useSSEContext((event) => {
+    if (["user_created", "user_updated", "user_deleted"].includes(event.type)) {
+      fetchUsers();
+    }
+  });
 
   // Lấy danh sách phòng ban khi mở dialog
   useEffect(() => {

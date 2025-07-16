@@ -8,7 +8,7 @@ const updateOverdueStatus = async (req, res, next) => {
     // Cập nhật nhiệm vụ chính quá deadline
     await Task.updateMany(
       {
-        status: { $in: ['pending', 'submitted'] },
+        status: { $in: ['pending'] },
         endDate: { $lt: now }
       },
       {
@@ -19,7 +19,7 @@ const updateOverdueStatus = async (req, res, next) => {
     // Cập nhật nhiệm vụ con quá deadline
     await Task.updateMany(
       {
-        'subTasks.status': { $in: ['pending', 'submitted'] },
+        'subTasks.status': { $in: ['pending'] },
         'subTasks.endDate': { $lt: now }
       },
       {

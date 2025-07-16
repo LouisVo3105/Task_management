@@ -23,5 +23,6 @@ router.delete('/permanent/:id', UserController.deleteUserPermanently.bind(UserCo
 router.post('/import-csv', roleMiddleware(['admin']), upload.single('file'), UserController.importUsersFromCSV.bind(UserController));
 router.get('/export', roleMiddleware(['admin']), UserController.exportUsers.bind(UserController));
 router.get('/positions', UserController.getPositions.bind(UserController));
+router.get('/leaders', UserController.getLeaders.bind(UserController));
 
 module.exports = router;

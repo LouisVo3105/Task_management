@@ -4,6 +4,7 @@ import CreateTaskModal from "../../components/modals/CreateTaskModal";
 import SubmitTaskMainModal from "../../components/modals/SubmitTaskMainModal";
 import StatusDot from "../../components/StatusDot";
 import { formatDate } from "../../utils/formatDate";
+import TaskProcessManager from "../../components/TaskProcessManager";
 
 // Component hiển thị trạng thái nhiệm vụ
 const TaskStatusBadge = ({ status }) => {
@@ -142,6 +143,14 @@ export default function TaskPageUI({
             )}
           </div>
         )}
+
+        {/* Quản lý thực hiện nhiệm vụ */}
+        {isAdminOrManager && (
+          <div className="mt-10">
+            <h2 className="text-xl font-bold mb-4">Quản lý thực hiện nhiệm vụ</h2>
+            <TaskProcessManager />
+          </div>
+        )}
       </div>
     );
   }
@@ -220,7 +229,7 @@ export default function TaskPageUI({
                           setSubmitError("");
                           setOpenSubmitMain(true);
                         }}>
-                          Submit
+                          Nộp báo cáo
                         </Button>
                       )}
                       {isAdminOrManager && (item.status === 'submitted' || item.status === 'approved') && (

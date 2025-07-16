@@ -9,6 +9,7 @@ const StatusDot = ({ status, size = "small" }) => {
     in_progress: { color: "bg-cyan-500", text: "Đang làm" },
     completed: { color: "bg-purple-500", text: "Hoàn thành" },
     overdue: { color: "bg-red-500", text: "Quá deadline" },
+    no_tasks: { color: "bg-gray-400", text: "Chưa có nhiệm vụ" },
   };
 
   const config = statusConfig[status] || { color: "bg-gray-500", text: status || "Không xác định" };

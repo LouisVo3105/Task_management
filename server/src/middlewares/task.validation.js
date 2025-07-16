@@ -53,9 +53,19 @@ const validateCreateSubTask = [
   body('notes').optional().isString().withMessage('Ghi chú phải là chuỗi'),
 ];
 
+const validateApproveTask = [
+  body('comment').trim().notEmpty().withMessage('Nhận xét là bắt buộc')
+];
+
+const validateRejectTask = [
+  body('comment').trim().notEmpty().withMessage('Lý do từ chối là bắt buộc')
+];
+
 module.exports = {
   validateCreateTask,
   validateUpdateTask,
   validateSubmitTask,
-  validateCreateSubTask
+  validateCreateSubTask,
+  validateApproveTask,
+  validateRejectTask
 };

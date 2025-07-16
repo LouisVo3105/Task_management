@@ -20,7 +20,7 @@ export default function useTaskDetailPageLogic() {
   const [openCreateSubtask, setOpenCreateSubtask] = useState(false);
   const [submissions, setSubmissions] = useState([]);
   const [loadingSubmissions, setLoadingSubmissions] = useState(false);
-
+  const [approvalHistory, setApprovalHistory] = useState([]);
 
 
   const fetchData = async () => {
@@ -29,8 +29,25 @@ export default function useTaskDetailPageLogic() {
       const res = await authFetch(`http://localhost:3056/api/tasks/${taskId}`);
       const taskData = await res.json();
       setTask(taskData.data);
+      // Lấy lịch sử duyệt nếu có
+      if (taskData.data && taskData.data._id) {
+        try {
+          const resHistory = await authFetch(`http://localhost:3056/api/tasks/${taskData.data._id}/approval-history`);
+          const dataHistory = await resHistory.json();
+          if (dataHistory.success && Array.isArray(dataHistory.data)) {
+            setApprovalHistory(dataHistory.data);
+          } else {
+            setApprovalHistory([]);
+          }
+        } catch {
+          setApprovalHistory([]);
+        }
+      } else {
+        setApprovalHistory([]);
+      }
     } catch {
       setTask(null);
+      setApprovalHistory([]);
     }
     setLoading(false);
   };
@@ -100,8 +117,10 @@ export default function useTaskDetailPageLogic() {
       const res = await authFetch(url, { method: 'DELETE' });
       if (res.ok) {
         if (taskToDelete.parentTask) {
-          navigate(-1);
+          // Nếu là subtask: chỉ fetch lại dữ liệu, KHÔNG điều hướng
+          fetchData();
         } else {
+          // Nếu là task chính: điều hướng về trang quản lý nhiệm vụ
           navigate('/tasks');
         }
       } else {
@@ -142,6 +161,8 @@ export default function useTaskDetailPageLogic() {
     setSubmissions,
     loadingSubmissions,
     setLoadingSubmissions,
+    approvalHistory,
+    setApprovalHistory,
     fetchData,
     navigate,
     handleDeleteTask,

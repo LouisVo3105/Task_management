@@ -6,34 +6,19 @@ import { useAuth, AuthProvider } from './utils/AuthContext';
 import DefaultLayout from './layouts/DefaultLayout';
 import LoginForm from './components/LoginForm/LoginFrom';
 import DefaultPage from './pages/DefaultPage/DefaultPage';
+import Header from './components/Header/Header.component';
 
 function AppContent() {
   const auth = useAuth();
-  const [showLogin, setShowLogin] = useState(false);
-
   useEffect(() => {
     auth.init();
   }, []);
 
-  const handleLoginSuccess = async () => {
-    await auth.fetchUserInfo();
-    setShowLogin(false);
-  };
-
-  const headerProps = {
-    onLoginClick: () => setShowLogin(true)
-  };
-
   // Nếu chưa đăng nhập, chỉ render DefaultLayout và login form
   if (!auth.accessToken) {
     return (
-      <DefaultLayout headerProps={headerProps}>
+      <DefaultLayout>
         <DefaultPage />
-        {showLogin && (
-          <div className="fixed inset-0 flex justify-center items-center z-50 pointer-events-auto">
-            <LoginForm onLoginSuccess={handleLoginSuccess} />
-          </div>
-        )}
       </DefaultLayout>
     );
   }
@@ -63,10 +48,20 @@ function AppContent() {
 }
 
 function App() {
+  const [showLogin, setShowLogin] = useState(false);
+  const handleLoginSuccess = async () => {
+    setShowLogin(false);
+  };
   return (
     <BrowserRouter>
       <AuthProvider>
+        <Header onLoginClick={() => setShowLogin(true)} />
         <AppContent />
+        {showLogin && (
+          <div className="fixed inset-0 flex justify-center items-center z-50 pointer-events-auto">
+            <LoginForm onLoginSuccess={handleLoginSuccess} />
+          </div>
+        )}
       </AuthProvider>
     </BrowserRouter>
   );

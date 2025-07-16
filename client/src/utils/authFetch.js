@@ -42,4 +42,6 @@ export async function authFetch(url, options = {}) {
     },
   };
   return fetch(url, retryOpts);
-} 
+}
+
+export default authFetch; 

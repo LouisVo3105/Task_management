@@ -4,6 +4,7 @@ import { useAuth } from "../../utils/useAuth";
 import { authFetch } from '../../utils/authFetch';
 import { Chart, ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from 'chart.js';
 Chart.register(ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
+import { useSSEContext } from "@utils/SSEContext";
 
 const statusMap = {
   no_tasks: "Chưa có nhiệm vụ",
@@ -36,6 +37,12 @@ export function useIndicatorPageLogic() {
   useEffect(() => {
     fetchIndicators();
   }, []);
+
+  useSSEContext((event) => {
+    if (["indicator_created", "indicator_updated", "indicator_deleted"].includes(event.type)) {
+      fetchIndicators();
+    }
+  });
 
   // Phân quyền rõ ràng cho admin và manager
   const isAdmin = user && user.role === 'admin';

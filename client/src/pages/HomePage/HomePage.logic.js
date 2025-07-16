@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Chart, ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from 'chart.js';
 Chart.register(ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 import { authFetch } from '../../utils/authFetch';
+import { useSSEContext } from "@utils/SSEContext";
 
 const API_URL = 'http://localhost:3056/api';
 const statusMap = {
@@ -28,11 +29,16 @@ export function useHomePageLogic() {
   const [searchTitle, setSearchTitle] = useState('');
   const [searchDepartment, setSearchDepartment] = useState('');
   const [searchLeader, setSearchLeader] = useState('');
+  const [searchIndicator, setSearchIndicator] = useState(''); // Thêm state filter chỉ tiêu
+  const [searchStartDate, setSearchStartDate] = useState(''); // Thêm state filter ngày bắt đầu
+  const [searchEndDate, setSearchEndDate] = useState(''); // Thêm state filter ngày kết thúc
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchError, setSearchError] = useState(null);
   // State kết quả tìm kiếm
   const [searchResults, setSearchResults] = useState([]);
   const [hasSearched, setHasSearched] = useState(false);
+  // State danh sách chỉ tiêu
+  const [indicators, setIndicators] = useState([]);
 
   // Hàm tìm kiếm nhiệm vụ
   const handleSearchTasks = async () => {
@@ -42,6 +48,9 @@ export function useHomePageLogic() {
     if (searchTitle) params.push(`title=${encodeURIComponent(searchTitle)}`);
     if (searchDepartment) params.push(`department=${encodeURIComponent(searchDepartment)}`);
     if (searchLeader) params.push(`leader=${encodeURIComponent(searchLeader)}`);
+    if (searchIndicator) params.push(`indicator=${encodeURIComponent(searchIndicator)}`); // Thêm filter chỉ tiêu
+    if (searchStartDate) params.push(`startDate=${encodeURIComponent(searchStartDate)}`); // Thêm filter ngày bắt đầu
+    if (searchEndDate) params.push(`endDate=${encodeURIComponent(searchEndDate)}`); // Thêm filter ngày kết thúc
     const query = params.length > 0 ? `?${params.join('&')}` : '';
     try {
       const res = await authFetch(`${API_URL}/tasks/search${query}`);
@@ -140,9 +149,70 @@ export function useHomePageLogic() {
         }
       };
       fetchDepartments();
+      // Thêm fetch chỉ tiêu
+      const fetchIndicators = async () => {
+        try {
+          const res = await authFetch('http://localhost:3056/api/indicators?limit=1000');
+          const json = await res.json();
+          if (Array.isArray(json.data?.docs)) setIndicators(json.data.docs);
+        } catch {
+          setIndicators([]);
+        }
+      };
+      fetchIndicators();
     }
     // eslint-disable-next-line
   }, [user]);
+
+  useSSEContext((event) => {
+    // Tự động fetch lại dữ liệu khi có sự kiện liên quan
+    if ([
+      "task_created", "task_updated", "task_deleted", "subtask_created", "subtask_updated",
+      "indicator_created", "indicator_updated", "indicator_deleted",
+      "user_created", "user_updated", "user_deleted"
+    ].includes(event.type)) {
+      // Fetch lại các dữ liệu chính trên trang chủ
+      if (user) {
+        // Fetch lại nhiệm vụ
+        setLoading(true);
+        Promise.all([
+          authFetch(`${API_URL}/tasks/incomplete/${user._id}`).then(res => res.json()),
+          authFetch(`${API_URL}/tasks/pending`).then(res => res.json()),
+          authFetch(`${API_URL}/tasks/completed/${user._id}`).then(res => res.json()).catch(() => ({ data: [] })),
+        ]).then(([incomplete, pending, completed]) => {
+          const allTasks = [
+            ...(incomplete.data?.docs || []),
+            ...(pending.data?.docs || []),
+            ...(completed.data?.docs || []),
+          ];
+          const uniqueTasks = Array.from(new Map(allTasks.map(t => [t._id, t])).values());
+          setTasks(uniqueTasks);
+          setLoading(false);
+        });
+      }
+      // Fetch lại chỉ tiêu nếu là admin/manager
+      if (user && (user.role === 'admin' || user.role === 'manager')) {
+        authFetch('http://localhost:3056/api/indicators?limit=1000')
+          .then(res => res.json())
+          .then(json => {
+            if (Array.isArray(json.data?.docs)) setIndicators(json.data.docs);
+          })
+          .catch(() => setIndicators([]));
+      }
+      // Fetch lại user performance nếu là admin/manager
+      if (user && (user.role === 'admin' || user.role === 'manager')) {
+        authFetch(`${API_URL}/analysis/user-performance`).then(res => res.json()).then(data => setUserPerformance(data.data));
+      }
+      // Fetch lại overallStats nếu là admin/manager
+      if (user && (user.role === 'admin' || user.role === 'manager')) {
+        authFetch(`${API_URL}/analysis/overall-stats`).then(res => res.json()).then(data => setOverallStats(data.data));
+      }
+      // Fetch lại dashboard analytics nếu là admin hoặc Giam doc/Pho Giam doc
+      if (user && (user.role === 'admin' || user.position === 'Giam doc' || user.position === 'Pho Giam doc')) {
+        fetchDashboardAnalytics();
+      }
+    }
+  });
 
   // Derived data
   const total = tasks.length;
@@ -247,10 +317,17 @@ export function useHomePageLogic() {
     setSearchDepartment,
     searchLeader,
     setSearchLeader,
+    searchIndicator,
+    setSearchIndicator,
+    searchStartDate,
+    setSearchStartDate,
+    searchEndDate,
+    setSearchEndDate,
     handleSearchTasks,
     searchLoading,
     searchError,
     departments,
+    indicators,
     searchResults,
     hasSearched,
   };

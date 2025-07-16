@@ -38,16 +38,34 @@ const CreateTaskModal = ({ open, onClose, onCreated, indicatorId }) => {
     if (open) fetchDepartments();
   }, [open]);
 
-  // Khi chọn phòng ban, lấy leader và supporter
+  // Thêm useEffect lấy supporter từ API /api/users/leaders khi open
+  useEffect(() => {
+    if (open) {
+      const fetchSupporters = async () => {
+        try {
+          const token = sessionStorage.getItem("accessToken");
+          const res = await fetch("http://localhost:3056/api/users/leaders", {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const data = await res.json();
+          setSupporters(data.data || []);
+        } catch {
+          setSupporters([]);
+        }
+      };
+      fetchSupporters();
+    }
+  }, [open]);
+
+  // Trong useEffect phụ thuộc departmentId, bỏ fetch supporter ở đây (chỉ fetch leader)
   useEffect(() => {
     if (!departmentId) {
       setLeaders([]);
-      setSupporters([]);
       setLeaderId("");
       setSupporterIds([]);
       return;
     }
-    const fetchLeadersAndSupporters = async () => {
+    const fetchLeaders = async () => {
       try {
         const token = sessionStorage.getItem("accessToken");
         // Lấy leader
@@ -56,18 +74,11 @@ const CreateTaskModal = ({ open, onClose, onCreated, indicatorId }) => {
         });
         const dataLeader = await resLeader.json();
         setLeaders(dataLeader.data || []);
-        // Lấy supporters
-        const resSupporter = await fetch(`http://localhost:3056/api/departments/${departmentId}/supporters`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const dataSupporter = await resSupporter.json();
-        setSupporters(dataSupporter.data || []);
       } catch {
         setLeaders([]);
-        setSupporters([]);
       }
     };
-    fetchLeadersAndSupporters();
+    fetchLeaders();
   }, [departmentId]);
 
   const handleFileChange = (e) => {

@@ -5,7 +5,8 @@ const { validationResult } = require('express-validator');
 const mongoose = require('mongoose');
 const { roleMiddleware } = require('../middlewares/auth.middleware');
 const path = require('path');
-
+const fs = require('fs');
+const { broadcastSSE } = require('../services/sse.service');
 
 
 class TaskController {
@@ -28,6 +29,10 @@ class TaskController {
 
     try {
       const fileObj = req.file;
+      let fileName = fileObj ? fileObj.originalname : undefined;
+      if (fileName) {
+        fileName = Buffer.from(fileName, 'latin1').toString('utf8');
+      }
       const { title,content, endDate, indicatorId, parentTaskId, assigneeId, notes, leaderId, supporterIds, departmentId } = req.body;
 
       const indicator = await Indicator.findById(indicatorId);
@@ -70,7 +75,7 @@ class TaskController {
         notes,
         department: departmentId,
         file: fileObj ? fileObj.path : undefined,
-        fileName: fileObj ? fileObj.originalname : undefined
+        fileName: fileName
       };
       if (!parentTaskId && taskData.subTasks) {
         delete taskData.subTasks;
@@ -79,6 +84,7 @@ class TaskController {
         parentTask.subTasks.push({ ...taskData, assignee: assigneeId, status: 'pending' });
         await parentTask.save();
         const newSubTask = parentTask.subTasks[parentTask.subTasks.length - 1];
+        broadcastSSE('subtask_created', { parentTaskId: parentTask._id, subTask: newSubTask });
         this.#sendResponse(res, 201, true, 'Tạo nhiệm vụ con thành công', newSubTask);
       } else {
         if (!Array.isArray(supporterIds) || supporterIds.length === 0) {
@@ -104,6 +110,7 @@ class TaskController {
         const uniqueCode = `${Date.now()}_${Math.floor(Math.random()*1000000)}`;
         const task = new Task({ ...taskData, leader: leaderId, supporters: supporterIds, indicatorCreator: indicator.creator, code: uniqueCode });
         await task.save();
+        broadcastSSE('task_created', { taskId: task._id, task });
         this.#sendResponse(res, 201, true, 'Tạo nhiệm vụ thành công', task);
       }
     } catch (error) {
@@ -148,6 +155,7 @@ class TaskController {
         Object.assign(subTask, updateData);
         await parentTask.save();
         this.#sendResponse(res, 200, true, 'Cập nhật nhiệm vụ con thành công', subTask);
+        broadcastSSE('subtask_updated', { parentTaskId: parentTask._id, subTask: subTask });
       } else {
         // Chỉ chặn khi nhiệm vụ chính đã approved
         if (task.status === 'approved') {
@@ -168,6 +176,7 @@ class TaskController {
         Object.assign(task, updateData);
         await task.save();
         this.#sendResponse(res, 200, true, 'Cập nhật nhiệm vụ thành công', task);
+        broadcastSSE('task_updated', { taskId: task._id, task });
       }
     } catch (error) {
       this.#sendResponse(res, 500, false, 'Lỗi khi cập nhật nhiệm vụ', null, error.message);
@@ -189,16 +198,89 @@ class TaskController {
           return this.#sendResponse(res, 400, false, 'Không thể xóa nhiệm vụ con của nhiệm vụ đã submit hoặc đã duyệt');
         }
         
+        // Xóa file của subtask
+        const subTask = parentTask.subTasks.id(id);
+        if (subTask && subTask.file) {
+          try {
+            fs.unlinkSync(subTask.file);
+          } catch (err) {
+            console.log('File không tồn tại hoặc đã bị xóa:', subTask.file);
+          }
+        }
+        
+        // Xóa files của submissions
+        if (subTask && subTask.submissions) {
+          subTask.submissions.forEach(submission => {
+            if (submission.file) {
+              try {
+                fs.unlinkSync(submission.file);
+              } catch (err) {
+                console.log('Submission file không tồn tại:', submission.file);
+              }
+            }
+          });
+        }
+        
         parentTask.subTasks.pull(id);
         await parentTask.save();
         this.#sendResponse(res, 200, true, 'Xóa nhiệm vụ con thành công');
+        broadcastSSE('task_deleted', { taskId: id });
       } else {
         // Kiểm tra trạng thái của nhiệm vụ chính
         if (task.status === 'submitted' || task.status === 'approved') {
           return this.#sendResponse(res, 400, false, 'Không thể xóa nhiệm vụ đã submit hoặc đã duyệt');
         }
+        
+        // Xóa file của task chính
+        if (task.file) {
+          try {
+            fs.unlinkSync(task.file);
+          } catch (err) {
+            console.log('File không tồn tại hoặc đã bị xóa:', task.file);
+          }
+        }
+        
+        // Xóa files của submissions của task chính
+        if (task.submissions) {
+          task.submissions.forEach(submission => {
+            if (submission.file) {
+              try {
+                fs.unlinkSync(submission.file);
+              } catch (err) {
+                console.log('Submission file không tồn tại:', submission.file);
+              }
+            }
+          });
+        }
+        
+        // Xóa files của tất cả subtasks
+        if (task.subTasks) {
+          task.subTasks.forEach(subTask => {
+            if (subTask.file) {
+              try {
+                fs.unlinkSync(subTask.file);
+              } catch (err) {
+                console.log('Subtask file không tồn tại:', subTask.file);
+              }
+            }
+            // Xóa files của submissions của subtask
+            if (subTask.submissions) {
+              subTask.submissions.forEach(submission => {
+                if (submission.file) {
+                  try {
+                    fs.unlinkSync(submission.file);
+                  } catch (err) {
+                    console.log('Subtask submission file không tồn tại:', submission.file);
+                  }
+                }
+              });
+            }
+          });
+        }
+        
         await Task.deleteMany({ $or: [{ _id: id }, { parentTask: id }] });
         this.#sendResponse(res, 200, true, 'Xóa nhiệm vụ và các nhiệm vụ con thành công');
+        broadcastSSE('task_deleted', { taskId: id });
       }
     } catch (error) {
       this.#sendResponse(res, 500, false, 'Lỗi khi xóa nhiệm vụ', null, error.message);
@@ -231,9 +313,14 @@ class TaskController {
       let task = await Task.findById(id)
         .populate('indicator', selectIndicatorFields)
         .populate('leader', selectUserFields)
-        .populate('supporters', selectUserFields)
+        .populate({
+          path: 'supporters',
+          select: selectUserFields + ' department',
+          populate: { path: 'department', select: '_id name' }
+        })
         .populate('subTasks.assignee', selectUserFields)
         .populate('department', '_id name')
+        .populate('approvalHistory.reviewer', 'fullName')
         .lean();
 
       if (task) {
@@ -258,12 +345,23 @@ class TaskController {
         const subTask = parentTask.subTasks.find(st => st._id.toString() === id);
         
         if (subTask) {
+          // Populate reviewer cho subtask approval history
+          const populatedHistory = subTask.approvalHistory ? 
+            await Promise.all(subTask.approvalHistory.map(async (history) => {
+              const reviewer = await User.findById(history.reviewer).select('fullName');
+              return {
+                ...history,
+                reviewer: reviewer ? { _id: reviewer._id, fullName: reviewer.fullName } : null
+              };
+            })) : [];
+
           // To make the response consistent, we'll build a response object
           // that resembles a main task but includes parent info.
           const response = {
             ...subTask,
             file: subTask.file || null,
             fileName: subTask.fileName || null,
+            approvalHistory: populatedHistory,
 
             // Add Department info
             department: {
@@ -378,9 +476,13 @@ class TaskController {
       let fileData = null;
       if (file) {
         // File upload thực tế từ multer
+        let uploadFileName = file.originalname;
+        if (uploadFileName) {
+          uploadFileName = Buffer.from(uploadFileName, 'latin1').toString('utf8');
+        }
         fileData = {
           path: file.path,
-          fileName: file.originalname,
+          fileName: uploadFileName,
 
         };
       } else if (req.body.file) {
@@ -448,6 +550,13 @@ class TaskController {
       const mainTaskId = id || taskId;
       let task = await Task.findById(mainTaskId);
       if (task) {
+        // Kiểm tra trạng thái các subtask trước khi cho phép nộp nhiệm vụ chính
+        if (task.subTasks && task.subTasks.length > 0) {
+          const hasUnsubmittedSubtask = task.subTasks.some(st => st.status !== 'submitted' && st.status !== 'approved');
+          if (hasUnsubmittedSubtask) {
+            return this.#sendResponse(res, 400, false, 'Không thể nộp nhiệm vụ chính khi còn nhiệm vụ con chưa nộp hoặc chưa hoàn thành');
+          }
+        }
         task.submissions.push({ 
           file: fileData.path, 
           fileName: fileData.fileName, 
@@ -492,11 +601,24 @@ class TaskController {
   async getTaskSubmissions(req, res) {
     try {
       const { id } = req.params;
-      const task = await Task.findById(id).select('submissions');
+      const task = await Task.findById(id)
+        .select('submissions')
+        .populate('submissions.reviewer', 'fullName');
       if (!task) {
         return this.#sendResponse(res, 404, false, 'Không tìm thấy nhiệm vụ');
       }
-      this.#sendResponse(res, 200, true, 'Lấy log nộp file thành công', task.submissions);
+
+      // Populate reviewer cho mỗi submission
+      const populatedSubmissions = await Promise.all(task.submissions.map(async (submission) => {
+        const submissionObj = submission.toObject();
+        if (submission.reviewer) {
+          const reviewer = await User.findById(submission.reviewer).select('fullName');
+          submissionObj.reviewer = reviewer ? { _id: reviewer._id, fullName: reviewer.fullName } : null;
+        }
+        return submissionObj;
+      }));
+
+      this.#sendResponse(res, 200, true, 'Lấy log nộp file thành công', populatedSubmissions);
     } catch (error) {
       this.#sendResponse(res, 500, false, 'Lỗi khi lấy log nộp file', null, error.message);
     }
@@ -514,7 +636,18 @@ class TaskController {
       if (!subTask) {
         return this.#sendResponse(res, 404, false, 'Không tìm thấy nhiệm vụ con');
       }
-      this.#sendResponse(res, 200, true, 'Lấy log nộp file nhiệm vụ con thành công', subTask.submissions || []);
+
+      // Populate reviewer cho mỗi submission của subtask
+      const populatedSubmissions = await Promise.all((subTask.submissions || []).map(async (submission) => {
+        const submissionObj = submission.toObject();
+        if (submission.reviewer) {
+          const reviewer = await User.findById(submission.reviewer).select('fullName');
+          submissionObj.reviewer = reviewer ? { _id: reviewer._id, fullName: reviewer.fullName } : null;
+        }
+        return submissionObj;
+      }));
+
+      this.#sendResponse(res, 200, true, 'Lấy log nộp file nhiệm vụ con thành công', populatedSubmissions);
     } catch (error) {
       this.#sendResponse(res, 500, false, 'Lỗi khi lấy log nộp file nhiệm vụ con', null, error.message);
     }
@@ -649,6 +782,10 @@ class TaskController {
       const leader = parentTask.leader;
       const supporters = parentTask.supporters;
       // Tạo subtask mới
+      let subTaskFileName = file ? file.originalname : null;
+      if (subTaskFileName) {
+        subTaskFileName = Buffer.from(subTaskFileName, 'latin1').toString('utf8');
+      }
       const subTaskData = {
         title,
         content,
@@ -656,7 +793,7 @@ class TaskController {
         assignee: assigneeId,
         notes,
         file: file ? file.path : null,
-        fileName: file ? file.originalname : null,
+        fileName: subTaskFileName,
         mimeType: file ? file.mimetype : null,
         status: 'pending',
         department,
@@ -674,7 +811,7 @@ class TaskController {
 
   async searchTasks(req, res) {
     try {
-      const { title, department, leader } = req.query;
+      const { title, department, leader, indicator, endDateFrom, endDateTo } = req.query;
       const filter = {};
       if (title) {
         filter.title = { $regex: title, $options: 'i' };
@@ -685,9 +822,17 @@ class TaskController {
       if (leader) {
         filter.leader = leader;
       }
+      if (indicator) {
+        filter.indicator = indicator;
+      }
+      if (endDateFrom || endDateTo) {
+        filter.endDate = {};
+        if (endDateFrom) filter.endDate.$gte = new Date(endDateFrom);
+        if (endDateTo) filter.endDate.$lte = new Date(endDateTo);
+      }
       const tasks = await Task.find(filter)
-        .populate('department leader')
-        .select('title department leader endDate status');
+        .populate('department leader indicator')
+        .select('title department leader indicator endDate status');
       res.json({ success: true, data: tasks });
     } catch (error) {
       res.status(500).json({ success: false, message: 'Lỗi tìm kiếm nhiệm vụ', error: error.message });
@@ -798,6 +943,402 @@ class TaskController {
       });
     } catch (error) {
       this.#sendResponse(res, 500, false, 'Lỗi khi lấy danh sách nhiệm vụ quá deadline', null, error.message);
+    }
+  }
+
+  // API chấp thuận báo cáo
+  async approveTask(req, res) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return this.#sendResponse(res, 400, false, 'Dữ liệu không hợp lệ', null, errors.array());
+    }
+
+    try {
+      const { id, taskId, subTaskId, submissionId } = req.params;
+      const { comment } = req.body;
+      const reviewer = req.user;
+
+      if (!comment || comment.trim() === '') {
+        return this.#sendResponse(res, 400, false, 'Nhận xét là bắt buộc');
+      }
+
+      // Xử lý chấp thuận subtask
+      if (taskId && subTaskId) {
+        const parentTask = await Task.findById(taskId);
+        if (!parentTask) {
+          return this.#sendResponse(res, 404, false, 'Không tìm thấy nhiệm vụ cha');
+        }
+
+        const subTask = parentTask.subTasks.id(subTaskId);
+        if (!subTask) {
+          return this.#sendResponse(res, 404, false, 'Không tìm thấy nhiệm vụ con');
+        }
+
+        // Kiểm tra quyền duyệt
+        if (reviewer.role !== 'admin' && reviewer.role !== 'manager' && reviewer.position !== 'Giam doc' && parentTask.leader.toString() !== reviewer.id) {
+          return this.#sendResponse(res, 403, false, 'Bạn không có quyền duyệt nhiệm vụ này');
+        }
+
+              // Tìm submission cụ thể nếu có submissionId
+      let targetSubmission = null;
+      if (submissionId) {
+        console.log('Looking for submissionId in subtask:', submissionId);
+        console.log('Available subtask submissions:', subTask.submissions.map(s => ({ id: s._id, fileName: s.fileName })));
+        
+        targetSubmission = subTask.submissions.id(submissionId);
+        if (!targetSubmission) {
+          return this.#sendResponse(res, 404, false, `Không tìm thấy submission với ID: ${submissionId} trong subtask. Tổng số submissions: ${subTask.submissions.length}`);
+        }
+        // Cập nhật submission cụ thể
+        targetSubmission.approvalStatus = 'approved';
+        targetSubmission.approvalComment = comment.trim();
+        targetSubmission.reviewer = reviewer.id;
+        targetSubmission.reviewedAt = new Date();
+      } else {
+          // Duyệt submission mới nhất
+          if (subTask.submissions.length === 0) {
+            return this.#sendResponse(res, 400, false, 'Không có submission nào để duyệt');
+          }
+          targetSubmission = subTask.submissions[subTask.submissions.length - 1];
+          targetSubmission.approvalStatus = 'approved';
+          targetSubmission.approvalComment = comment.trim();
+          targetSubmission.reviewer = reviewer.id;
+          targetSubmission.reviewedAt = new Date();
+        }
+
+        // Thêm vào lịch sử duyệt
+        subTask.approvalHistory = subTask.approvalHistory || [];
+        subTask.approvalHistory.push({
+          action: 'approve',
+          comment: comment.trim(),
+          reviewer: reviewer.id,
+          reviewedAt: new Date()
+        });
+
+        // Cập nhật trạng thái task
+        subTask.status = 'approved';
+        await parentTask.save();
+
+        return this.#sendResponse(res, 200, true, 'Chấp thuận nhiệm vụ con thành công', {
+          subTask,
+          approvedSubmission: targetSubmission,
+          approvalHistory: subTask.approvalHistory[subTask.approvalHistory.length - 1]
+        });
+      }
+
+      // Xử lý chấp thuận task chính
+      const mainTaskId = id || taskId;
+      const task = await Task.findById(mainTaskId);
+      if (!task) {
+        return this.#sendResponse(res, 404, false, 'Không tìm thấy nhiệm vụ');
+      }
+
+      // Kiểm tra trạng thái các subtask trước khi cho phép duyệt nhiệm vụ chính
+      if (task.subTasks && task.subTasks.length > 0) {
+        const hasUnsubmittedSubtask = task.subTasks.some(st => st.status !== 'submitted' && st.status !== 'approved');
+        if (hasUnsubmittedSubtask) {
+          return this.#sendResponse(res, 400, false, 'Không thể duyệt nhiệm vụ chính khi còn nhiệm vụ con chưa nộp hoặc chưa hoàn thành');
+        }
+      }
+
+      // Kiểm tra quyền duyệt
+      if (reviewer.role !== 'admin' && reviewer.role !== 'manager' && reviewer.position !== 'Giam doc' && task.leader.toString() !== reviewer.id) {
+        return this.#sendResponse(res, 403, false, 'Bạn không có quyền duyệt nhiệm vụ này');
+      }
+
+      // Tìm submission cụ thể nếu có submissionId
+      let targetSubmission = null;
+      if (submissionId) {
+        console.log('Looking for submissionId:', submissionId);
+        console.log('Available submissions:', task.submissions.map(s => ({ id: s._id, fileName: s.fileName })));
+        
+        targetSubmission = task.submissions.id(submissionId);
+        if (!targetSubmission) {
+          return this.#sendResponse(res, 404, false, `Không tìm thấy submission với ID: ${submissionId}. Tổng số submissions: ${task.submissions.length}`);
+        }
+        // Cập nhật submission cụ thể
+        targetSubmission.approvalStatus = 'approved';
+        targetSubmission.approvalComment = comment.trim();
+        targetSubmission.reviewer = reviewer.id;
+        targetSubmission.reviewedAt = new Date();
+      } else {
+        // Duyệt submission mới nhất
+        if (task.submissions.length === 0) {
+          return this.#sendResponse(res, 400, false, 'Không có submission nào để duyệt');
+        }
+        targetSubmission = task.submissions[task.submissions.length - 1];
+        targetSubmission.approvalStatus = 'approved';
+        targetSubmission.approvalComment = comment.trim();
+        targetSubmission.reviewer = reviewer.id;
+        targetSubmission.reviewedAt = new Date();
+      }
+
+      // Thêm vào lịch sử duyệt
+      task.approvalHistory = task.approvalHistory || [];
+      task.approvalHistory.push({
+        action: 'approve',
+        comment: comment.trim(),
+        reviewer: reviewer.id,
+        reviewedAt: new Date()
+      });
+
+      // Cập nhật trạng thái task
+      task.status = 'approved';
+      await task.save();
+
+      return this.#sendResponse(res, 200, true, 'Chấp thuận nhiệm vụ thành công', {
+        task,
+        approvedSubmission: targetSubmission,
+        approvalHistory: task.approvalHistory[task.approvalHistory.length - 1]
+      });
+
+    } catch (error) {
+      this.#sendResponse(res, 500, false, 'Lỗi khi chấp thuận nhiệm vụ', null, error.message);
+    }
+  }
+
+  // API từ chối báo cáo
+  async rejectTask(req, res) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return this.#sendResponse(res, 400, false, 'Dữ liệu không hợp lệ', null, errors.array());
+    }
+
+    try {
+      const { id, taskId, subTaskId, submissionId } = req.params;
+      const { comment } = req.body;
+      const reviewer = req.user;
+
+      if (!comment || comment.trim() === '') {
+        return this.#sendResponse(res, 400, false, 'Lý do từ chối là bắt buộc');
+      }
+
+      // Xử lý từ chối subtask
+      if (taskId && subTaskId) {
+        const parentTask = await Task.findById(taskId);
+        if (!parentTask) {
+          return this.#sendResponse(res, 404, false, 'Không tìm thấy nhiệm vụ cha');
+        }
+
+        const subTask = parentTask.subTasks.id(subTaskId);
+        if (!subTask) {
+          return this.#sendResponse(res, 404, false, 'Không tìm thấy nhiệm vụ con');
+        }
+
+        // Kiểm tra quyền duyệt
+        if (reviewer.role !== 'admin' && reviewer.role !== 'manager' && reviewer.position !== 'Giam doc' && parentTask.leader.toString() !== reviewer.id) {
+          return this.#sendResponse(res, 403, false, 'Bạn không có quyền duyệt nhiệm vụ này');
+        }
+
+        // Tìm submission cụ thể nếu có submissionId
+        let targetSubmission = null;
+        if (submissionId) {
+          console.log('Looking for submissionId in subtask (reject):', submissionId);
+          console.log('Available subtask submissions:', subTask.submissions.map(s => ({ id: s._id, fileName: s.fileName })));
+          
+          targetSubmission = subTask.submissions.id(submissionId);
+          if (!targetSubmission) {
+            return this.#sendResponse(res, 404, false, `Không tìm thấy submission với ID: ${submissionId} trong subtask. Tổng số submissions: ${subTask.submissions.length}`);
+          }
+          // Cập nhật submission cụ thể
+          targetSubmission.approvalStatus = 'rejected';
+          targetSubmission.approvalComment = comment.trim();
+          targetSubmission.reviewer = reviewer.id;
+          targetSubmission.reviewedAt = new Date();
+        } else {
+          // Từ chối submission mới nhất
+          if (subTask.submissions.length === 0) {
+            return this.#sendResponse(res, 400, false, 'Không có submission nào để từ chối');
+          }
+          targetSubmission = subTask.submissions[subTask.submissions.length - 1];
+          targetSubmission.approvalStatus = 'rejected';
+          targetSubmission.approvalComment = comment.trim();
+          targetSubmission.reviewer = reviewer.id;
+          targetSubmission.reviewedAt = new Date();
+        }
+
+        // Thêm vào lịch sử duyệt
+        subTask.approvalHistory = subTask.approvalHistory || [];
+        subTask.approvalHistory.push({
+          action: 'reject',
+          comment: comment.trim(),
+          reviewer: reviewer.id,
+          reviewedAt: new Date()
+        });
+
+        // Cập nhật trạng thái task về pending để có thể nộp lại
+        subTask.status = 'pending';
+        await parentTask.save();
+
+        return this.#sendResponse(res, 200, true, 'Từ chối nhiệm vụ con thành công', {
+          subTask,
+          rejectedSubmission: targetSubmission,
+          approvalHistory: subTask.approvalHistory[subTask.approvalHistory.length - 1]
+        });
+      }
+
+      // Xử lý từ chối task chính
+      const mainTaskId = id || taskId;
+      const task = await Task.findById(mainTaskId);
+      if (!task) {
+        return this.#sendResponse(res, 404, false, 'Không tìm thấy nhiệm vụ');
+      }
+
+      // Kiểm tra quyền duyệt
+      if (reviewer.role !== 'admin' && reviewer.role !== 'manager' && reviewer.position !== 'Giam doc' && task.leader.toString() !== reviewer.id) {
+        return this.#sendResponse(res, 403, false, 'Bạn không có quyền duyệt nhiệm vụ này');
+      }
+
+              // Tìm submission cụ thể nếu có submissionId
+        let targetSubmission = null;
+        if (submissionId) {
+          console.log('Looking for submissionId in task (reject):', submissionId);
+          console.log('Available task submissions:', task.submissions.map(s => ({ id: s._id, fileName: s.fileName })));
+          
+          targetSubmission = task.submissions.id(submissionId);
+          if (!targetSubmission) {
+            return this.#sendResponse(res, 404, false, `Không tìm thấy submission với ID: ${submissionId} trong task. Tổng số submissions: ${task.submissions.length}`);
+          }
+          // Cập nhật submission cụ thể
+          targetSubmission.approvalStatus = 'rejected';
+          targetSubmission.approvalComment = comment.trim();
+          targetSubmission.reviewer = reviewer.id;
+          targetSubmission.reviewedAt = new Date();
+        } else {
+        // Từ chối submission mới nhất
+        if (task.submissions.length === 0) {
+          return this.#sendResponse(res, 400, false, 'Không có submission nào để từ chối');
+        }
+        targetSubmission = task.submissions[task.submissions.length - 1];
+        targetSubmission.approvalStatus = 'rejected';
+        targetSubmission.approvalComment = comment.trim();
+        targetSubmission.reviewer = reviewer.id;
+        targetSubmission.reviewedAt = new Date();
+      }
+
+      // Thêm vào lịch sử duyệt
+      task.approvalHistory = task.approvalHistory || [];
+      task.approvalHistory.push({
+        action: 'reject',
+        comment: comment.trim(),
+        reviewer: reviewer.id,
+        reviewedAt: new Date()
+      });
+
+      // Cập nhật trạng thái task về pending để có thể nộp lại
+      task.status = 'pending';
+      await task.save();
+
+      return this.#sendResponse(res, 200, true, 'Từ chối nhiệm vụ thành công', {
+        task,
+        rejectedSubmission: targetSubmission,
+        approvalHistory: task.approvalHistory[task.approvalHistory.length - 1]
+      });
+
+    } catch (error) {
+      this.#sendResponse(res, 500, false, 'Lỗi khi từ chối nhiệm vụ', null, error.message);
+    }
+  }
+
+  // API lấy lịch sử duyệt
+  async getApprovalHistory(req, res) {
+    try {
+      const { id, taskId, subTaskId } = req.params;
+
+      // Xử lý lấy lịch sử duyệt subtask
+      if (taskId && subTaskId) {
+        const parentTask = await Task.findById(taskId).populate('approvalHistory.reviewer', 'fullName');
+        if (!parentTask) {
+          return this.#sendResponse(res, 404, false, 'Không tìm thấy nhiệm vụ cha');
+        }
+
+        const subTask = parentTask.subTasks.id(subTaskId);
+        if (!subTask) {
+          return this.#sendResponse(res, 404, false, 'Không tìm thấy nhiệm vụ con');
+        }
+
+        // Populate reviewer cho subtask approval history
+        const populatedHistory = subTask.approvalHistory ? 
+          await Promise.all(subTask.approvalHistory.map(async (history) => {
+            const reviewer = await User.findById(history.reviewer).select('fullName');
+            return {
+              ...history.toObject(),
+              reviewer: reviewer ? { _id: reviewer._id, fullName: reviewer.fullName } : null
+            };
+          })) : [];
+
+        return this.#sendResponse(res, 200, true, 'Lấy lịch sử duyệt nhiệm vụ con thành công', populatedHistory);
+      }
+
+      // Xử lý lấy lịch sử duyệt task chính
+      const mainTaskId = id || taskId;
+      const task = await Task.findById(mainTaskId).populate('approvalHistory.reviewer', 'fullName');
+      if (!task) {
+        return this.#sendResponse(res, 404, false, 'Không tìm thấy nhiệm vụ');
+      }
+
+      return this.#sendResponse(res, 200, true, 'Lấy lịch sử duyệt nhiệm vụ thành công', task.approvalHistory || []);
+
+    } catch (error) {
+      this.#sendResponse(res, 500, false, 'Lỗi khi lấy lịch sử duyệt', null, error.message);
+    }
+  }
+
+  // API: Lấy tất cả nhiệm vụ phân cấp theo chỉ tiêu, nhiệm vụ chính, nhiệm vụ con
+  async getAllTasksByHierarchy(req, res) {
+    try {
+      // Lấy tất cả chỉ tiêu
+      const indicators = await Indicator.find({})
+        .populate('creator', 'fullName')
+        .lean();
+      // Lấy tất cả nhiệm vụ chính
+      const tasks = await Task.find({})
+        .populate('leader', 'fullName')
+        .populate('indicator', '_id')
+        .populate('subTasks.assignee', 'fullName')
+        .lean();
+      // Map indicatorId -> mainTasks
+      const indicatorTaskMap = {};
+      tasks.forEach(task => {
+        const indId = task.indicator?._id?.toString() || (task.indicator + '');
+        if (!indicatorTaskMap[indId]) indicatorTaskMap[indId] = [];
+        indicatorTaskMap[indId].push(task);
+      });
+      // Build kết quả
+      const result = indicators.map(ind => {
+        const mainTasks = (indicatorTaskMap[ind._id.toString()] || []).map(task => ({
+          _id: task._id,
+          leader: task.leader ? { _id: task.leader._id, fullName: task.leader.fullName } : null,
+          content: task.content,
+          createdAt: task.createdAt,
+          status: task.status,
+          file: task.file || null, // Thêm trường file hướng dẫn cho mainTask
+          subTasks: (task.subTasks || []).map(st => {
+            const leaderObj = st.assignee ? { _id: st.assignee._id, fullName: st.assignee.fullName } : null;
+            return {
+              _id: st._id,
+              leader: leaderObj,
+              assigner: task.leader ? { _id: task.leader._id, fullName: task.leader.fullName } : null,
+              assignee: leaderObj, // Thêm trường assignee giống leader
+              content: st.content,
+              createdAt: st.createdAt,
+              status: st.status,
+              file: st.file || null // Thêm trường file hướng dẫn cho subTask
+            };
+          })
+        }));
+        return {
+          _id: ind._id,
+          creator: ind.creator ? { _id: ind.creator._id, fullName: ind.creator.fullName } : null,
+          content: ind.name,
+          createdAt: ind.createdAt,
+          status: ind.status,
+          mainTasks
+        };
+      });
+      res.json({ success: true, data: result });
+    } catch (error) {
+      res.status(500).json({ success: false, message: 'Lỗi lấy danh sách chỉ tiêu phân cấp', error: error.message });
     }
   }
 }

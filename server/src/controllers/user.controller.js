@@ -8,6 +8,7 @@ const fs = require('fs');
 const xlsx = require('xlsx');
 const { Parser: CsvParser } = require('json2csv');
 const { mapPosition, getStandardPositions, getPositionKeywords } = require('../utils/position-mapper');
+const { broadcastSSE } = require('../services/sse.service');
 
 class UserController {
   #sendResponse(res, status, success, message, data = null, errors = null) {
@@ -66,6 +67,7 @@ class UserController {
       delete userResponse.password;
       
       this.#sendResponse(res, 201, true, 'Người dùng đã được tạo thành công', userResponse);
+      broadcastSSE('user_created', { userId: user._id, user: userResponse });
     } catch (error) {
       this.#sendResponse(res, 500, false, 'Lỗi khi tạo người dùng', null, error.message);
     }
@@ -198,6 +200,7 @@ class UserController {
         message: 'User updated successfully',
         data: updatedUser 
       });
+      broadcastSSE('user_updated', { userId: updatedUser._id, user: updatedUser.toObject() });
     } catch (error) {
       res.status(500).json({ 
         success: false, 
@@ -244,6 +247,7 @@ class UserController {
         message: 'User deactivated successfully',
         data: deletedUser 
       });
+      broadcastSSE('user_deleted', { userId: deletedUser._id });
     } catch (error) {
       res.status(500).json({ 
         success: false, 
@@ -437,6 +441,22 @@ class UserController {
       });
     } catch (error) {
       this.#sendResponse(res, 500, false, 'Lỗi khi lấy danh sách position', null, error.message);
+    }
+  }
+
+  async getLeaders(req, res) {
+    try {
+      // Lấy tất cả user từ trưởng phòng trở lên
+      const positions = ['Truong phong', 'Pho Giam doc', 'Giam doc'];
+      const users = await User.find({
+        isActive: true,
+        position: { $in: positions }
+      })
+        .select('_id fullName email role position department')
+        .populate('department', 'name');
+      this.#sendResponse(res, 200, true, 'Lấy danh sách lãnh đạo thành công', users);
+    } catch (error) {
+      this.#sendResponse(res, 500, false, 'Lỗi khi lấy danh sách lãnh đạo', null, error.message);
     }
   }
 }

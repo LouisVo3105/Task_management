@@ -3,6 +3,8 @@ import { Card, Typography } from "@material-tailwind/react";
 import CreateIndicatorModal from "../../components/modals/CreateIndicatorModal";
 import EditIndicatorModal from "../../components/modals/EditIndicatorModal";
 import { formatDate } from "../../utils/formatDate";
+import { useAuth } from "../../utils/useAuth";
+import StatusDot from "../../components/StatusDot";
 
 const TABLE_HEAD = ["Tên Chỉ Tiêu", "Ngày giao", "Deadline", "Trạng Thái", "% Hoàn thành", "Số NV hoàn thành/Tổng", ""];
 
@@ -20,10 +22,9 @@ export default function IndicatorPageUI({
   isAdmin,
   fetchIndicators,
   handleDelete,
-  statusMap,
 }) {
+  const { participatedIndicators } = useAuth();
   // Cho phép admin và manager đều xem chi tiết
-  const canViewDetail = user && (user.role === 'admin' || user.role === 'manager' || user.position === 'Giam doc' || user.position === 'Pho giam doc' || user.position === 'Truong phong');
   return (
     <div className="p-6">
       <CreateIndicatorModal open={openCreate} onClose={() => setOpenCreate(false)} onCreated={fetchIndicators} />
@@ -76,12 +77,24 @@ export default function IndicatorPageUI({
               {indicators.map((item, index) => {
                 const isLast = index === indicators.length - 1;
                 const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
+                // Kiểm tra quyền xem chi tiết cho từng indicator
+                const canViewDetail =
+                  user && (
+                    user.role === 'admin' ||
+                    user.role === 'manager' ||
+                    user.position === 'Giam doc' ||
+                    user.position === 'Pho giam doc' ||
+                    user.position === 'Truong phong' ||
+                    (participatedIndicators && participatedIndicators.some(i => i._id === item._id))
+                  );
                 return (
-                  <tr key={item._id}>
-                    <td className={classes}>{item.name}</td>
+                  <tr key={item._id} className="text-xl">
+                    <td className={classes}><a className="text-teal-600 text-bold">{item.name}</a></td>
                     <td className={classes}>{formatDate(item.createdAt)}</td>
-                    <td className={classes}>{formatDate(item.endDate)}</td>
-                    <td className={classes}>{statusMap[item.status?.overallStatus] || "-"}</td>
+                    <td className={classes}>{formatDate(item.endDate)}</td> 
+                    <td className={classes}>
+                      <StatusDot status={item.status?.overallStatus} size="small" />
+                    </td>
                     <td className={classes}>{item.status?.percentage ?? 0}%</td>
                     <td className={classes}>{item.status?.completed ?? 0}/{item.status?.total ?? 0}</td>
                     <td className={classes}>

@@ -27,7 +27,7 @@ import React from "react";
 export default function Sidebar() {
   const [open, setOpen] = React.useState(0);
   const navigate = useNavigate();
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
 
   const handleOpen = (value) => {
     setOpen(open === value ? 0 : value);
@@ -37,6 +37,8 @@ export default function Sidebar() {
     await logout();
     navigate('/');
   };
+
+  const isAdminOrDirector = user?.role === 'admin' || user?.position === 'Giam doc' || user?.position === 'Pho Giam doc';
 
   return (
     <Card className="h-[calc(100vh-2rem)] w-full max-w-[20rem] p-4 shadow-xl shadow-blue-gray-900/5 font-sans">
@@ -92,14 +94,16 @@ export default function Sidebar() {
                 </ListItemPrefix>
                 Quản lý người dùng
               </ListItem>
-              <ListItem onClick={() => navigate('/overdue-tasks')}>
-                <ListItemPrefix>
-                  <ExclamationTriangleIcon className="h-5 w-5 text-red-500" />
-                </ListItemPrefix>
-                <Typography color="red" className="font-medium">
-                  Nhiệm vụ quá deadline
-                </Typography>
-              </ListItem>
+              {isAdminOrDirector && (
+                <ListItem onClick={() => navigate('/overdue-tasks')}>
+                  <ListItemPrefix>
+                    <ExclamationTriangleIcon className="h-5 w-5 text-red-500" />
+                  </ListItemPrefix>
+                  <Typography color="red" className="font-medium">
+                    Nhiệm vụ quá deadline
+                  </Typography>
+                </ListItem>
+              )}
             </List>
           </AccordionBody>
         </Accordion>

@@ -1,12 +1,39 @@
 import { useAuth } from '../../utils/useAuth';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Logo from '../../assets/logo.svg';
 import { mapPositionLabel } from '../../utils/positionLabel';
+import { useSSEContext } from "@utils/SSEContext";
+import { useNotification } from '../NotificationProvider';
 
 const Header = ({ onLoginClick }) => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { showNotification } = useNotification();
+
+  const handleSSEMessage = useCallback((data) => {
+    if (data.type === 'main_task_deadline_soon') {
+      showNotification({
+        type: 'info',
+        title: 'Sắp đến hạn nhiệm vụ chính',
+        message: `Nhiệm vụ chính "${data.title}" sắp đến hạn (${data.daysToDeadline} ngày nữa)!`,
+      });
+    } else if (data.type === 'subtask_deadline_soon') {
+      showNotification({
+        type: 'info',
+        title: 'Sắp đến hạn subtask',
+        message: `Subtask "${data.title}" sắp đến hạn (${data.daysToDeadline} ngày nữa)!`,
+      });
+    } else if (data.type === 'indicator_deadline_soon') {
+      showNotification({
+        type: 'info',
+        title: 'Sắp đến hạn chỉ tiêu',
+        message: `Indicator "${data.name}" sắp đến hạn (${data.daysToDeadline} ngày nữa)!`,
+      });
+    }
+  }, [showNotification]);
+
+  useSSEContext(user ? handleSSEMessage : null);
 
   return (<header className="bg-white">
     <div className="mx-auto flex h-16 max-w-screen-xl items-center gap-8 px-4 sm:px-6 lg:px-8">
@@ -36,6 +63,15 @@ const Header = ({ onLoginClick }) => {
                 >
                   {user.fullName}
                 </span>
+                {/* Notification Bell Icon */}
+                <button
+                  className="relative ml-4 focus:outline-none"
+                  title="Thông báo"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-7 h-7 text-gray-700 hover:text-teal-600 transition">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a2.25 2.25 0 01-4.714 0M21 19.5v-2.25A2.25 2.25 0 0018.75 15a6.75 6.75 0 01-13.5 0A2.25 2.25 0 003 17.25V19.5m18 0H3" />
+                  </svg>
+                </button>
               </>
             ) : (
               <button

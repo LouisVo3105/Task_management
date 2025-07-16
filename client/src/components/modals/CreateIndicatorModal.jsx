@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Button, Input, Typography } from "@material-tailwind/react";
 import ReactDOM from "react-dom";
+import authFetch from "../../utils/authFetch";
 
 const CreateIndicatorModal = ({ open, onClose, onCreated }) => {
   const [name, setName] = useState("");
@@ -12,12 +13,10 @@ const CreateIndicatorModal = ({ open, onClose, onCreated }) => {
     setLoading(true);
     setError("");
     try {
-      const token = sessionStorage.getItem('accessToken');
-      const res = await fetch("http://localhost:3056/api/indicators", {
+      const res = await authFetch("http://localhost:3056/api/indicators", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ name, endDate }),
       });

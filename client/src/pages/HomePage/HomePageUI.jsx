@@ -4,6 +4,7 @@ import { Bar } from 'react-chartjs-2';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authFetch } from '../../utils/authFetch';
+import { formatDate } from '../../utils/formatDate';
 
 export default function HomePageUI({
   user,
@@ -25,10 +26,17 @@ export default function HomePageUI({
   setSearchDepartment,
   searchLeader,
   setSearchLeader,
+  searchIndicator,
+  setSearchIndicator,
+  searchStartDate,
+  setSearchStartDate,
+  searchEndDate,
+  setSearchEndDate,
   handleSearchTasks,
   searchLoading,
   searchError,
   departments,
+  indicators,
   searchResults,
   hasSearched,
 }) {
@@ -77,6 +85,13 @@ export default function HomePageUI({
             setSearchDepartment={setSearchDepartment}
             searchLeader={searchLeader}
             setSearchLeader={setSearchLeader}
+            searchIndicator={searchIndicator}
+            setSearchIndicator={setSearchIndicator}
+            searchStartDate={searchStartDate}
+            setSearchStartDate={setSearchStartDate}
+            searchEndDate={searchEndDate}
+            setSearchEndDate={setSearchEndDate}
+            indicators={indicators}
             handleSearchTasks={handleSearchTasks}
             searchLoading={searchLoading}
             searchError={searchError}
@@ -215,7 +230,7 @@ export default function HomePageUI({
                                         <span className="ml-2 text-sm text-red-600">(Chủ trì: {task.leader.fullName})</span>
                                       ) : null}
                                       {task && task.endDate ? (
-                                        <span className="ml-2 text-xs text-gray-500">(Hạn: {new Date(task.endDate).toLocaleDateString()})</span>
+                                        <span className="ml-2 text-xs text-gray-500">(Hạn: {formatDate(task.endDate)})</span>
                                       ) : null}
                                     </li>
                                   ))}
@@ -232,7 +247,7 @@ export default function HomePageUI({
                                         <span className="ml-2 text-sm text-green-700">(Chủ trì: {task.leader.fullName})</span>
                                       ) : null}
                                       {task && task.endDate ? (
-                                        <span className="ml-2 text-xs text-gray-500">(Hoàn thành: {new Date(task.endDate).toLocaleDateString()})</span>
+                                        <span className="ml-2 text-xs text-gray-500">(Hoàn thành: {formatDate(task.endDate)})</span>
                                       ) : null}
                                     </li>
                                   ))}
@@ -306,7 +321,7 @@ export default function HomePageUI({
                       <tr key={task._id}>
                         <td className="p-2">{task.title}</td>
                         <td className="p-2">{statusMap[task.status] || task.status}</td>
-                        <td className="p-2">{task.endDate ? new Date(task.endDate).toLocaleDateString() : ''}</td>
+                        <td className="p-2">{task.endDate ? formatDate(task.endDate) : ''}</td>
                         <td className="p-2">{typeof task.indicator === 'string' ? task.indicator : (task.indicator?.name || '')}</td>
                       </tr>
                     ))}
@@ -329,6 +344,13 @@ function FilterTaskSearch({
   setSearchDepartment,
   searchLeader,
   setSearchLeader,
+  searchIndicator,
+  setSearchIndicator,
+  searchStartDate,
+  setSearchStartDate,
+  searchEndDate,
+  setSearchEndDate,
+  indicators,
   handleSearchTasks,
   searchLoading,
   searchError,
@@ -351,50 +373,100 @@ function FilterTaskSearch({
       .then(json => {
         setLeaders(Array.isArray(json.data) ? json.data : []);
       })
-      .catch((err) => {
+      .catch(() => {
         setLeaders([]);
       });
   }, [searchDepartment]);
 
   return (
-    <div className="mb-6 flex flex-col md:flex-row gap-2 md:gap-4 items-center">
-      <input
-        type="text"
-        placeholder="Tìm theo tên nhiệm vụ..."
-        value={searchTitle}
-        onChange={e => setSearchTitle(e.target.value)}
-        className="border rounded px-2 py-1 w-full md:w-64"
-      />
-      <select
-        value={searchDepartment}
-        onChange={e => setSearchDepartment(e.target.value)}
-        className={`border rounded px-2 py-1 w-full md:w-48 ${(!departments || departments.length === 0) ? 'bg-gray-100 text-gray-400' : ''}`}
-        disabled={!departments || departments.length === 0}
-      >
-        <option value="">{(!departments || departments.length === 0) ? 'Không có phòng ban' : 'Chọn phòng ban...'}</option>
-        {departments && departments.map(dep => (
-          <option key={dep._id} value={dep._id}>{dep.name}</option>
-        ))}
-      </select>
-      <select
-        value={searchLeader}
-        onChange={e => setSearchLeader(e.target.value)}
-        className={`border rounded px-2 py-1 w-full md:w-48 ${(!searchDepartment || leaders.length === 0) ? 'bg-gray-100 text-gray-400' : ''}`}
-        disabled={!searchDepartment || leaders.length === 0}
-      >
-        <option value="">{!searchDepartment ? 'Chọn phòng ban trước' : (leaders.length === 0 ? 'Không có chủ trì' : 'Tất cả chủ trì')}</option>
-        {leaders.map(leader => (
-          <option key={leader._id} value={leader._id}>{leader.fullName}</option>
-        ))}
-      </select>
-      <button
-        className="px-4 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
-        onClick={handleSearchTasks}
-        disabled={searchLoading}
-      >
-        {searchLoading ? 'Đang tìm...' : 'Tìm kiếm'}
-      </button>
-      {searchError && <span className="text-red-600 ml-2">{searchError}</span>}
+    <div className="mb-6 flex flex-col gap-2">
+      <div className="flex flex-col md:flex-row md:gap-4 gap-2 items-center w-full">
+        <div className="flex flex-col w-full md:w-64">
+          <label className="text-sm font-medium text-gray-700 mb-1">Tên nhiệm vụ</label>
+          <input
+            type="text"
+            placeholder="Tìm theo tên nhiệm vụ..."
+            value={searchTitle}
+            onChange={e => setSearchTitle(e.target.value)}
+            className="border rounded px-2 py-1 w-full"
+          />
+        </div>
+        <div className="flex flex-col w-full md:w-48">
+          <label className="text-sm font-medium text-gray-700 mb-1">Phòng ban</label>
+          <select
+            value={searchDepartment}
+            onChange={e => setSearchDepartment(e.target.value)}
+            className={`border rounded px-2 py-1 w-full ${(!departments || departments.length === 0) ? 'bg-gray-100 text-gray-400' : ''}`}
+            disabled={!departments || departments.length === 0}
+          >
+            <option value="">{(!departments || departments.length === 0) ? 'Không có phòng ban' : 'Chọn phòng ban...'}</option>
+            {departments && departments.map(dep => (
+              <option key={dep._id} value={dep._id}>{dep.name}</option>
+            ))}
+          </select>
+        </div>
+        <div className="flex flex-col w-full md:w-48">
+          <label className="text-sm font-medium text-gray-700 mb-1">Chủ trì</label>
+          <select
+            value={searchLeader}
+            onChange={e => setSearchLeader(e.target.value)}
+            className={`border rounded px-2 py-1 w-full ${(!searchDepartment || leaders.length === 0) ? 'bg-gray-100 text-gray-400' : ''}`}
+            disabled={!searchDepartment || leaders.length === 0}
+          >
+            <option value="">{!searchDepartment ? 'Chọn phòng ban trước' : (leaders.length === 0 ? 'Không có chủ trì' : 'Tất cả chủ trì')}</option>
+            {leaders.map(leader => (
+              <option key={leader._id} value={leader._id}>{leader.fullName}</option>
+            ))}
+          </select>
+        </div>
+        <div className="flex flex-col w-full md:w-48">
+          <label className="text-sm font-medium text-gray-700 mb-1">Chỉ tiêu</label>
+          <select
+            value={searchIndicator}
+            onChange={e => setSearchIndicator(e.target.value)}
+            className={`border rounded px-2 py-1 w-full ${(!indicators || indicators.length === 0) ? 'bg-gray-100 text-gray-400' : ''}`}
+            disabled={!indicators || indicators.length === 0}
+          >
+            <option value="">{(!indicators || indicators.length === 0) ? 'Không có chỉ tiêu' : 'Tất cả chỉ tiêu'}</option>
+            {indicators && indicators.map(ind => (
+              <option key={ind._id} value={ind._id}>{ind.name}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+      <div className="flex flex-col md:flex-row md:gap-4 gap-2 items-center w-full">
+        <div className="flex flex-col w-full md:w-40">
+          <label className="text-sm font-medium text-gray-700 mb-1">Từ ngày</label>
+          <input
+            type="date"
+            value={searchStartDate}
+            onChange={e => setSearchStartDate(e.target.value)}
+            className="border rounded px-2 py-1 w-full"
+            placeholder="Từ ngày"
+          />
+        </div>
+        <div className="flex flex-col w-full md:w-40">
+          <label className="text-sm font-medium text-gray-700 mb-1">Đến ngày</label>
+          <input
+            type="date"
+            value={searchEndDate}
+            onChange={e => setSearchEndDate(e.target.value)}
+            className="border rounded px-2 py-1 w-full"
+            placeholder="Đến ngày"
+          />
+        </div>
+        <div className="flex flex-col w-full md:w-auto mt-2 md:mt-6">
+          <label className="block md:hidden text-sm font-medium text-gray-700 mb-1">&nbsp;</label>
+          <button
+            className="px-4 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 w-full md:w-auto"
+            onClick={handleSearchTasks}
+            disabled={searchLoading}
+          >
+            {searchLoading ? 'Đang tìm...' : 'Tìm kiếm'}
+          </button>
+        </div>
+        {searchError && <span className="text-red-600 ml-2 mt-2 md:mt-6">{searchError}</span>}
+      </div>
     </div>
   );
 }
@@ -427,7 +499,7 @@ function SearchResultsTable({ searchResults, statusMap }) {
                   <td className="p-3">{task.department?.name || ''}</td>
                   <td className="p-3">{task.leader?.fullName || ''}</td>
                   <td className="p-3">{statusMap[task.status] || task.status}</td>
-                  <td className="p-3">{task.endDate ? new Date(task.endDate).toLocaleDateString() : ''}</td>
+                  <td className="p-3">{task.endDate ? formatDate(task.endDate) : ''}</td>
                   <td className="p-3">
                     <button
                       className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-700 text-sm"

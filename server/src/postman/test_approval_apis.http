@@ -1,0 +1,85 @@
+### Test Approval APIs
+
+# 1. Approve Task
+PATCH {{baseUrl}}/api/tasks/{{taskId}}/approve
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "comment": "Báo cáo rất tốt, đầy đủ thông tin và đúng format yêu cầu. Chấp thuận!"
+}
+
+###
+
+# 2. Reject Task
+PATCH {{baseUrl}}/api/tasks/{{taskId}}/reject
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "comment": "Báo cáo thiếu thông tin về phần A và B. Vui lòng bổ sung và nộp lại."
+}
+
+###
+
+# 3. Approve SubTask
+PATCH {{baseUrl}}/api/tasks/{{parentTaskId}}/subtasks/{{subTaskId}}/approve
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "comment": "Nhiệm vụ con hoàn thành tốt, đúng tiến độ. Chấp thuận!"
+}
+
+###
+
+# 4. Reject SubTask
+PATCH {{baseUrl}}/api/tasks/{{parentTaskId}}/subtasks/{{subTaskId}}/reject
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "comment": "Cần bổ sung thêm chi tiết trong phần phân tích. Vui lòng cập nhật và nộp lại."
+}
+
+###
+
+# 5. Get Task Approval History
+GET {{baseUrl}}/api/tasks/{{taskId}}/approval-history
+Authorization: Bearer {{token}}
+
+###
+
+# 6. Get SubTask Approval History
+GET {{baseUrl}}/api/tasks/{{parentTaskId}}/subtasks/{{subTaskId}}/approval-history
+Authorization: Bearer {{token}}
+
+###
+
+# 7. Get Task Detail (includes approval history)
+GET {{baseUrl}}/api/tasks/{{taskId}}
+Authorization: Bearer {{token}}
+
+###
+
+# Test without comment (should fail)
+PATCH {{baseUrl}}/api/tasks/{{taskId}}/approve
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "comment": ""
+}
+
+###
+
+# Test reject without comment (should fail)
+PATCH {{baseUrl}}/api/tasks/{{taskId}}/reject
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "comment": ""
+}
+
+### 

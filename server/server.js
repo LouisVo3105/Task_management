@@ -19,6 +19,35 @@ const server = app.listen(PORT, {
 // Tăng max listeners
 server.setMaxListeners(0);
 
+// --- SOCKET.IO ---
+const { Server } = require('socket.io');
+const io = new Server(server, {
+  cors: {
+    origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
+    credentials: true
+  }
+});
+
+io.on('connection', (socket) => {
+  // Tham gia vào indicator room
+  socket.on('joinIndicator', (indicatorId) => {
+    socket.join(`indicator_${indicatorId}`);
+  });
+  // Rời khỏi indicator room
+  socket.on('leaveIndicator', (indicatorId) => {
+    socket.leave(`indicator_${indicatorId}`);
+  });
+  // Khi có comment mới
+  socket.on('newComment', (data) => {
+    // data phải chứa indicatorId và comment
+    if (data && data.indicatorId && data.comment) {
+      io.to(`indicator_${data.indicatorId}`).emit('newComment', data.comment);
+    }
+  });
+});
+
+// --- END SOCKET.IO ---
+
 // Graceful shutdown
 process.on('SIGINT', () => {
   console.log('Received SIGINT. Performing graceful shutdown...');

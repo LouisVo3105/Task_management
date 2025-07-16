@@ -59,25 +59,41 @@ export default function usePendingTaskDetailPageLogic() {
     }
   };
 
-  const handleApprove = async () => {
-    if (!taskId) return;
-    await authFetch(`http://localhost:3056/api/tasks/${taskId}`, {
-      method: 'PUT',
+  // Thêm hàm duyệt/từ chối submission
+  const handleApproveSubmission = async (submissionId, comment) => {
+    if (!task || !submissionId) return;
+    let url;
+    if (task.parentTask && task.parentTask._id) {
+      // Subtask
+      url = `http://localhost:3056/api/tasks/${task.parentTask._id}/subtasks/${task._id}/submissions/${submissionId}/approve`;
+    } else {
+      // Main task
+      url = `http://localhost:3056/api/tasks/${task._id}/submissions/${submissionId}/approve`;
+    }
+    await authFetch(url, {
+      method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status: 'approved' })
+      body: JSON.stringify({ comment })
     });
     // Sau khi duyệt, reload lại task
     const res = await authFetch(`http://localhost:3056/api/tasks/${taskId}`);
     const data = await res.json();
     if (data.success) setTask(data.data);
   };
-
-  const handleReject = async () => {
-    if (!taskId) return;
-    await authFetch(`http://localhost:3056/api/tasks/${taskId}`, {
-      method: 'PUT',
+  const handleRejectSubmission = async (submissionId, comment) => {
+    if (!task || !submissionId) return;
+    let url;
+    if (task.parentTask && task.parentTask._id) {
+      // Subtask
+      url = `http://localhost:3056/api/tasks/${task.parentTask._id}/subtasks/${task._id}/submissions/${submissionId}/reject`;
+    } else {
+      // Main task
+      url = `http://localhost:3056/api/tasks/${task._id}/submissions/${submissionId}/reject`;
+    }
+    await authFetch(url, {
+      method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status: 'pending' })
+      body: JSON.stringify({ comment })
     });
     // Sau khi từ chối, reload lại task
     const res = await authFetch(`http://localhost:3056/api/tasks/${taskId}`);
@@ -106,7 +122,7 @@ export default function usePendingTaskDetailPageLogic() {
     loading,
     handleFileDownload,
     navigate,
-    handleApprove,
-    handleReject,
+    handleApproveSubmission,
+    handleRejectSubmission,
   };
 } 
