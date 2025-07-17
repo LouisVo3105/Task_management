@@ -6,7 +6,7 @@ const { authMiddleware } = require('../middlewares/auth.middleware');
 router.use(authMiddleware);
 
 // Lấy danh sách phòng ban
-router.get('/', DepartmentController.getDepartments.bind(DepartmentController));
+  router.get('/', DepartmentController.getDepartments.bind(DepartmentController));
 // Lấy danh sách trưởng phòng của phòng ban
 router.get('/:id/leaders', DepartmentController.getLeaders.bind(DepartmentController));
 // Lấy danh sách nhân viên của phòng ban

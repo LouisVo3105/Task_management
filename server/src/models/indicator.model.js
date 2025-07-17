@@ -15,5 +15,6 @@ const indicatorSchema = new mongoose.Schema({
 });
 
 indicatorSchema.plugin(mongoosePaginate);
+indicatorSchema.index({ creator: 1 });
 
 module.exports = mongoose.model('Indicator', indicatorSchema);

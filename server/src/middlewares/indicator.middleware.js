@@ -2,7 +2,6 @@ const Indicator = require('../models/indicator.model');
 
 const checkLeaderPermission = (req, res, nextOrCallback) => {
   const user = req.user;
-  console.log('checkLeaderPermission - user:', user); // DEBUG LOG
   if (!user) {
     return res.status(403).json({ success: false, message: 'Người dùng không có quyền truy cập' });
   }
@@ -14,22 +13,16 @@ const checkLeaderPermission = (req, res, nextOrCallback) => {
   if (typeof nextOrCallback === 'function') {
     return nextOrCallback();
   }
-  if (typeof next === 'function') {
-    return next();
-  }
 };
 
 const checkOverdueStatus = async (req, res, next) => {
   const now = new Date();
   try {
-    const indicators = await Indicator.find();
-    for (let indicator of indicators) {
-      if (indicator.status === 'active' && indicator.endDate < now) {
-        indicator.status = 'overdue';
-        indicator.isOverdue = true;
-        await indicator.save();
-      }
-    }
+    // Bulk update thay vì lặp từng indicator
+    await Indicator.updateMany(
+      { status: 'active', endDate: { $lt: now } },
+      { $set: { status: 'overdue', isOverdue: true } }
+    );
     next();
   } catch (error) {
     console.error('Lỗi khi kiểm tra trạng thái quá hạn:', error);

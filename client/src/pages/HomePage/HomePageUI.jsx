@@ -102,11 +102,16 @@ export default function HomePageUI({
             {hasSearched && (
               <SearchResultsTable searchResults={searchResults} statusMap={statusMap} />
             )}
+            {searchLoading && (
+              <div className="h-32 bg-gray-100 rounded animate-pulse my-4" />
+            )}
             {/* 1. Bảng tiến độ hoàn thành chỉ tiêu */}
             <Card className="p-4">
               <Typography variant="h6" className="mb-2">Tiến độ hoàn thành từng chỉ tiêu</Typography>
               {/* Bar chart */}
-              {indicatorProgress.length > 0 && (
+              {dashboard.loadingDashboard ? (
+                <div className="h-32 bg-gray-100 rounded animate-pulse mb-4" />
+              ) : indicatorProgress.length > 0 && (
                 <div className="mb-4">
                   <Bar
                     data={{
@@ -131,7 +136,9 @@ export default function HomePageUI({
                   />
                 </div>
               )}
-              {dashboard.loadingDashboard ? <Spinner /> : (
+              {dashboard.loadingDashboard ? (
+                <div className="h-32 bg-gray-100 rounded animate-pulse" />
+              ) : (
                 <div className="overflow-x-auto">
                   <table className="min-w-full text-left">
                     <thead>
@@ -161,7 +168,9 @@ export default function HomePageUI({
             {/* 2. Bảng tiến độ hoàn thành phòng ban */}
             <Card className="p-4">
               <Typography variant="h6" className="mb-2">Tiến độ hoàn thành từng phòng ban</Typography>
-              {dashboard.loadingDashboard ? <Spinner /> : (
+              {dashboard.loadingDashboard ? (
+                <div className="h-32 bg-gray-100 rounded animate-pulse" />
+              ) : (
                 <div className="overflow-x-auto">
                   <table className="min-w-full text-left">
                     <thead>
@@ -204,7 +213,9 @@ export default function HomePageUI({
                   onClick={() => dashboard.fetchDashboardAnalytics(month, year)}
                 >Lọc</button>
               </div>
-              {dashboard.loadingDashboard ? <Spinner /> : (
+              {dashboard.loadingDashboard ? (
+                <div className="h-32 bg-gray-100 rounded animate-pulse" />
+              ) : (
                 <div className="overflow-x-auto">
                   <table className="min-w-full text-left">
                     <thead>

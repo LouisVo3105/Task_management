@@ -54,6 +54,11 @@ const validateCreateSubTask = [
 ];
 
 const validateApproveTask = [
+  (req, res, next) => {
+    console.log('--- VÀO validateApproveTask ---');
+    console.log('params:', req.params);
+    next();
+  },
   body('comment').trim().notEmpty().withMessage('Nhận xét là bắt buộc')
 ];
 

@@ -48,12 +48,36 @@ export default function TaskPageUI({
 }) {
   if (!indicatorId) {
     return (
-      <div className="p-6">
+      <div className="p-6 min-h-[650px]">
         <h1 className="text-2xl font-bold mb-4">Nhiệm vụ chưa hoàn thành của bạn</h1>
         {loading ? (
-          <div className="text-center py-8">Đang tải dữ liệu...</div>
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-max table-auto text-left">
+              <thead>
+                <tr>
+                  <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">Tiêu đề</th>
+                  <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">Ngày giao</th>
+                  <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">Ngày kết thúc</th>
+                  <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">Trạng thái</th>
+                  <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">Hành động</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[...Array(15)].map((_, i) => (
+                  <tr key={i} className="animate-pulse">
+                    <td className="p-4 border-b border-blue-gray-50"><div className="h-6 bg-gray-200 rounded w-3/4" /></td>
+                    <td className="p-4 border-b border-blue-gray-50"><div className="h-6 bg-gray-200 rounded w-1/2" /></td>
+                    <td className="p-4 border-b border-blue-gray-50"><div className="h-6 bg-gray-200 rounded w-1/2" /></td>
+                    <td className="p-4 border-b border-blue-gray-50"><div className="h-6 bg-gray-200 rounded w-1/3" /></td>
+                    <td className="p-4 border-b border-blue-gray-50"><div className="h-6 bg-gray-200 rounded w-1/2" /></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <div className="my-2" style={{ height: '8px' }} />
+          </div>
         ) : tasks.length === 0 ? (
-          <div className="text-center py-8 text-gray-500">Bạn không có nhiệm vụ nào chưa hoàn thành.</div>
+          <div className="text-center py-8 text-gray-500 min-h-[200px] flex items-center justify-center">Bạn không có nhiệm vụ nào chưa hoàn thành.</div>
         ) : (
           <Card className="h-full w-full overflow-scroll">
             <table className="w-full min-w-max table-auto text-left">
@@ -93,7 +117,7 @@ export default function TaskPageUI({
           <div className="mt-10">
             <h2 className="text-xl font-bold mb-4">Nhiệm vụ chờ duyệt</h2>
             {loadingPending ? (
-              <div className="text-center py-8">Đang tải dữ liệu...</div>
+              <div className="h-40 bg-gray-100 rounded animate-pulse my-4" />
             ) : pendingTasks.length === 0 ? (
               <div className="text-center py-8 text-gray-500">Không có nhiệm vụ nào chờ duyệt.</div>
             ) : (
@@ -148,7 +172,11 @@ export default function TaskPageUI({
         {isAdminOrManager && (
           <div className="mt-10">
             <h2 className="text-xl font-bold mb-4">Quản lý thực hiện nhiệm vụ</h2>
-            <TaskProcessManager />
+            {loading ? (
+              <div className="h-40 bg-gray-100 rounded animate-pulse my-4" />
+            ) : (
+              <TaskProcessManager />
+            )}
           </div>
         )}
       </div>
@@ -166,7 +194,7 @@ export default function TaskPageUI({
   ];
 
   return (
-    <div className="p-6">
+    <div className="p-6 min-h-[650px]">
       <CreateTaskModal open={openCreate} onClose={() => setOpenCreate(false)} onCreated={fetchTasks} indicatorId={indicatorId} />
       <SubmitTaskMainModal
         open={openSubmitMain}
@@ -193,9 +221,34 @@ export default function TaskPageUI({
       </div>
 
       {loading ? (
-        <div className="text-center py-8">Đang tải dữ liệu...</div>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-max table-auto text-left">
+            <thead>
+              <tr>
+                {TABLE_HEAD_WITH_DEPT.map((head) => (
+                  <th key={head} className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">
+                    <Typography variant="small" color="blue-gray" className="font-normal leading-none opacity-70">{head}</Typography>
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {[...Array(15)].map((_, i) => (
+                <tr key={i} className="animate-pulse">
+                  <td className="p-4 border-b border-blue-gray-50"><div className="h-6 bg-gray-200 rounded w-3/4" /></td>
+                  <td className="p-4 border-b border-blue-gray-50"><div className="h-6 bg-gray-200 rounded w-1/2" /></td>
+                  <td className="p-4 border-b border-blue-gray-50"><div className="h-6 bg-gray-200 rounded w-1/2" /></td>
+                  <td className="p-4 border-b border-blue-gray-50"><div className="h-6 bg-gray-200 rounded w-1/3" /></td>
+                  <td className="p-4 border-b border-blue-gray-50"><div className="h-6 bg-gray-200 rounded w-1/2" /></td>
+                  <td className="p-4 border-b border-blue-gray-50"><div className="h-6 bg-gray-200 rounded w-1/2" /></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div className="my-2" style={{ height: '8px' }} />
+        </div>
       ) : tasks.length === 0 ? (
-        <div className="text-center py-8 text-gray-500">Chỉ tiêu này chưa có nhiệm vụ nào.</div>
+        <div className="text-center py-8 text-gray-500 min-h-[200px] flex items-center justify-center">Chỉ tiêu này chưa có nhiệm vụ nào.</div>
       ) : (
         <Card className="h-full w-full overflow-scroll">
           <table className="w-full min-w-max table-auto text-left">

@@ -22,6 +22,10 @@ export function useManageUserLogic() {
   const [importFile, setImportFile] = useState(null);
   const [importResult, setImportResult] = useState(null);
   const [importLoading, setImportLoading] = useState(false);
+  const [searchName, setSearchName] = useState("");
+  const [searchDepartment, setSearchDepartment] = useState("");
+  const [searchGender, setSearchGender] = useState("");
+  const [sortNameOrder, setSortNameOrder] = useState("asc"); // 'asc' | 'desc'
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -45,7 +49,14 @@ export function useManageUserLogic() {
     }
   });
 
-  // Lấy danh sách phòng ban khi mở dialog
+  // Lấy danh sách phòng ban khi vào trang
+  useEffect(() => {
+    authFetch(DEPT_API_URL)
+      .then(res => res.json())
+      .then(data => setDepartments(data.data || []));
+  }, []);
+
+  // Lấy danh sách phòng ban khi mở dialog (nếu cần cập nhật mới)
   useEffect(() => {
     if (openDialog) {
       authFetch(DEPT_API_URL)
@@ -207,8 +218,30 @@ export function useManageUserLogic() {
 
   const canEdit = user && (user.role === 'admin' || user.role === 'manager');
 
+  // Lọc và sort users
+  const filteredUsers = users
+    .filter(u => {
+      // Tìm kiếm theo tên
+      const matchName = !searchName || (u.fullName || "").toLowerCase().includes(searchName.toLowerCase());
+      // Tìm kiếm theo phòng ban
+      const matchDept = !searchDepartment || (
+        (typeof u.department === "object" && u.department && u.department._id === searchDepartment) ||
+        (typeof u.department === "string" && u.department === searchDepartment)
+      );
+      // Tìm kiếm theo giới tính
+      const matchGender = !searchGender || (u.gender === searchGender);
+      return matchName && matchDept && matchGender;
+    })
+    .sort((a, b) => {
+      const nameA = (a.fullName || "").toLowerCase();
+      const nameB = (b.fullName || "").toLowerCase();
+      if (sortNameOrder === "asc") return nameA.localeCompare(nameB);
+      else return nameB.localeCompare(nameA);
+    });
+
   return {
     users,
+    filteredUsers,
     loading,
     error,
     openDialog,
@@ -235,5 +268,14 @@ export function useManageUserLogic() {
     user,
     departments,
     departmentUsers,
+    // filter/sort
+    searchName,
+    setSearchName,
+    searchDepartment,
+    setSearchDepartment,
+    searchGender,
+    setSearchGender,
+    sortNameOrder,
+    setSortNameOrder,
   };
 } 

@@ -28,6 +28,37 @@ export default function useTaskDetailPageLogic() {
     try {
       const res = await authFetch(`http://localhost:3056/api/tasks/${taskId}`);
       const taskData = await res.json();
+      if (!taskData.data) {
+        // Nếu là subtask vừa bị xóa, fetch lại nhiệm vụ chính (task cha) và render ngay tại trang này
+        const parentTaskId = task && task.parentTask?._id;
+        if (parentTaskId) {
+          const resParent = await authFetch(`http://localhost:3056/api/tasks/${parentTaskId}`);
+          const parentData = await resParent.json();
+          if (parentData.data) {
+            setTask(parentData.data);
+            // Có thể fetch lại approvalHistory nếu cần
+            try {
+              const resHistory = await authFetch(`http://localhost:3056/api/tasks/${parentTaskId}/approval-history`);
+              const dataHistory = await resHistory.json();
+              if (dataHistory.success && Array.isArray(dataHistory.data)) {
+                setApprovalHistory(dataHistory.data);
+              } else {
+                setApprovalHistory([]);
+              }
+            } catch {
+              setApprovalHistory([]);
+            }
+          } else {
+            setTask(null);
+            setApprovalHistory([]);
+          }
+        } else {
+          setTask(null);
+          setApprovalHistory([]);
+        }
+        setLoading(false);
+        return;
+      }
       setTask(taskData.data);
       // Lấy lịch sử duyệt nếu có
       if (taskData.data && taskData.data._id) {
@@ -120,8 +151,8 @@ export default function useTaskDetailPageLogic() {
           // Nếu là subtask: chỉ fetch lại dữ liệu, KHÔNG điều hướng
           fetchData();
         } else {
-          // Nếu là task chính: điều hướng về trang quản lý nhiệm vụ
-          navigate('/tasks');
+          // Nếu là task chính: quay lại trang trước đó
+          navigate(-1);
         }
       } else {
         alert('Xóa nhiệm vụ thất bại!');

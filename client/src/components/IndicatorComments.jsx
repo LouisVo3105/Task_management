@@ -1,6 +1,7 @@
 import { Button } from "@material-tailwind/react";
 import React, { useEffect, useState, useRef } from "react";
 import { io } from "socket.io-client";
+import authFetch from "../utils/authFetch";
 import { useAuth } from "../utils/useAuth";
 
 const socket = io("http://localhost:3056", { withCredentials: true });
@@ -36,11 +37,7 @@ const IndicatorComments = ({ indicatorId }) => {
   // Lấy danh sách comment ban đầu
   useEffect(() => {
     if (!indicatorId) return;
-    fetch(`http://localhost:3056/api/comments/indicator/${indicatorId}`, {
-      headers: {
-        "Authorization": `Bearer ${accessToken}`
-      }
-    })
+    authFetch(`http://localhost:3056/api/comments/indicator/${indicatorId}`)
       .then(res => res.json())
       .then(data => setComments(data.data || []));
   }, [indicatorId, accessToken]);
@@ -59,11 +56,10 @@ const IndicatorComments = ({ indicatorId }) => {
   // Gửi comment mới
   const handleSend = async () => {
     if (!content.trim()) return;
-    const res = await fetch("http://localhost:3056/api/comments", {
+    const res = await authFetch("http://localhost:3056/api/comments", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${accessToken}`
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({ indicatorId, parentId, content })
     });
@@ -80,9 +76,8 @@ const IndicatorComments = ({ indicatorId }) => {
   // Xóa comment
   const handleDelete = async (commentId) => {
     if (!window.confirm("Bạn có chắc muốn xóa bình luận này?")) return;
-    const res = await fetch(`http://localhost:3056/api/comments/${commentId}`, {
-      method: "DELETE",
-      headers: { "Authorization": `Bearer ${accessToken}` }
+    const res = await authFetch(`http://localhost:3056/api/comments/${commentId}`, {
+      method: "DELETE"
     });
     const data = await res.json();
     if (data.success) {

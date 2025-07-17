@@ -46,7 +46,7 @@ export default function IndicatorPageUI({
         )}
       </div>
       {loading ? (
-        <div className="text-center py-8">Đang tải dữ liệu...</div>
+        <div className="h-40 bg-gray-100 rounded animate-pulse my-4" />
       ) : indicators.length === 0 ? (
         <div className="text-center py-8 text-gray-500">Không có chỉ tiêu nào.</div>
       ) : (
@@ -91,7 +91,7 @@ export default function IndicatorPageUI({
                   <tr key={item._id} className="text-xl">
                     <td className={classes}><a className="text-teal-600 text-bold">{item.name}</a></td>
                     <td className={classes}>{formatDate(item.createdAt)}</td>
-                    <td className={classes}>{formatDate(item.endDate)}</td> 
+                    <td className={classes}>{formatDate(item.endDate)}</td>
                     <td className={classes}>
                       <StatusDot status={item.status?.overallStatus} size="small" />
                     </td>

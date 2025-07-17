@@ -73,6 +73,7 @@ const CreateSubtaskModal = ({ open, onClose, onCreated, parentTaskId, supporters
       formData.append('endDate', endDate ? new Date(endDate).toISOString() : "");
       formData.append('assigneeId', assigneeId);
       formData.append('notes', notes);
+      formData.append('leaderId', leaderId);
       if (fileObj) formData.append('file', fileObj);
       const res = await fetch(`http://localhost:3056/api/tasks/${parentTaskId}/subtasks`, {
         method: "POST",

@@ -12,6 +12,7 @@ const { registerSSE } = require('./services/sse.service');
 const lastNotified = {}; // { [userId_taskType_taskId]: lastNotifyDate }
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret';
 const { updateOverdueStatus } = require('./middlewares/task.middleware');
+const rateLimit = require('express-rate-limit');
 
 const userRoute = require('./routes/user.route');
 const taskRoute = require('./routes/task.route');
@@ -41,14 +42,33 @@ app.use('/uploads', express.static('uploads'));
 // Kết nối database
 db.connect().catch(err => console.error('Failed to connect to DB:', err));
 
+// Cấu hình rate limit cho toàn bộ API
+const userLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 phút
+  max: 50,
+  message: 'Quá nhiều request user, vui lòng thử lại sau!'
+});
+
+const taskIndicatorLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 phút
+  max: 200,
+  message: 'Quá nhiều request task/indicator, vui lòng thử lại sau!'
+});
+
+const commentLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 phút
+  max: 60,
+  message: 'Quá nhiều request comment, vui lòng thử lại sau!'
+});
+
 // Khởi tạo routes
-app.use('/api/auth', authRoute);
-app.use('/api/users', userRoute);
-app.use('/api/tasks', taskRoute);
-app.use('/api/indicators', indicatorRoute);
+app.use('/api/auth', userLimiter, authRoute);
+app.use('/api/users', userLimiter, userRoute);
+app.use('/api/tasks', taskIndicatorLimiter, taskRoute);
+app.use('/api/indicators', taskIndicatorLimiter, indicatorRoute);
 app.use('/api/analysis', analysisRoute);
 app.use('/api/departments', departmentRoute);
-app.use('/api/comments', commentRoute);
+app.use('/api/comments', commentLimiter, commentRoute);
 app.use('/api/notifications', notificationRoute);
 
 // Đăng ký SSE

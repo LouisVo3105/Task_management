@@ -6,6 +6,7 @@ import { mapPositionLabel } from '../../utils/positionLabel';
 
 export default function ManageUserUI({
   users,
+  filteredUsers,
   loading,
   error,
   openDialog,
@@ -30,124 +31,192 @@ export default function ManageUserUI({
   canEdit,
   departments,
   departmentUsers,
+  searchName,
+  setSearchName,
+  searchDepartment,
+  setSearchDepartment,
+  searchGender,
+  setSearchGender,
+  sortNameOrder,
+  setSortNameOrder,
 }) {
   return (
     <div className="p-6">
       <Typography variant="h4" className="mb-4">Quản lý người dùng</Typography>
       {error && <Typography color="red" className="mb-2">{error}</Typography>}
-      {loading && <Spinner className="mx-auto" />}
-      <div className="flex justify-end mb-4 gap-2">
-        {canEdit && (
-          <>
-            <button
-              className="block rounded-md bg-teal-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-teal-700 mr-2"
-              onClick={() => setImportDialog(true)}
-            >
-              Import
-            </button>
-            <button
-              className="block rounded-md bg-teal-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-teal-700 mr-2"
-              onClick={() => handleExport('csv')}
-            >
-              Export CSV
-            </button>
-            <button
-              className="block rounded-md bg-teal-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-teal-700 mr-2"
-              onClick={() => handleExport('xlsx')}
-            >
-              Export Excel
-            </button>
-            <button
-              className="block rounded-md bg-teal-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-teal-700"
-              onClick={() => handleOpenDialog()}
-            >
-              Thêm người dùng
-            </button>
-          </>
-        )}
+      {/* Filter & Sort UI */}
+      <div className="flex flex-wrap gap-2 mb-4 items-end">
+        <div>
+          <label className="block text-xs font-medium mb-1">Tìm kiếm tên</label>
+          <input
+            className="border rounded px-2 py-1 min-w-[160px]"
+            type="text"
+            placeholder="Nhập tên..."
+            value={searchName}
+            onChange={e => setSearchName(e.target.value)}
+          />
+        </div>
+        <div>
+          <label className="block text-xs font-medium mb-1">Phòng ban</label>
+          <select
+            className="border rounded px-2 py-1 min-w-[140px]"
+            value={searchDepartment}
+            onChange={e => setSearchDepartment(e.target.value)}
+          >
+            <option value="">Tất cả</option>
+            {departments && departments.map(dep => (
+              <option key={dep._id} value={dep._id}>{dep.name}</option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label className="block text-xs font-medium mb-1">Giới tính</label>
+          <select
+            className="border rounded px-2 py-1 min-w-[100px]"
+            value={searchGender}
+            onChange={e => setSearchGender(e.target.value)}
+          >
+            <option value="">Tất cả</option>
+            <option value="Nam">Nam</option>
+            <option value="Nữ">Nữ</option>
+          </select>
+        </div>
+        <div>
+          <label className="block text-xs font-medium mb-1">Sắp xếp tên</label>
+          <button
+            className="border rounded px-2 py-1 min-w-[80px] bg-gray-100 hover:bg-gray-200"
+            onClick={() => setSortNameOrder(sortNameOrder === 'asc' ? 'desc' : 'asc')}
+          >
+            {sortNameOrder === 'asc' ? 'A → Z' : 'Z → A'}
+          </button>
+        </div>
       </div>
-      <Card className="overflow-x-auto">
-        <table className="min-w-full text-left">
-          <thead>
-            <tr>
-              <th className="p-2">Tên đăng nhập</th>
-              <th className="p-2">Họ tên</th>
-              <th className="p-2">Email</th>
-              <th className="p-2">Vai trò</th>
-              <th className="p-2">Phòng ban</th>
-              <th className="p-2">Chức vụ</th>
-              <th className="p-2">SĐT</th>
-              <th className="p-2">Giới tính</th>
-              <th className="p-2">Quản lý trực tiếp</th>
-              {canEdit && <th className="p-2">Hành động</th>}
-            </tr>
-          </thead>
-          <tbody>
-            {Array.isArray(users) && users.length > 0 ? users.map((u) => {
-              try {
-                if (!u || typeof u !== 'object' || !u._id) return null;
-                return (
-                  <tr key={u._id} className="border-b">
-                    <td className="p-2">{typeof u.username === 'string' ? u.username : ''}</td>
-                    <td className="p-2">{typeof u.fullName === 'string' ? u.fullName : ''}</td>
-                    <td className="p-2">{typeof u.email === 'string' ? u.email : ''}</td>
-                    <td className="p-2">{typeof u.role === 'string' ? u.role : ''}</td>
-                    <td className="p-2">{typeof u.department === 'object' && u.department !== null ? u.department.name : u.department}</td>
-                    <td className="p-2">{typeof u.position === 'string' ? mapPositionLabel(u.position) : ''}</td>
-                    <td className="p-2">{typeof u.phoneNumber === 'string' ? u.phoneNumber : ''}</td>
-                    <td className="p-2">{typeof u.gender === 'string' ? u.gender : ''}</td>
-                    <td className="p-2">{
-                      !u.directSupervisor ? '' :
-                        (typeof u.directSupervisor === 'object' && u.directSupervisor !== null && u.directSupervisor.fullName)
-                          ? u.directSupervisor.fullName
-                          : (typeof u.directSupervisor === 'string'
-                            ? (users.find(sv => sv._id === u.directSupervisor)?.fullName || u.directSupervisor)
-                            : '')
-                    }</td>
-                    {canEdit && (
-                      <td className="p-2 flex gap-2">
-                        {u.isActive ? (
-                          <>
-                            <button
-                              className="rounded-md bg-teal-600 px-3 py-1 text-sm font-medium text-white transition hover:bg-teal-700"
-                              onClick={() => handleOpenDialog(u)}
-                            >
-                              Cập nhật
-                            </button>
-                            <button
-                              className="rounded-md bg-yellow-600 px-3 py-1 text-sm font-medium text-white transition hover:bg-yellow-700"
-                              onClick={() => handleSetActive(u._id, false)}
-                            >
-                              Vô hiệu hóa
-                            </button>
-                          </>
-                        ) : (
-                          <>
-                            <button
-                              className="rounded-md bg-green-600 px-3 py-1 text-sm font-medium text-white transition hover:bg-green-700"
-                              onClick={() => handleSetActive(u._id, true)}
-                            >
-                              Kích hoạt
-                            </button>
-                            <button
-                              className="rounded-md bg-red-600 px-3 py-1 text-sm font-medium text-white transition hover:bg-red-700"
-                              onClick={() => handlePermanentDelete(u._id)}
-                            >
-                              Xóa
-                            </button>
-                          </>
+      {loading ? (
+        <>
+          <div className="flex justify-end mb-4 gap-2">
+            <div className="w-32 h-10 bg-gray-100 rounded animate-pulse" />
+            <div className="w-32 h-10 bg-gray-100 rounded animate-pulse" />
+            <div className="w-32 h-10 bg-gray-100 rounded animate-pulse" />
+            <div className="w-40 h-10 bg-gray-100 rounded animate-pulse" />
+          </div>
+          <div className="h-60 bg-gray-100 rounded animate-pulse my-4" />
+        </>
+      ) : (
+        <>
+          <div className="flex justify-end mb-4 gap-2">
+            {canEdit && (
+              <>
+                <button
+                  className="block rounded-md bg-teal-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-teal-700 mr-2"
+                  onClick={() => setImportDialog(true)}
+                >
+                  Import
+                </button>
+                <button
+                  className="block rounded-md bg-teal-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-teal-700 mr-2"
+                  onClick={() => handleExport('csv')}
+                >
+                  Export CSV
+                </button>
+                <button
+                  className="block rounded-md bg-teal-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-teal-700 mr-2"
+                  onClick={() => handleExport('xlsx')}
+                >
+                  Export Excel
+                </button>
+                <button
+                  className="block rounded-md bg-teal-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-teal-700"
+                  onClick={() => handleOpenDialog()}
+                >
+                  Thêm người dùng
+                </button>
+              </>
+            )}
+          </div>
+          <Card className="overflow-x-auto">
+            <table className="min-w-full text-left">
+              <thead>
+                <tr>
+                  <th className="p-2">Tên đăng nhập</th>
+                  <th className="p-2">Họ tên</th>
+                  <th className="p-2">Email</th>
+                  <th className="p-2">Vai trò</th>
+                  <th className="p-2">Phòng ban</th>
+                  <th className="p-2">Chức vụ</th>
+                  <th className="p-2">SĐT</th>
+                  <th className="p-2">Giới tính</th>
+                  <th className="p-2">Quản lý trực tiếp</th>
+                  {canEdit && <th className="p-2">Hành động</th>}
+                </tr>
+              </thead>
+              <tbody>
+                {Array.isArray(filteredUsers) && filteredUsers.length > 0 ? filteredUsers.map((u) => {
+                  try {
+                    if (!u || typeof u !== 'object' || !u._id) return null;
+                    return (
+                      <tr key={u._id} className="border-b">
+                        <td className="p-2">{typeof u.username === 'string' ? u.username : ''}</td>
+                        <td className="p-2">{typeof u.fullName === 'string' ? u.fullName : ''}</td>
+                        <td className="p-2">{typeof u.email === 'string' ? u.email : ''}</td>
+                        <td className="p-2">{typeof u.role === 'string' ? u.role : ''}</td>
+                        <td className="p-2">{typeof u.department === 'object' && u.department !== null ? u.department.name : u.department}</td>
+                        <td className="p-2">{typeof u.position === 'string' ? mapPositionLabel(u.position) : ''}</td>
+                        <td className="p-2">{typeof u.phoneNumber === 'string' ? u.phoneNumber : ''}</td>
+                        <td className="p-2">{typeof u.gender === 'string' ? u.gender : ''}</td>
+                        <td className="p-2">{
+                          !u.directSupervisor ? '' :
+                            (typeof u.directSupervisor === 'object' && u.directSupervisor !== null && u.directSupervisor.fullName)
+                              ? u.directSupervisor.fullName
+                              : (typeof u.directSupervisor === 'string'
+                                ? (users.find(sv => sv._id === u.directSupervisor)?.fullName || u.directSupervisor)
+                                : '')
+                        }</td>
+                        {canEdit && (
+                          <td className="p-2 flex gap-2">
+                            {u.isActive ? (
+                              <>
+                                <button
+                                  className="rounded-md bg-teal-600 px-3 py-1 text-sm font-medium text-white transition hover:bg-teal-700"
+                                  onClick={() => handleOpenDialog(u)}
+                                >
+                                  Cập nhật
+                                </button>
+                                <button
+                                  className="rounded-md bg-yellow-600 px-3 py-1 text-sm font-medium text-white transition hover:bg-yellow-700"
+                                  onClick={() => handleSetActive(u._id, false)}
+                                >
+                                  Vô hiệu hóa
+                                </button>
+                              </>
+                            ) : (
+                              <>
+                                <button
+                                  className="rounded-md bg-green-600 px-3 py-1 text-sm font-medium text-white transition hover:bg-green-700"
+                                  onClick={() => handleSetActive(u._id, true)}
+                                >
+                                  Kích hoạt
+                                </button>
+                                <button
+                                  className="rounded-md bg-red-600 px-3 py-1 text-sm font-medium text-white transition hover:bg-red-700"
+                                  onClick={() => handlePermanentDelete(u._id)}
+                                >
+                                  Xóa
+                                </button>
+                              </>
+                            )}
+                          </td>
                         )}
-                      </td>
-                    )}
-                  </tr>
-                );
-              } catch {
-                return null;
-              }
-            }) : null}
-          </tbody>
-        </table>
-      </Card>
+                      </tr>
+                    );
+                  } catch {
+                    return null;
+                  }
+                }) : null}
+              </tbody>
+            </table>
+          </Card>
+        </>
+      )}
       {openDialog && (
         <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.2)' }}>
           <div className="bg-white rounded-lg shadow-lg w-full max-w-xl p-6">

@@ -15,15 +15,15 @@ export default function CustomToast({ id, title, message, type = 'info', onClose
   }, [id, onClose, duration]);
 
   return (
-    <div className={`w-full max-w-xs shadow-lg rounded-lg border-l-4 p-4 mb-4 animate-fade-in-up ${typeStyles[type]}`}
-      role="alert">
-      <div className="flex justify-between items-start">
-        <div>
-          {title && <div className="font-semibold mb-1">{title}</div>}
-          <div className="text-sm">{message}</div>
-        </div>
-        <button onClick={() => onClose(id)} className="ml-4 text-lg font-bold text-gray-400 hover:text-gray-700">&times;</button>
-      </div>
+    <div className={`w-full max-w-md shadow-2xl rounded-xl border-l-4 p-6 mb-4 animate-fade-in-up ${typeStyles[type]} flex flex-col items-center`} role="alert">
+      {title && <div className="font-semibold mb-2 text-lg text-center">{title}</div>}
+      <div className="text-base text-center mb-4">{message}</div>
+      <button
+        onClick={() => onClose(id)}
+        className="px-6 py-2 bg-teal-600 text-white rounded-lg font-semibold hover:bg-teal-700 transition text-base"
+      >
+        OK
+      </button>
     </div>
   );
 } 

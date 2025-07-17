@@ -2,11 +2,15 @@ import React from 'react';
 import CustomToast from './CustomToast';
 
 export default function NotificationStack({ notifications, onClose }) {
+  // Chỉ hiển thị toast đầu tiên (nếu có)
+  const toast = notifications[0];
   return (
-    <div className="fixed top-5 right-5 z-[9999] flex flex-col items-end space-y-2">
-      {notifications.map((n) => (
-        <CustomToast key={n.id} {...n} onClose={onClose} />
-      ))}
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center pointer-events-none">
+      {toast && (
+        <div className="pointer-events-auto">
+          <CustomToast {...toast} onClose={onClose} />
+        </div>
+      )}
     </div>
   );
 } 

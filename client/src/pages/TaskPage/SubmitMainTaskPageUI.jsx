@@ -14,7 +14,7 @@ export default function SubmitMainTaskPageUI({
   navigate,
 }) {
   if (taskLoading) {
-    return <div className="max-w-md mx-auto p-6 text-center">Đang tải thông tin nhiệm vụ...</div>;
+    return <div className="h-40 bg-gray-100 rounded animate-pulse my-4" />;
   }
   if (!task) {
     return <div className="max-w-md mx-auto p-6 text-center text-red-500">Không tìm thấy nhiệm vụ.</div>;

@@ -37,6 +37,7 @@ const subTaskSchema = new mongoose.Schema({
   content: { type: String, required: true },
   endDate: { type: Date, required: true },
   assignee: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  leader: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, // Chủ trì của subtask
   notes: { type: String },
   status: { 
     type: String, 
@@ -81,6 +82,13 @@ const taskSchema = new mongoose.Schema({
 taskSchema.index({ indicator: 1 });
 taskSchema.index({ leader: 1, status: 1 });
 taskSchema.index({ 'subTasks.status': 1, leader: 1 });
+taskSchema.index({ department: 1 });
+taskSchema.index({ status: 1 });
+taskSchema.index({ endDate: 1 });
+taskSchema.index({ code: 1 }, { unique: true });
+taskSchema.index({ 'subTasks.assignee': 1 });
+taskSchema.index({ 'subTasks.status': 1 });
+taskSchema.index({ 'subTasks.endDate': 1 });
 taskSchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model('Task', taskSchema);

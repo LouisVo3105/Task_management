@@ -14,7 +14,7 @@ export default function TaskDetailPageUI({
   const [openSubmit, setOpenSubmit] = React.useState(false);
   const [openApprove, setOpenApprove] = React.useState(false);
   if (loading) {
-    return <div className="p-6 text-center">Đang tải chi tiết nhiệm vụ...</div>;
+    return <div className="h-40 bg-gray-100 rounded animate-pulse my-4" />;
   }
   if (!task) {
     return <div className="p-6 text-center text-red-500">Không tìm thấy thông tin nhiệm vụ.</div>;
@@ -24,6 +24,7 @@ export default function TaskDetailPageUI({
     { label: "Chỉ tiêu", value: task.indicator?.name, highlight: true },
     { label: "Tiêu đề", value: task.title, highlight: true },
     { label: "Người chủ trì", value: task.leader?.fullName, highlight: true },
+    isSubtask && task.assignee && { label: "Người thực hiện", value: task.assignee.fullName, highlight: true },
     { label: "Phòng ban", value: task.department?.name, highlight: true },
     Array.isArray(task.supporters) && task.supporters.length > 0 && { label: "Người hỗ trợ", value: task.supporters.map(s => s.fullName).join(', ') },
     { label: "Nội dung", value: task.content },
@@ -56,7 +57,7 @@ export default function TaskDetailPageUI({
   const isTaskLocked = task.status === 'submitted' || task.status === 'approved';
 
   return (
-    <div className="max-w-7xl mx-auto px-2 md:px-6 py-6">
+    <div className="max-w-7xl mx-auto px-2 md:px-6 py-6 min-h-[650px]">
       <EditTaskModal
         open={openEdit}
         onClose={() => setOpenEdit(false)}
@@ -148,7 +149,7 @@ export default function TaskDetailPageUI({
           </div>
         </div>
         {/* 2 thẻ bên phải - chia theo column, min-w-0 để không bị ép */}
-        <div className="lg:col-span-6 min-w-0 space-y-4"> 
+        <div className="lg:col-span-6 min-w-0 space-y-4">
           {/* Thẻ lịch sử nộp bài */}
           <div className="bg-white rounded-lg shadow p-6 border border-gray-200">
             <h2 className="text-lg font-semibold mb-4">Lịch sử báo cáo</h2>
@@ -215,7 +216,7 @@ export default function TaskDetailPageUI({
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={6} className="py-4 text-center text-gray-400">Chưa có lịch sử báo cáo</td>
+                      <td colSpan={6} className="py-4 text-center text-gray-400 min-h-[120px] flex items-center justify-center">Chưa có lịch sử báo cáo</td>
                     </tr>
                   )}
                 </tbody>
@@ -293,7 +294,7 @@ export default function TaskDetailPageUI({
                       ))
                     ) : (
                       <tr>
-                        <td colSpan={6} className="py-4 text-center text-gray-400">Chưa có nhiệm vụ con</td>
+                        <td colSpan={6} className="py-4 text-center text-gray-400 min-h-[120px] flex items-center justify-center">Chưa có nhiệm vụ con</td>
                       </tr>
                     )}
                   </tbody>

@@ -15,19 +15,14 @@ const verifyRefreshToken = (req, res, next) => {
   });
 };
 
-const roleMiddleware = (roles) => (req, res, next) => {
-  console.log('roleMiddleware - req.user:', req.user); // DEBUG LOG
-  if (!roles || !Array.isArray(roles)) {
-    return res.status(500).json({ success: false, message: 'Cấu hình middleware roleMiddleware sai' });
+function roleMiddleware(roles) {
+  return (req, res, next) => {
+    console.log('--- VÀO roleMiddleware ---');
+    console.log('roles:', roles);
+    console.log('req.user:', req.user);
+    next();
   }
-  if (!req.user || !req.user.role) {
-    return res.status(401).json({ success: false, message: 'Chưa xác thực hoặc thiếu thông tin quyền' });
-  }
-  if (!roles.includes(req.user.role)) {
-    return res.status(403).json({ success: false, message: 'Không có quyền truy cập' });
-  }
-  next();
-};
+}
 
 const authMiddleware = (req, res, next) => {
   const authHeader = req.headers['authorization'];
@@ -65,25 +60,43 @@ const authMiddleware = (req, res, next) => {
 };
 
 const canManageTask = async (req, res, next) => {
+  console.log('--- VÀO canManageTask ---');
+  console.log('params:', req.params);
+  console.log('user:', req.user);
   try {
     const userId = req.user.id;
     const userRole = req.user.role;
-    const taskId = req.params.id;
-    
-    // Admin có toàn quyền thao tác với tất cả nhiệm vụ
+
+    // Ưu tiên quyền admin, giám đốc
     if (userRole === 'admin') return next();
-    // Nếu là Giám đốc thì cũng có toàn quyền
     if (req.user && req.user.position === 'Giam doc') return next();
 
+    // Xác định taskId phù hợp cho từng loại route
+    const taskId = req.params.id || req.params.taskId;
+
     // Tìm task chính
-    let task = await Task.findById(taskId).select('leader');
-    // Nếu không có, tìm task cha chứa subtask
+    let task = await Task.findById(taskId).select('leader subTasks');
     if (!task) {
-      task = await Task.findOne({ 'subTasks._id': new mongoose.Types.ObjectId(taskId) }).select('leader');
-      if (!task) {
-        return res.status(404).json({ success: false, message: 'Không tìm thấy nhiệm vụ' });
-      }
+      return res.status(404).json({ success: false, message: 'Không tìm thấy nhiệm vụ' });
     }
+
+    // Nếu là thao tác trên subtask
+    if (req.params.subTaskId) {
+      const subTask = task.subTasks.id(req.params.subTaskId);
+      if (!subTask) {
+        return res.status(404).json({ success: false, message: 'Không tìm thấy nhiệm vụ con' });
+      }
+      // Chủ trì subtask hoặc chủ trì task cha đều có quyền
+      if (
+        (subTask.leader && subTask.leader.toString() === userId) ||
+        (task.leader && task.leader.toString() === userId)
+      ) {
+        return next();
+      }
+      return res.status(403).json({ success: false, message: 'Bạn không có quyền thao tác với nhiệm vụ con này' });
+    }
+
+    // Nếu là thao tác trên task chính
     if (task.leader && task.leader.toString() === userId) {
       return next();
     }

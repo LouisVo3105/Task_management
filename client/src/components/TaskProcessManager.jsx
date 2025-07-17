@@ -111,7 +111,7 @@ export default function TaskProcessManager() {
     }
   });
 
-  if (loading) return <div className="py-8 text-center">Đang tải...</div>;
+  if (loading) return <div className="h-40 bg-gray-100 rounded animate-pulse my-4" />;
   if (error) return <div className="py-8 text-center text-red-500">{error}</div>;
 
   // Helper để render file link đúng host

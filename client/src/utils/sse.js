@@ -32,6 +32,41 @@ export async function connectSSE(onMessage, onError) {
     });
   });
 
+  // Lắng nghe các event bell
+  const bellEventTypes = [
+    'tasks_incomplete_count',
+    'tasks_pending_approval_count',
+    'task_approved',
+    'task_rejected',
+    'subtask_approved',
+    'subtask_rejected',
+    'main_task_deadline_soon',
+    'main_task_overdue',
+    'subtask_deadline_soon',
+    'subtask_overdue',
+  ];
+  bellEventTypes.forEach(type => {
+    eventSource.addEventListener(type, (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        console.log('SSE BELL EVENT:', type, data); // Log debug
+        onMessage({ type, ...data });
+      } catch (e) {
+        console.error('SSE bell event parse error:', e, event.data);
+      }
+    });
+  });
+
+  // Lắng nghe event toast
+  eventSource.addEventListener('toast', (event) => {
+    try {
+      const data = JSON.parse(event.data);
+      onMessage({ type: 'toast', ...data });
+    } catch (e) {
+      console.error('SSE toast parse error:', e, event.data);
+    }
+  });
+
   // Optionally, vẫn lắng nghe event mặc định
   eventSource.onmessage = (event) => {
     try {

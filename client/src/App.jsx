@@ -2,14 +2,32 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Fragment, useEffect, useState } from 'react';
 import routes from './routes';
 import './App.css';
-import { useAuth, AuthProvider } from './utils/AuthContext';
+import { useAuth } from './utils/useAuth';
+import { AuthProvider } from './utils/AuthContext';
 import DefaultLayout from './layouts/DefaultLayout';
 import LoginForm from './components/LoginForm/LoginFrom';
 import DefaultPage from './pages/DefaultPage/DefaultPage';
 import Header from './components/Header/Header.component';
+import { useSSEContext } from './utils/SSEContext';
+import { useNotification } from './components/NotificationProvider/index.jsx';
 
 function AppContent() {
   const auth = useAuth();
+  const { showNotification } = useNotification();
+  useSSEContext((event) => {
+    console.log('SSE EVENT:', event); // Log event SSE nhận được
+    // Lắng nghe các sự kiện thành công/thất bại/info/warning từ SSE
+    if (
+      ["success", "error", "info", "warning"].includes(event.type) ||
+      (event.type === 'toast' && ["success", "error", "info", "warning"].includes(event.toastType))
+    ) {
+      showNotification({
+        type: event.type === 'toast' ? event.toastType || event.level || 'info' : event.type,
+        title: event.title || (event.toastType === 'success' ? 'Thành công' : event.toastType === 'error' ? 'Lỗi' : 'Thông báo'),
+        message: event.message,
+      });
+    }
+  });
   useEffect(() => {
     auth.init();
   }, []);

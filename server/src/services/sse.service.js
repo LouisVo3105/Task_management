@@ -2,6 +2,20 @@ const jwt = require('jsonwebtoken');
 const Task = require('../models/task.model');
 const Indicator = require('../models/indicator.model');
 const { createNotification } = require('./notification.service');
+const fs = require('fs');
+const path = require('path');
+const logDir = path.join(__dirname, '../../logs');
+const logFile = path.join(logDir, 'sse.txt');
+const mongoose = require('mongoose');
+function getVNDateString(date) {
+  return date.toLocaleString('vi-VN', { hour12: false });
+}
+function logToFile(message) {
+  if (!fs.existsSync(logDir)) {
+    fs.mkdirSync(logDir, { recursive: true });
+  }
+  fs.appendFileSync(logFile, message + '\n');
+}
 
 const sseClients = {}; // { userId: [res, ...] }
 const lastNotified = {}; // { [userId_taskType_taskId]: lastNotifyDate }
@@ -34,7 +48,14 @@ function registerSSE(app) {
     if (!sseClients[userId]) sseClients[userId] = [];
     sseClients[userId].push(res);
 
-    console.log(`[SSE] User ${userId} connected at ${new Date().toISOString()}`);
+    logToFile(`[SSE] User ${userId} connected at ${getVNDateString(new Date())}`);
+
+    // Delay gửi notification tổng quan 3 giây sau khi user kết nối
+    setTimeout(() => {
+      sendIncompleteTasksCount(userId);
+      sendPendingApprovalTasksCount(userId);
+      // Có thể bổ sung các notification tổng quan khác ở đây nếu cần
+    }, 3000);
 
     const keepAlive = setInterval(() => {
       res.write(':keep-alive\n\n');
@@ -48,7 +69,7 @@ function registerSSE(app) {
         if (sseClients[userId].length === 0) delete sseClients[userId];
       }
       res.end();
-      console.log(`[SSE] User ${userId} disconnected at ${new Date().toISOString()}`);
+      logToFile(`[SSE] User ${userId} disconnected at ${getVNDateString(new Date())}`);
     });
   });
 }
@@ -59,6 +80,112 @@ function broadcastSSE(event, data) {
     res.write(`data: ${JSON.stringify(data)}\n\n`);
     if (res.flush) res.flush();
   });
+}
+
+/**
+ * Gửi SSE toast notification cho 1 user cụ thể
+ * @param {string} userId
+ * @param {'success'|'error'|'info'|'warning'} type
+ * @param {string} message
+ * @param {object} [data]
+ */
+function sendSseToastToUser(userId, type, message, data = {}) {
+  if (!sseClients[userId]) return;
+  const payload = { type, message, ...data };
+  sseClients[userId].forEach(res => {
+    res.write(`event: toast\ndata: ${JSON.stringify(payload)}\n\n`);
+    if (res.flush) res.flush();
+  });
+  logToFile(`[SSE] Toast to user ${userId}: ${type} - ${message}`);
+}
+
+/**
+ * Gửi SSE toast notification cho tất cả user
+ * @param {'success'|'error'|'info'|'warning'} type
+ * @param {string} message
+ * @param {object} [data]
+ */
+function broadcastSseToast(type, message, data = {}) {
+  const payload = { type, message, ...data };
+  Object.entries(sseClients).forEach(([userId, resArr]) => {
+    resArr.forEach(res => {
+      res.write(`event: toast\ndata: ${JSON.stringify(payload)}\n\n`);
+      if (res.flush) res.flush();
+    });
+  });
+  logToFile(`[SSE] Toast broadcast: ${type} - ${message}`);
+}
+
+/**
+ * Gửi số nhiệm vụ chưa hoàn thành cho user
+ * @param {string} userId
+ */
+async function sendIncompleteTasksCount(userId) {
+  const Task = require('../models/task.model');
+  // Nhiệm vụ chính user là leader, chưa hoàn thành
+  const mainCount = await Task.countDocuments({ leader: userId, status: { $in: ['pending', 'submitted'] } });
+  // Subtask user là assignee, chưa hoàn thành
+  const subCount = await Task.aggregate([
+    { $unwind: '$subTasks' },
+    { $match: { 'subTasks.assignee': new mongoose.Types.ObjectId(userId), 'subTasks.status': { $in: ['pending', 'submitted'] } } },
+    { $count: 'count' }
+  ]);
+  const total = mainCount + (subCount[0]?.count || 0);
+  if (sseClients[userId]) {
+    sseClients[userId].forEach(res => {
+      res.write(`event: tasks_incomplete_count\ndata: ${JSON.stringify({ count: total })}\n\n`);
+      if (res.flush) res.flush();
+    });
+    logToFile(`[SSE] Incomplete tasks count to user ${userId}: ${total}`);
+  }
+}
+
+/**
+ * Gửi số nhiệm vụ chờ duyệt cho user
+ * @param {string} userId
+ */
+async function sendPendingApprovalTasksCount(userId) {
+  const Task = require('../models/task.model');
+  // Nhiệm vụ chính user là leader, chờ duyệt
+  const mainCount = await Task.countDocuments({ leader: userId, status: 'submitted' });
+  // Subtask user là assignee, chờ duyệt
+  const subCount = await Task.aggregate([
+    { $unwind: '$subTasks' },
+    { $match: { 'subTasks.assignee': new mongoose.Types.ObjectId(userId), 'subTasks.status': 'submitted' } },
+    { $count: 'count' }
+  ]);
+  const total = mainCount + (subCount[0]?.count || 0);
+  if (sseClients[userId]) {
+    sseClients[userId].forEach(res => {
+      res.write(`event: tasks_pending_approval_count\ndata: ${JSON.stringify({ count: total })}\n\n`);
+      if (res.flush) res.flush();
+    });
+    logToFile(`[SSE] Pending approval tasks count to user ${userId}: ${total}`);
+  }
+}
+
+/**
+ * Gửi thông báo nhiệm vụ/subtask được duyệt/từ chối
+ * @param {string} userId
+ * @param {'approved'|'rejected'} status
+ * @param {object} taskData
+ *   - type: 'main'|'subtask'
+ *   - taskId, subTaskId, title, ...
+ */
+function sendTaskApprovalResult(userId, status, taskData) {
+  const event = taskData.type === 'main'
+    ? (status === 'approved' ? 'task_approved' : 'task_rejected')
+    : (status === 'approved' ? 'subtask_approved' : 'subtask_rejected');
+  const message = taskData.type === 'main'
+    ? `Nhiệm vụ "${taskData.title}" đã được ${status === 'approved' ? 'duyệt' : 'từ chối'}!`
+    : `Nhiệm vụ con "${taskData.title}" đã được ${status === 'approved' ? 'duyệt' : 'từ chối'}!`;
+  if (sseClients[userId]) {
+    sseClients[userId].forEach(res => {
+      res.write(`event: ${event}\ndata: ${JSON.stringify({ ...taskData, status, message })}\n\n`);
+      if (res.flush) res.flush();
+    });
+    logToFile(`[SSE] ${event} to user ${userId}: ${message}`);
+  }
 }
 
 // Định kỳ kiểm tra và gửi thông báo deadline
@@ -231,4 +358,12 @@ async function checkAndNotifyDeadlines() {
 // Định kỳ mỗi giờ
 setInterval(checkAndNotifyDeadlines, 60 * 60 * 1000);
 
-module.exports = { registerSSE, broadcastSSE }; 
+module.exports = {
+  registerSSE,
+  broadcastSSE,
+  sendSseToastToUser,
+  broadcastSseToast,
+  sendIncompleteTasksCount,
+  sendPendingApprovalTasksCount,
+  sendTaskApprovalResult
+}; 

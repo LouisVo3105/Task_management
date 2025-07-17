@@ -14,7 +14,7 @@ export default function PendingTaskDetailPageUI({ task, loading, handleFileDownl
   const [modalLoading, setModalLoading] = useState(false);
 
   if (loading) {
-    return <div className="p-6 text-center">Đang tải chi tiết nhiệm vụ...</div>;
+    return <div className="h-40 bg-gray-100 rounded animate-pulse my-4" />;
   }
   if (!task) {
     return <div className="p-6 text-center text-red-500">Không tìm thấy thông tin nhiệm vụ.</div>;
