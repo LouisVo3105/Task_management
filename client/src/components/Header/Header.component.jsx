@@ -1,7 +1,7 @@
 import { useAuth } from '../../utils/useAuth';
 import React, { useCallback, useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Logo from '../../assets/logo.svg';
+import Logo from '../../assets/Logo.svg';
 import { mapPositionLabel } from '../../utils/positionLabel';
 import { useSSEContext } from "@utils/SSEContext";
 import { useNotification } from '../NotificationProvider';
