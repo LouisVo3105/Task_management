@@ -1,3 +1,4 @@
+"use strict";
 /**
  * Utility function để mapping position từ input thành position chuẩn
  * @param {string} inputPosition - Position được nhập từ user

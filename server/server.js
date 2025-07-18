@@ -1,19 +1,21 @@
+"use strict";
 const app = require("./src/app");
 
-const PORT = process.env.PORT || 3056
+const PORT = process.env.PORT
+const CLIENT_URL = process.env.CLIENT;
 
 // Cấu hình server để tăng khả năng chịu tải
 const server = app.listen(PORT, {
-  // Tăng backlog để xử lý nhiều connection pending
+
   backlog: 511,
-  // Tăng timeout
+
   timeout: 30000,
-  // Keep-alive
+
   keepAlive: true,
   keepAliveTimeout: 30000,
   headersTimeout: 31000
 }, () => {
-  console.log(`Quan ly chi tieu on port ${PORT}`);
+  console.log(`Ứng dụng quản lý chỉ tiêu đang chạy trên cổng ${PORT}`);
 });
 
 // Tăng max listeners
@@ -23,7 +25,7 @@ server.setMaxListeners(0);
 const { Server } = require('socket.io');
 const io = new Server(server, {
   cors: {
-    origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
+    origin: [CLIENT_URL],
     credentials: true
   }
 });

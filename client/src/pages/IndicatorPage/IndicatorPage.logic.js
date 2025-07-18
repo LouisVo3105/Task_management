@@ -6,6 +6,8 @@ import { Chart, ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Leg
 Chart.register(ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 import { useSSEContext } from "@utils/SSEContext";
 
+const BASE_URL = import.meta.env.VITE_SERVER_BASE_URL
+
 const statusMap = {
   no_tasks: "Chưa có nhiệm vụ",
   not_started: "Chưa bắt đầu",
@@ -25,7 +27,7 @@ export function useIndicatorPageLogic() {
   const fetchIndicators = async () => {
     setLoading(true);
     try {
-      const res = await authFetch("http://localhost:3056/api/indicators");
+      const res = await authFetch(`${BASE_URL}/api/indicators`);
       const data = await res.json();
       setIndicators(data.data?.docs || []);
     } catch {
@@ -51,7 +53,7 @@ export function useIndicatorPageLogic() {
   const handleDelete = async (indicator) => {
     if (!window.confirm(`Bạn có chắc muốn xóa chỉ tiêu "${indicator.name}"?`)) return;
     try {
-      const res = await authFetch(`http://localhost:3056/api/indicators/${indicator._id}`, { method: "DELETE" });
+      const res = await authFetch(`${BASE_URL}/api/indicators/${indicator._id}`, { method: "DELETE" });
       if (!res.ok) {
         const data = await res.json();
         throw new Error(data.message || "Xóa thất bại");

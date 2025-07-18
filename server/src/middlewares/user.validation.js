@@ -1,5 +1,8 @@
+"use strict";
 const { body, validationResult } = require('express-validator');
 const { mapPosition, getStandardPositions } = require('../utils/position-mapper');
+const { ROLES } = require('../configs/enum');
+
 
 exports.validateCreateUser = [
   body('username').trim().notEmpty().isLength({ min: 3 }).withMessage('Tên đăng nhập phải có ít nhất 3 ký tự'),
@@ -20,9 +23,9 @@ exports.validateCreateUser = [
     }),
   body('phoneNumber').isMobilePhone().withMessage('Số điện thoại không hợp lệ'),
   body('department').trim().notEmpty().withMessage('Phòng ban là bắt buộc'),
-  body('role').isIn(['admin', 'manager', 'user']).withMessage('Vai trò không hợp lệ'),
+  body('role').isIn(ROLES).withMessage('Vai trò không hợp lệ'),
   body('directSupervisor')
-    .if(body('role').isIn(['user', 'manager']))
+    .if(body('role').isIn(ROLES.filter(r => r !== 'admin')))
     .notEmpty()
     .isMongoId()
     .withMessage('Cấp trên trực tiếp là bắt buộc cho vai trò user hoặc manager'),
@@ -57,10 +60,10 @@ exports.validateUpdateUser = [
     }),
   body('phoneNumber').optional().isMobilePhone().withMessage('Số điện thoại không hợp lệ'),
   body('department').optional().trim().notEmpty().withMessage('Phòng ban không được để trống'),
-  body('role').optional().isIn(['admin', 'manager', 'user']).withMessage('Vai trò không hợp lệ'),
+  body('role').optional().isIn(ROLES).withMessage('Vai trò không hợp lệ'),
   body('isActive').optional().isBoolean().withMessage('Trạng thái hoạt động không hợp lệ'),
   body('directSupervisor')
-    .if(body('role').isIn(['user', 'manager']))
+    .if(body('role').isIn(ROLES.filter(r => r !== 'admin')))
     .notEmpty()
     .isMongoId()
     .withMessage('Cấp trên trực tiếp là bắt buộc cho vai trò user hoặc manager'),

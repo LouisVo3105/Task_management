@@ -8,6 +8,10 @@ import {
 } from "@material-tailwind/react";
 import ReactSelect from "react-select";
 
+const BASE_URL = import.meta.env.VITE_SERVER_BASE_URL
+
+
+
 const CreateSubtaskModal = ({ open, onClose, onCreated, parentTaskId, supporters = [] }) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -30,7 +34,7 @@ const CreateSubtaskModal = ({ open, onClose, onCreated, parentTaskId, supporters
       if (departmentId) {
         const fetchUsers = async () => {
           try {
-            const res = await fetch(`http://localhost:3056/api/departments/${departmentId}/supporters`, {
+            const res = await fetch(`${BASE_URL}/api/departments/${departmentId}/supporters`, {
               headers: { Authorization: `Bearer ${sessionStorage.getItem('accessToken')}` }
             });
             const data = await res.json();
@@ -75,7 +79,7 @@ const CreateSubtaskModal = ({ open, onClose, onCreated, parentTaskId, supporters
       formData.append('notes', notes);
       formData.append('leaderId', leaderId);
       if (fileObj) formData.append('file', fileObj);
-      const res = await fetch(`http://localhost:3056/api/tasks/${parentTaskId}/subtasks`, {
+      const res = await fetch(`${BASE_URL}/api/tasks/${parentTaskId}/subtasks`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`,

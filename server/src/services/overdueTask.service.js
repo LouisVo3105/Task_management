@@ -1,3 +1,4 @@
+"use strict";
 const Task = require('../models/task.model');
 const ExcelJS = require('exceljs');
 const { Parser } = require('json2csv');

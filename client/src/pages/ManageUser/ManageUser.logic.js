@@ -3,8 +3,8 @@ import { useAuth } from '../../utils/useAuth';
 import { authFetch } from '../../utils/authFetch';
 import { useSSEContext } from "@utils/SSEContext";
 
-const API_URL = 'http://localhost:3056/api/users';
-const DEPT_API_URL = 'http://localhost:3056/api/departments';
+const BASE_URL = import.meta.env.VITE_SERVER_BASE_URL
+
 
 export function useManageUserLogic() {
   const { accessToken, user } = useAuth();
@@ -31,7 +31,7 @@ export function useManageUserLogic() {
     setLoading(true);
     setError(null);
     try {
-      const res = await authFetch(`${API_URL}/all?includeInactive=true`);
+      const res = await authFetch(`${BASE_URL}/api/users/all?includeInactive=true`);
       if (!res.ok) throw new Error('Không lấy được danh sách user');
       const data = await res.json();
       setUsers(data.data || []);
@@ -51,7 +51,7 @@ export function useManageUserLogic() {
 
   // Lấy danh sách phòng ban khi vào trang
   useEffect(() => {
-    authFetch(DEPT_API_URL)
+    authFetch(`${BASE_URL}/api/departments`)
       .then(res => res.json())
       .then(data => setDepartments(data.data || []));
   }, []);
@@ -59,7 +59,7 @@ export function useManageUserLogic() {
   // Lấy danh sách phòng ban khi mở dialog (nếu cần cập nhật mới)
   useEffect(() => {
     if (openDialog) {
-      authFetch(DEPT_API_URL)
+      authFetch(`${BASE_URL}/api/departments`)
         .then(res => res.json())
         .then(data => setDepartments(data.data || []));
     }
@@ -76,7 +76,7 @@ export function useManageUserLogic() {
     if (user && user.department) {
       const deptId = typeof user.department === 'object' ? user.department._id : user.department;
       if (deptId) {
-        authFetch(`${DEPT_API_URL}/${deptId}/supporters`)
+        authFetch(`${BASE_URL}/api/departments/${deptId}/supporters`)
           .then(res => res.json())
           .then(data => setDepartmentUsers(data.data || []))
           .catch(() => setDepartmentUsers([]));
@@ -95,7 +95,7 @@ export function useManageUserLogic() {
       // Reset cấp trên khi phòng ban thay đổi
       setForm(prev => ({ ...prev, directSupervisor: '' }));
       if (value) {
-        authFetch(`${DEPT_API_URL}/${value}/leaders`)
+        authFetch(`${BASE_URL}/api/departments/${value}/leaders`)
           .then(res => res.json())
           .then(data => setDepartmentUsers(data.data || []))
           .catch(() => setDepartmentUsers([]));
@@ -118,7 +118,7 @@ export function useManageUserLogic() {
     setError(null);
     try {
       const method = editUser ? 'PUT' : 'POST';
-      const url = editUser ? `http://localhost:3056/api/users/${editUser._id}` : `${API_URL}/create`;
+      const url = editUser ? `${BASE_URL}/api/users/${editUser._id}` : `${BASE_URL}/api/users/create`;
       const body = { ...submitForm };
       if (!body.password) delete body.password;
       const res = await authFetch(url, {
@@ -142,7 +142,7 @@ export function useManageUserLogic() {
     setLoading(true);
     setError(null);
     try {
-      const res = await authFetch(`http://localhost:3056/api/users/${id}`, {
+      const res = await authFetch(`${BASE_URL}/api/users/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
         body: JSON.stringify({ isActive }),
@@ -159,7 +159,7 @@ export function useManageUserLogic() {
     setLoading(true);
     setError(null);
     try {
-      const res = await authFetch(`http://localhost:3056/api/users/permanent/${id}`, {
+      const res = await authFetch(`${BASE_URL}/api/users/permanent/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${accessToken}` }
       });
@@ -179,7 +179,7 @@ export function useManageUserLogic() {
     try {
       const formData = new FormData();
       formData.append('file', importFile);
-      const res = await authFetch(`${API_URL}/import-csv`, {
+      const res = await authFetch(`${BASE_URL}/api/users/import-csv`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -197,7 +197,7 @@ export function useManageUserLogic() {
 
   const handleExport = async (type) => {
     try {
-      const res = await authFetch(`${API_URL}/export?type=${type}`, {
+      const res = await authFetch(`${BASE_URL}/api/users/export?type=${type}`, {
         method: 'GET',
         headers: { Authorization: `Bearer ${accessToken}` },
       });

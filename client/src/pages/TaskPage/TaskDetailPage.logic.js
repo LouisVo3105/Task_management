@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { authFetch } from "../../utils/authFetch";
 
+const BASE_URL = import.meta.env.VITE_SERVER_BASE_URL
+
 export default function useTaskDetailPageLogic() {
   const { taskId } = useParams();
   const navigate = useNavigate();
@@ -26,19 +28,19 @@ export default function useTaskDetailPageLogic() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const res = await authFetch(`http://localhost:3056/api/tasks/${taskId}`);
+      const res = await authFetch(`${BASE_URL}/api/tasks/${taskId}`);
       const taskData = await res.json();
       if (!taskData.data) {
         // Nếu là subtask vừa bị xóa, fetch lại nhiệm vụ chính (task cha) và render ngay tại trang này
         const parentTaskId = task && task.parentTask?._id;
         if (parentTaskId) {
-          const resParent = await authFetch(`http://localhost:3056/api/tasks/${parentTaskId}`);
+          const resParent = await authFetch(`${BASE_URL}/api/tasks/${parentTaskId}`);
           const parentData = await resParent.json();
           if (parentData.data) {
             setTask(parentData.data);
             // Có thể fetch lại approvalHistory nếu cần
             try {
-              const resHistory = await authFetch(`http://localhost:3056/api/tasks/${parentTaskId}/approval-history`);
+              const resHistory = await authFetch(`${BASE_URL}/api/tasks/${parentTaskId}/approval-history`);
               const dataHistory = await resHistory.json();
               if (dataHistory.success && Array.isArray(dataHistory.data)) {
                 setApprovalHistory(dataHistory.data);
@@ -63,7 +65,7 @@ export default function useTaskDetailPageLogic() {
       // Lấy lịch sử duyệt nếu có
       if (taskData.data && taskData.data._id) {
         try {
-          const resHistory = await authFetch(`http://localhost:3056/api/tasks/${taskData.data._id}/approval-history`);
+          const resHistory = await authFetch(`${BASE_URL}/api/tasks/${taskData.data._id}/approval-history`);
           const dataHistory = await resHistory.json();
           if (dataHistory.success && Array.isArray(dataHistory.data)) {
             setApprovalHistory(dataHistory.data);
@@ -94,7 +96,7 @@ export default function useTaskDetailPageLogic() {
       const fetchSubmissions = async () => {
         setLoadingSubmissions(true);
         try {
-          const res = await authFetch(`http://localhost:3056/api/tasks/${task.parentTask._id}/subtasks/${task._id}/submissions`);
+          const res = await authFetch(`${BASE_URL}/api/tasks/${task.parentTask._id}/subtasks/${task._id}/submissions`);
           const data = await res.json();
           if (data.success && Array.isArray(data.data) && data.data.length > 0) {
             setSubmissions(data.data);
@@ -117,7 +119,7 @@ export default function useTaskDetailPageLogic() {
       const fetchMainTaskSubmissions = async () => {
         setLoadingSubmissions(true);
         try {
-          const res = await authFetch(`http://localhost:3056/api/tasks/${task._id}/submissions`);
+          const res = await authFetch(`${BASE_URL}/api/tasks/${task._id}/submissions`);
           const data = await res.json();
           if (data.success && Array.isArray(data.data) && data.data.length > 0) {
             setSubmissions(data.data);
@@ -144,7 +146,7 @@ export default function useTaskDetailPageLogic() {
     if (!window.confirm('Bạn có chắc chắn muốn xóa nhiệm vụ này?')) return;
     setDeleteLoading(true);
     try {
-      const url = `http://localhost:3056/api/tasks/${taskToDelete._id}`;
+      const url = `${BASE_URL}/api/tasks/${taskToDelete._id}`;
       const res = await authFetch(url, { method: 'DELETE' });
       if (res.ok) {
         if (taskToDelete.parentTask) {

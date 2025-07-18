@@ -1,4 +1,6 @@
+"use strict";
 const { body } = require('express-validator');
+const { TASK_STATUS } = require('../configs/enum');
 
 const validateCreateTask = [
   body('title').trim().notEmpty().withMessage('Tên nhiệm vụ là bắt buộc'),
@@ -34,7 +36,7 @@ const validateUpdateTask = [
   body('parentTaskId').optional().isMongoId().withMessage('ID nhiệm vụ cha không hợp lệ'),
   body('assigneeId').optional().isMongoId().withMessage('ID người thực hiện không hợp lệ'),
   body('notes').optional().isString().withMessage('Ghi chú phải là chuỗi'),
-  body('status').optional().isIn(['pending', 'submitted', 'approved', 'overdue']).withMessage('Trạng thái không hợp lệ')
+  body('status').optional().isIn(TASK_STATUS).withMessage('Trạng thái không hợp lệ')
 ];
 
 const validateSubmitTask = [
@@ -55,8 +57,6 @@ const validateCreateSubTask = [
 
 const validateApproveTask = [
   (req, res, next) => {
-    console.log('--- VÀO validateApproveTask ---');
-    console.log('params:', req.params);
     next();
   },
   body('comment').trim().notEmpty().withMessage('Nhận xét là bắt buộc')

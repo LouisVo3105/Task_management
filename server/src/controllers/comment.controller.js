@@ -1,3 +1,4 @@
+"use strict";
 const commentService = require('../services/comment.service');
 const { sendSseToastToUser } = require('../services/sse.service');
 

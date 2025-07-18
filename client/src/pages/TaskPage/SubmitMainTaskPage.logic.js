@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { authFetch } from "../../utils/authFetch";
 
+const BASE_URL = import.meta.env.VITE_SERVER_BASE_URL
+
 export default function useSubmitMainTaskPageLogic() {
   const { taskId } = useParams();
   const navigate = useNavigate();
@@ -16,12 +18,13 @@ export default function useSubmitMainTaskPageLogic() {
     const fetchTask = async () => {
       setTaskLoading(true);
       try {
-        const res = await authFetch(`http://localhost:3056/api/tasks/${taskId}`);
+        const res = await authFetch(`${BASE_URL}/api/tasks/${taskId}`);
         const data = await res.json();
         if (data.success) {
           setTask(data.data);
         }
       } catch (error) {
+        console.error("Xuất hiện lỗi", error)
         setTask(null);
       }
       setTaskLoading(false);
@@ -34,7 +37,7 @@ export default function useSubmitMainTaskPageLogic() {
     setLoading(true);
     setError("");
     try {
-      const res = await authFetch(`http://localhost:3056/api/tasks/${taskId}`, {
+      const res = await authFetch(`${BASE_URL}/api/tasks/${taskId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

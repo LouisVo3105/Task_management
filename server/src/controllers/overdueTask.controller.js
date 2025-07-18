@@ -1,3 +1,4 @@
+"use strict";
 const overdueTaskService = require('../services/overdueTask.service');
 const { sendSseToastToUser } = require('../services/sse.service');
 

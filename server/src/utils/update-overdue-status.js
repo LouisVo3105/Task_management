@@ -1,3 +1,4 @@
+"use strict";
 const mongoose = require('mongoose');
 const Task = require('../models/task.model');
 
@@ -43,7 +44,7 @@ async function updateOverdueStatus() {
 
 // Nếu chạy trực tiếp file này
 if (require.main === module) {
-  const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/task_management';
+  const MONGODB_URI = process.env.MONGODB_URI;
   
   mongoose.connect(MONGODB_URI)
     .then(() => {

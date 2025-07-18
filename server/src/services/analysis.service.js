@@ -1,3 +1,4 @@
+"use strict";
 // src/services/analysis.service.js
 const Task = require('../models/task.model');
 const Indicator = require('../models/indicator.model');

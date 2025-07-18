@@ -1,3 +1,4 @@
+"use strict";
 const Task = require('../models/task.model');
 
 // Middleware để tự động cập nhật trạng thái quá deadline

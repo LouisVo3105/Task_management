@@ -1,14 +1,16 @@
 import { EventSourcePolyfill } from 'event-source-polyfill';
 import authFetch from './authFetch';
 
+const BASE_URL = import.meta.env.VITE_SERVER_BASE_URL
+
 export async function connectSSE(onMessage, onError) {
   let token = sessionStorage.getItem('accessToken');
   try {
-    await authFetch('http://localhost:3056/api/users/me');
+    await authFetch(`${BASE_URL}/api/users/me`);
     token = sessionStorage.getItem('accessToken');
   } catch { /* ignore */ }
 
-  const eventSource = new EventSourcePolyfill('http://localhost:3056/api/sse', {
+  const eventSource = new EventSourcePolyfill(`${BASE_URL}/api/sse`, {
     headers: { Authorization: `Bearer ${token}` },
     withCredentials: true,
   });

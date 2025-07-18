@@ -1,3 +1,4 @@
+"use strict";
 const Task = require('../models/task.model');
 const Indicator = require('../models/indicator.model');
 const User = require('../models/user.model');
@@ -310,10 +311,6 @@ const getSubTaskSubmissions = async (taskId, subTaskId) => {
 
 // APPROVAL/REJECT
 const approveTask = async (params, body, reviewer) => {
-  console.log('--- APPROVE TASK/SUBTASK ---');
-  console.log('params:', params);
-  console.log('body:', body);
-  console.log('reviewer:', reviewer);
   const { id, taskId, subTaskId, submissionId } = params;
   const { comment } = body;
   if (!comment || comment.trim() === '') {
@@ -322,26 +319,21 @@ const approveTask = async (params, body, reviewer) => {
   // Subtask
   if (taskId && subTaskId) {
     const parentTask = await Task.findById(taskId);
-    console.log('parentTask:', parentTask ? parentTask._id : null);
     if (!parentTask) { const err = new Error('Không tìm thấy nhiệm vụ cha'); err.status = 404; throw err; }
     const subTask = parentTask.subTasks.id(subTaskId);
-    console.log('subTask:', subTask ? subTask._id : null);
     if (!subTask) { const err = new Error('Không tìm thấy nhiệm vụ con'); err.status = 404; throw err; }
     // Chỉ cho phép leader của subtask được duyệt hoặc từ chối
     const reviewerId = reviewer._id || reviewer.id;
     if (!subTask.leader || subTask.leader.toString() !== reviewerId) {
-      console.log('subTask.leader:', subTask.leader, 'reviewerId:', reviewerId);
       const err = new Error('Chỉ chủ trì của nhiệm vụ con mới có quyền duyệt hoặc từ chối'); err.status = 403; throw err;
     }
     let targetSubmission = null;
     if (submissionId) {
       targetSubmission = subTask.submissions.id(submissionId);
-      console.log('targetSubmission by id:', targetSubmission ? targetSubmission._id : null);
       if (!targetSubmission) { const err = new Error(`Không tìm thấy submission với ID: ${submissionId} trong subtask.`); err.status = 404; throw err; }
     } else {
       if (subTask.submissions.length === 0) { const err = new Error('Không có submission nào để duyệt'); err.status = 400; throw err; }
       targetSubmission = subTask.submissions[subTask.submissions.length - 1];
-      console.log('targetSubmission last:', targetSubmission ? targetSubmission._id : null);
     }
     targetSubmission.approvalStatus = 'approved';
     targetSubmission.approvalComment = comment.trim();

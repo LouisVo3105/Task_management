@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../../utils/useAuth";
 import { authFetch } from "../../utils/authFetch";
 
+const BASE_URL = import.meta.env.VITE_SERVER_BASE_URL
+
 const statusMap = {
   pending: { text: "Đang chờ", color: "text-yellow-600" },
   approved: { text: "Đã duyệt", color: "text-green-600" },
@@ -20,7 +22,7 @@ export default function usePendingTasksPageLogic() {
   const fetchPendingTasks = async () => {
     setLoading(true);
     try {
-      const res = await authFetch(`http://localhost:3056/api/tasks/pending/${user._id}`);
+      const res = await authFetch(`${BASE_URL}/api/tasks/pending/${user._id}`);
       const data = await res.json();
       // Lọc nhiệm vụ có trạng thái submitted
       const submittedTasks = Array.isArray(data.data) ? data.data.filter(task => task.status === 'submitted') : [];
@@ -39,16 +41,16 @@ export default function usePendingTasksPageLogic() {
 
   const handleApprove = async (taskId) => {
     try {
-      await authFetch(`http://localhost:3056/api/tasks/${taskId}/approve`, { method: 'PATCH' });
+      await authFetch(`${BASE_URL}/api/tasks/${taskId}/approve`, { method: 'PATCH' });
       fetchPendingTasks();
     } catch { }
   };
 
   const handleReject = async (taskId) => {
     try {
-      await authFetch(`http://localhost:3056/api/tasks/${taskId}/reject`, { method: 'PATCH' });
+      await authFetch(`${BASE_URL}/api/tasks/${taskId}/reject`, { method: 'PATCH' });
       fetchPendingTasks();
-    } catch { }
+    } catch(e) {console.error("Xuất hiện lỗi: ",e) }
   };
 
   return {

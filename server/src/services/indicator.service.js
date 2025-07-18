@@ -1,3 +1,4 @@
+"use strict";
 const Indicator = require('../models/indicator.model');
 const Task = require('../models/task.model');
 const Comment = require('../models/comment.model');

@@ -579,3 +579,654 @@
 [SSE] Incomplete tasks count to user 687064a0b5e9e89346b9643e: 1
 [SSE] Pending approval tasks count to user 687064a0b5e9e89346b9643e: 0
 [SSE] Toast to user 687064a0b5e9e89346b9643e: success - Tạo comment thành công!
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:17:29 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:17:54 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:17:59 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:18:05 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:18:16 18/7/2025
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:18:42 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:19:00 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:19:11 18/7/2025
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:19:19 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 08:19:23 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:19:24 18/7/2025
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:21:46 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:21:50 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:22:37 18/7/2025
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:22:47 18/7/2025
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:23:25 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:23:36 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:23:51 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:24:22 18/7/2025
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:24:33 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 08:24:36 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:24:37 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] Toast to user 6870649fb5e9e89346b96425: success - Tạo comment thành công!
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:25:49 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:26:09 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:26:25 18/7/2025
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:26:35 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:27:01 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:27:09 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:27:18 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:27:24 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:27:31 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:27:40 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:27:44 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:27:52 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:27:59 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:28:04 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:28:11 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:28:15 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:32:42 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:32:59 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:33:12 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:33:26 18/7/2025
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:33:48 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:34:00 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:35:06 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:35:32 18/7/2025
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:35:43 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:36:01 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:36:09 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:36:15 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:36:24 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:36:59 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:37:53 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:38:29 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:38:34 18/7/2025
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:41:28 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:41:31 18/7/2025
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:41:39 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:42:35 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:43:13 18/7/2025
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:45:50 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:46:34 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:47:05 18/7/2025
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:49:03 18/7/2025
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:50:06 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:51:46 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:52:04 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:52:08 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:52:52 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:53:22 18/7/2025
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:54:55 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:55:27 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:59:47 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] User 6870649fb5e9e89346b96425 connected at 09:02:22 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] User 6870649fb5e9e89346b96425 connected at 09:02:28 18/7/2025
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] User 6870649fb5e9e89346b96425 connected at 09:02:34 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] User 6870649fb5e9e89346b96425 connected at 09:04:15 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] User 6870649fb5e9e89346b96425 connected at 09:04:21 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] User 6870649fb5e9e89346b96425 connected at 09:07:45 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 09:07:50 18/7/2025
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Toast to user 6870649fb5e9e89346b96425: success - Tạo chỉ tiêu thành công!
+[SSE] Toast to user 6870649fb5e9e89346b96425: success - Tạo nhiệm vụ thành công!
+[SSE] User 6870649fb5e9e89346b9642f connected at 09:15:52 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b9642f: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b9642f: 1
+[SSE] Toast to user 6870649fb5e9e89346b9642f: success - Nộp file nhiệm vụ con thành công!
+[SSE] User 6870649fb5e9e89346b9642a connected at 09:18:32 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b9642a: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b9642a: 0
+[SSE] User 6870649fb5e9e89346b9642f connected at 09:27:06 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642a connected at 09:27:06 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 09:27:06 18/7/2025
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b9642f: 1
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b9642f: 1
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b9642a: 0
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b9642a: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] User 6870649fb5e9e89346b9642f connected at 09:27:52 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642a connected at 09:27:52 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 09:27:52 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b9642f: 1
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b9642f: 1
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b9642a: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b9642a: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] User 6870649fb5e9e89346b9642a disconnected at 09:28:49 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642f disconnected at 09:28:49 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 09:28:50 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642f connected at 09:28:55 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 09:28:55 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642a connected at 09:28:55 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642a disconnected at 09:28:57 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 09:28:57 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642f disconnected at 09:28:57 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642f connected at 09:28:58 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642a connected at 09:28:58 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 09:28:58 18/7/2025
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b9642f: 1
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b9642f: 1
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b9642a: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b9642a: 0
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b9642f: 1
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b9642f: 1
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b9642a: 0
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b9642a: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] User 6870649fb5e9e89346b9642f disconnected at 09:29:12 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 09:29:12 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642a disconnected at 09:29:12 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642f connected at 09:29:13 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642a connected at 09:29:13 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 09:29:13 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642f disconnected at 09:29:14 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642a disconnected at 09:29:14 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 09:29:14 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642f connected at 09:29:15 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642a connected at 09:29:15 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 09:29:15 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b9642f: 1
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b9642f: 1
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b9642a: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b9642a: 0
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b9642f: 1
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b9642f: 1
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b9642a: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b9642a: 0
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] User 6870649fb5e9e89346b9642a disconnected at 09:29:20 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642f disconnected at 09:29:20 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 09:29:20 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642a connected at 09:29:21 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642f connected at 09:29:21 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 09:29:21 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b9642a: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b9642a: 0
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b9642f: 1
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b9642f: 1
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] User 6870649fb5e9e89346b9642a disconnected at 09:29:25 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642f disconnected at 09:29:25 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 09:29:25 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642f connected at 09:29:26 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 09:29:26 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642a connected at 09:29:26 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 09:29:28 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642f disconnected at 09:29:28 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642a disconnected at 09:29:28 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642f connected at 09:29:29 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 09:29:29 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642a connected at 09:29:29 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b9642f: 1
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b9642f: 1
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b9642a: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b9642a: 0
+[SSE] User 6870649fb5e9e89346b9642f disconnected at 09:29:31 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642a disconnected at 09:29:31 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 09:29:31 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642f connected at 09:29:32 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 09:29:32 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642a connected at 09:29:32 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b9642f: 1
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b9642f: 1
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b9642a: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b9642a: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b9642f: 1
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b9642f: 1
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b9642a: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b9642a: 0
+[SSE] User 6870649fb5e9e89346b9642a disconnected at 09:30:07 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 09:30:07 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642f disconnected at 09:30:08 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642a connected at 09:30:09 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 09:30:09 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642f connected at 09:30:09 18/7/2025
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b9642a: 0
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b9642a: 0
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b9642f: 1
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b9642f: 1
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 09:31:24 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 09:31:26 18/7/2025
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 09:32:45 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642f disconnected at 09:32:45 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642a disconnected at 09:32:46 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642a connected at 09:32:49 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642f connected at 09:32:49 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 09:32:49 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b9642a: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b9642a: 0
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b9642f: 1
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b9642f: 1
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 09:34:16 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 09:34:17 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 09:37:36 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 09:37:36 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Toast to user 6870649fb5e9e89346b9642a: success - Tạo comment thành công!
+[SSE] User 6870649fb5e9e89346b9642a disconnected at 09:40:31 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642a connected at 09:40:32 18/7/2025
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b9642a: 0
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b9642a: 0
+[SSE] User 6870649fb5e9e89346b9642a disconnected at 09:45:57 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642a connected at 09:46:05 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b9642a: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b9642a: 0
+[SSE] User 6870649fb5e9e89346b9642a disconnected at 09:49:04 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642a connected at 09:49:07 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b9642a: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b9642a: 0
+[SSE] User 6870649fb5e9e89346b9642a disconnected at 09:49:50 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642a connected at 09:49:51 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b9642a: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b9642a: 0
+[SSE] User 6870649fb5e9e89346b9642a disconnected at 09:52:18 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642a connected at 09:52:20 18/7/2025
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b9642a: 0
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b9642a: 0
+[SSE] Toast to user 6870649fb5e9e89346b9642a: success - Tạo comment thành công!
+[SSE] User 6870649fb5e9e89346b96425 connected at 09:55:12 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642a connected at 09:55:12 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642f connected at 09:55:12 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b9642a: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b9642a: 0
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b9642f: 1
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b9642f: 1
+[SSE] User 6870649fb5e9e89346b9642a disconnected at 09:55:41 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642a connected at 09:55:42 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b9642a: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b9642a: 0
+[SSE] User 6870649fb5e9e89346b9642a disconnected at 09:56:15 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642a connected at 09:56:16 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b9642a: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b9642a: 0
+[SSE] User 6870649fb5e9e89346b9642a disconnected at 09:59:31 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642a connected at 09:59:33 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b9642a: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b9642a: 0
+[SSE] User 6870649fb5e9e89346b96425 connected at 10:01:50 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642f connected at 10:01:50 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 10:01:50 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b9642f: 1
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b9642f: 1
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] User 6870649fb5e9e89346b9642f disconnected at 10:02:20 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642f connected at 10:02:21 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b9642f: 1
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b9642f: 1
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 10:02:29 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 10:02:30 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 10:02:56 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 10:02:57 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 10:08:09 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 10:08:13 18/7/2025
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] User 6870649fb5e9e89346b96425 connected at 10:08:32 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642f connected at 10:08:32 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 10:08:32 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b9642f: 1
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b9642f: 1
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 10:13:34 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 10:13:49 18/7/2025
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 10:15:00 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 10:15:02 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 10:15:07 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 10:15:08 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 10:15:09 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] User 6870649fb5e9e89346b96425 connected at 10:15:14 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 10:15:15 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 10:15:16 18/7/2025
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 10:15:18 18/7/2025
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] User 6870649fb5e9e89346b96425 connected at 10:15:19 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 10:15:21 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 10:15:22 18/7/2025
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 10:17:51 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 10:17:52 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Toast to user 6870649fb5e9e89346b96425: success - Tạo comment thành công!
+[SSE] Toast to user 6870649fb5e9e89346b96425: success - Xóa comment thành công!
+[SSE] User 6870649fb5e9e89346b96425 connected at 10:28:05 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 10:28:05 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642f connected at 10:28:05 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b9642f: 1
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b9642f: 1
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 10:29:03 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 10:29:04 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642f connected at 10:29:07 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 10:29:07 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 10:29:08 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 10:29:09 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 10:29:10 18/7/2025
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b9642f: 1
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b9642f: 1
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 10:29:20 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 10:29:21 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 10:29:23 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 10:29:24 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 10:29:26 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 10:29:27 18/7/2025
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 10:29:36 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 10:29:37 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 10:29:39 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 10:29:40 18/7/2025
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 10:29:41 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 10:29:42 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 10:29:44 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] User 6870649fb5e9e89346b96425 connected at 10:29:45 18/7/2025
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 10:29:57 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 10:29:58 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 10:29:58 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 10:29:59 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 10:30:02 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] User 6870649fb5e9e89346b96425 connected at 10:30:03 18/7/2025
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] User 6870649fb5e9e89346b9642f disconnected at 10:43:52 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 10:43:52 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 10:43:52 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642f connected at 10:47:22 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 10:47:23 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 10:47:23 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b9642f: 1
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b9642f: 1
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 10:53:12 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 10:53:13 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] User 6870649fb5e9e89346b96425 connected at 10:54:24 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 10:54:24 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642f connected at 10:54:24 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b9642f: 1
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b9642f: 1
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 10:58:48 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 10:58:49 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 10:58:51 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 10:58:52 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 10:58:56 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 10:58:57 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 10:59:12 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 10:59:13 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 10:59:14 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 10:59:15 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 10:59:20 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 10:59:21 18/7/2025
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 10:59:38 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 10:59:39 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 10:59:44 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 10:59:45 18/7/2025
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 10:59:50 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 10:59:51 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 10:59:52 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 10:59:53 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 10:59:53 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] User 6870649fb5e9e89346b96425 connected at 10:59:54 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 11:00:06 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 11:00:07 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 11:00:08 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 11:00:09 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 11:00:14 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 11:00:15 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 11:00:17 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 11:00:18 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 11:00:29 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 11:00:30 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 11:00:30 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 11:00:31 18/7/2025
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 11:00:33 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 11:00:34 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 11:00:34 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 11:00:35 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] User 6870649fb5e9e89346b96425 connected at 11:09:14 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 11:09:14 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642f connected at 11:09:16 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b9642f: 1
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b9642f: 1
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 11:13:58 18/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 11:16:28 18/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 11:25:31 18/7/2025
+[SSE] User 6870649fb5e9e89346b9642f disconnected at 11:26:59 18/7/2025

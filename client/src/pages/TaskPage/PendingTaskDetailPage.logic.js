@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { authFetch } from "../../utils/authFetch";
 
+const BASE_URL = import.meta.env.VITE_SERVER_BASE_URL
+
 export default function usePendingTaskDetailPageLogic() {
   const { taskId } = useParams();
   const navigate = useNavigate();
@@ -12,7 +14,7 @@ export default function usePendingTaskDetailPageLogic() {
     try {
       // Kiểm tra nếu filePath là string chứa file path thực tế
       if (typeof filePath === 'string' && (filePath.startsWith('http') || filePath.startsWith('/') || filePath.includes('uploads'))) {
-        const downloadUrl = filePath.startsWith('http') ? filePath : `http://localhost:3056/${filePath.replace(/\\/g, "/")}`;
+        const downloadUrl = filePath.startsWith('http') ? filePath : `${BASE_URL}/${filePath.replace(/\\/g, "/")}`;
         const a = document.createElement('a');
         a.href = downloadUrl;
         a.download = fileName;
@@ -65,10 +67,10 @@ export default function usePendingTaskDetailPageLogic() {
     let url;
     if (task.parentTask && task.parentTask._id) {
       // Subtask
-      url = `http://localhost:3056/api/tasks/${task.parentTask._id}/subtasks/${task._id}/submissions/${submissionId}/approve`;
+      url = `${BASE_URL}/api/tasks/${task.parentTask._id}/subtasks/${task._id}/submissions/${submissionId}/approve`;
     } else {
       // Main task
-      url = `http://localhost:3056/api/tasks/${task._id}/submissions/${submissionId}/approve`;
+      url = `${BASE_URL}/api/tasks/${task._id}/submissions/${submissionId}/approve`;
     }
     await authFetch(url, {
       method: 'PATCH',
@@ -76,7 +78,7 @@ export default function usePendingTaskDetailPageLogic() {
       body: JSON.stringify({ comment })
     });
     // Sau khi duyệt, reload lại task
-    const res = await authFetch(`http://localhost:3056/api/tasks/${taskId}`);
+    const res = await authFetch(`${BASE_URL}/api/tasks/${taskId}`);
     const data = await res.json();
     if (data.success) setTask(data.data);
   };
@@ -85,10 +87,10 @@ export default function usePendingTaskDetailPageLogic() {
     let url;
     if (task.parentTask && task.parentTask._id) {
       // Subtask
-      url = `http://localhost:3056/api/tasks/${task.parentTask._id}/subtasks/${task._id}/submissions/${submissionId}/reject`;
+      url = `${BASE_URL}/api/tasks/${task.parentTask._id}/subtasks/${task._id}/submissions/${submissionId}/reject`;
     } else {
       // Main task
-      url = `http://localhost:3056/api/tasks/${task._id}/submissions/${submissionId}/reject`;
+      url = `${BASE_URL}/api/tasks/${task._id}/submissions/${submissionId}/reject`;
     }
     await authFetch(url, {
       method: 'PATCH',
@@ -96,7 +98,7 @@ export default function usePendingTaskDetailPageLogic() {
       body: JSON.stringify({ comment })
     });
     // Sau khi từ chối, reload lại task
-    const res = await authFetch(`http://localhost:3056/api/tasks/${taskId}`);
+    const res = await authFetch(`${BASE_URL}/api/tasks/${taskId}`);
     const data = await res.json();
     if (data.success) setTask(data.data);
   };
@@ -105,7 +107,7 @@ export default function usePendingTaskDetailPageLogic() {
     const fetchTask = async () => {
       setLoading(true);
       try {
-        const res = await authFetch(`http://localhost:3056/api/tasks/${taskId}`);
+        const res = await authFetch(`${BASE_URL}/api/tasks/${taskId}`);
         const data = await res.json();
         if (data.success) setTask(data.data);
         else setTask(null);

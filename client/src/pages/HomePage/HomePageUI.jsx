@@ -6,6 +6,9 @@ import { useNavigate } from 'react-router-dom';
 import { authFetch } from '../../utils/authFetch';
 import { formatDate } from '../../utils/formatDate';
 
+const BASE_URL = import.meta.env.VITE_SERVER_BASE_URL
+
+
 export default function HomePageUI({
   user,
   loading,
@@ -377,7 +380,7 @@ function FilterTaskSearch({
       return;
     }
     const token = sessionStorage.getItem('accessToken');
-    authFetch(`http://localhost:3056/api/departments/${searchDepartment}/leaders`, {
+    authFetch(`${BASE_URL}/api/departments/${searchDepartment}/leaders`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(res => res.json())

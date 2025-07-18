@@ -1,3 +1,4 @@
+"use strict";
 const Notification = require('../models/notification.model');
 
 async function createNotification({ user, type, title, content, relatedId }) {

@@ -1,10 +1,11 @@
+"use strict";
 const User = require('../models/user.model');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { tokenBlacklist } = require('../middlewares/auth.middleware');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret';
-const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET || 'your-refresh-secret';
+const JWT_SECRET = process.env.JWT_SECRET;
+const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
 
 async function login({ username, password }) {
   const user = await User.findOne({ username }).select('password isActive role department').lean();

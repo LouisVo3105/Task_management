@@ -1,3 +1,4 @@
+"use strict";
 const taskService = require('../services/task.service');
 const { validationResult } = require('express-validator');
 const { broadcastSSE, sendSseToastToUser } = require('../services/sse.service');
@@ -192,10 +193,6 @@ class TaskController {
   }
 
   async approveTask(req, res) {
-    console.log('--- APPROVE TASK CONTROLLER ---');
-    console.log('params:', req.params);
-    console.log('body:', req.body);
-    console.log('user:', req.user);
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       sendSseToastToUser(req.user.id, 'error', 'Dữ liệu không hợp lệ');

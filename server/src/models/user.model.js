@@ -1,28 +1,22 @@
+"use strict";
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
+const { ROLES, POSITIONS, GENDERS } = require('../configs/enum');
 
 const userSchema = new mongoose.Schema({
   username: { type: String, required: true },
   password: { type: String, required: true },
   email: { type: String, required: true },
   fullName: { type: String, required: true },
-  gender: { type: String, enum: ['Nam', 'Nữ', 'Khác'], required: true },
-  position: { 
-    type: String, 
-    enum: ['Giam doc', 'Pho Giam doc', 'Truong phong', 'Nhan vien'],
-    required: true 
-  },
+  gender: { type: String, enum: GENDERS, required: true },
+  position: { type: String, enum: POSITIONS, required: true },
   phoneNumber: { type: String, required: true },
   department: { type: mongoose.Schema.Types.ObjectId, ref: 'Department', required: true },
-  role: { 
-    type: String, 
-    enum: ['admin', 'manager', 'user'], 
-    default: 'user' 
-  },
+  role: { type: String, enum: ROLES, default: 'user' },
   directSupervisor: { 
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'User',
-    required: function() { return ['user', 'manager'].includes(this.role); } // Bắt buộc với user và manager
+    required: function() { return ROLES.filter(r => r !== 'admin').includes(this.role); } // Bắt buộc với user và manager
   },
   isActive: { type: Boolean, default: true },
   createdAt: { type: Date, default: Date.now },

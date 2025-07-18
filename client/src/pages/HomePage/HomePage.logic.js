@@ -4,7 +4,8 @@ Chart.register(ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Lege
 import { authFetch } from '../../utils/authFetch';
 import { useSSEContext } from "@utils/SSEContext";
 
-const API_URL = 'http://localhost:3056/api';
+const BASE_URL = import.meta.env.VITE_SERVER_BASE_URL
+
 const statusMap = {
   pending: 'Đang thực hiện',
   submitted: 'Chờ duyệt',
@@ -53,7 +54,7 @@ export function useHomePageLogic() {
     if (searchEndDate) params.push(`endDate=${encodeURIComponent(searchEndDate)}`); // Thêm filter ngày kết thúc
     const query = params.length > 0 ? `?${params.join('&')}` : '';
     try {
-      const res = await authFetch(`${API_URL}/tasks/search${query}`);
+      const res = await authFetch(`${BASE_URL}/api/tasks/search${query}`);
       const data = await res.json();
       setSearchResults(Array.isArray(data.data) ? data.data : []);
       setHasSearched(true);
@@ -66,7 +67,7 @@ export function useHomePageLogic() {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const res = await authFetch(`${API_URL}/users/me`);
+      const res = await authFetch(`${BASE_URL}/api/users/me`);
       const data = await res.json();
       setUser(data.data);
     };
@@ -76,9 +77,9 @@ export function useHomePageLogic() {
   useEffect(() => {
     if (!user?._id) return;
     if (user.role === 'admin' || user.role === 'manager') {
-      authFetch(`${API_URL}/analysis/overall-stats`).then(res => res.json()).then(data => setOverallStats(data.data));
+      authFetch(`${BASE_URL}/api/analysis/overall-stats`).then(res => res.json()).then(data => setOverallStats(data.data));
 
-      authFetch(`${API_URL}/analysis/user-performance`).then(res => res.json()).then(data => setUserPerformance(data.data));
+      authFetch(`${BASE_URL}/api/analysis/user-performance`).then(res => res.json()).then(data => setUserPerformance(data.data));
     }
   }, [user]);
 
@@ -87,9 +88,9 @@ export function useHomePageLogic() {
     if (!user?._id) return;
     setLoading(true);
     Promise.all([
-      authFetch(`${API_URL}/tasks/incomplete/${user._id}`).then(res => res.json()),
-      authFetch(`${API_URL}/tasks/pending`).then(res => res.json()),
-      authFetch(`${API_URL}/tasks/completed/${user._id}`).then(res => res.json()).catch(() => ({ data: [] })),
+      authFetch(`${BASE_URL}/api/tasks/incomplete/${user._id}`).then(res => res.json()),
+      authFetch(`${BASE_URL}/api/tasks/pending`).then(res => res.json()),
+      authFetch(`${BASE_URL}/api/tasks/completed/${user._id}`).then(res => res.json()).catch(() => ({ data: [] })),
     ]).then(([incomplete, pending, completed]) => {
       const allTasks = [
         ...(incomplete.data?.docs || []),
@@ -113,8 +114,8 @@ export function useHomePageLogic() {
         query = `?month=${month}&year=${year}`;
       }
       const [indRes, deptSummaryRes] = await Promise.all([
-        authFetch(`${API_URL}/analysis/indicator-progress`).then(res => res.json()),
-        authFetch(`${API_URL}/analysis/department-task-summary${query}`).then(res => res.json()),
+        authFetch(`${BASE_URL}/api/analysis/indicator-progress`).then(res => res.json()),
+        authFetch(`${BASE_URL}/api/analysis/department-task-summary${query}`).then(res => res.json()),
       ]);
       const summaryArr = Array.isArray(deptSummaryRes) ? deptSummaryRes : deptSummaryRes.data || [];
       const mappedSummary = summaryArr.map(dep => ({
@@ -141,7 +142,7 @@ export function useHomePageLogic() {
       fetchDashboardAnalytics();
       const fetchDepartments = async () => {
         try {
-          const res = await authFetch('http://localhost:3056/api/departments');
+          const res = await authFetch(`${BASE_URL}/api/departments`);
           const json = await res.json();
           if (Array.isArray(json.data)) setDepartments(json.data);
         } catch (err) {
@@ -152,7 +153,7 @@ export function useHomePageLogic() {
       // Thêm fetch chỉ tiêu
       const fetchIndicators = async () => {
         try {
-          const res = await authFetch('http://localhost:3056/api/indicators?limit=1000');
+          const res = await authFetch(`${BASE_URL}/api/indicators?limit=1000`);
           const json = await res.json();
           if (Array.isArray(json.data?.docs)) setIndicators(json.data.docs);
         } catch {
@@ -176,9 +177,9 @@ export function useHomePageLogic() {
         // Fetch lại nhiệm vụ
         setLoading(true);
         Promise.all([
-          authFetch(`${API_URL}/tasks/incomplete/${user._id}`).then(res => res.json()),
-          authFetch(`${API_URL}/tasks/pending`).then(res => res.json()),
-          authFetch(`${API_URL}/tasks/completed/${user._id}`).then(res => res.json()).catch(() => ({ data: [] })),
+          authFetch(`${BASE_URL}/api/tasks/incomplete/${user._id}`).then(res => res.json()),
+          authFetch(`${BASE_URL}/api/tasks/pending`).then(res => res.json()),
+          authFetch(`${BASE_URL}/api/tasks/completed/${user._id}`).then(res => res.json()).catch(() => ({ data: [] })),
         ]).then(([incomplete, pending, completed]) => {
           const allTasks = [
             ...(incomplete.data?.docs || []),
@@ -192,7 +193,7 @@ export function useHomePageLogic() {
       }
       // Fetch lại chỉ tiêu nếu là admin/manager
       if (user && (user.role === 'admin' || user.role === 'manager')) {
-        authFetch('http://localhost:3056/api/indicators?limit=1000')
+        authFetch(`${BASE_URL}/api/indicators?limit=1000`)
           .then(res => res.json())
           .then(json => {
             if (Array.isArray(json.data?.docs)) setIndicators(json.data.docs);
@@ -201,11 +202,11 @@ export function useHomePageLogic() {
       }
       // Fetch lại user performance nếu là admin/manager
       if (user && (user.role === 'admin' || user.role === 'manager')) {
-        authFetch(`${API_URL}/analysis/user-performance`).then(res => res.json()).then(data => setUserPerformance(data.data));
+        authFetch(`${BASE_URL}/api/analysis/user-performance`).then(res => res.json()).then(data => setUserPerformance(data.data));
       }
       // Fetch lại overallStats nếu là admin/manager
       if (user && (user.role === 'admin' || user.role === 'manager')) {
-        authFetch(`${API_URL}/analysis/overall-stats`).then(res => res.json()).then(data => setOverallStats(data.data));
+        authFetch(`${BASE_URL}/api/analysis/overall-stats`).then(res => res.json()).then(data => setOverallStats(data.data));
       }
       // Fetch lại dashboard analytics nếu là admin hoặc Giam doc/Pho Giam doc
       if (user && (user.role === 'admin' || user.position === 'Giam doc' || user.position === 'Pho Giam doc')) {

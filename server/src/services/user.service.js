@@ -1,9 +1,11 @@
+"use strict";
 const User = require('../models/user.model');
 const Department = require('../models/department.model');
 const bcrypt = require('bcrypt');
 const xlsx = require('xlsx');
 const fs = require('fs');
 const { mapPosition, getStandardPositions, getPositionKeywords } = require('../utils/position-mapper');
+const { ROLES } = require('../configs/enum');
 
 async function createUser(data, currentUser) {
   const { username, password, directSupervisor, ...userData } = data;
@@ -11,7 +13,7 @@ async function createUser(data, currentUser) {
   if (currentUser.role === 'manager' && userData.department !== currentUser.department) throw new Error('Chỉ được tạo người dùng trong cùng phòng ban');
   const existingUser = await User.findOne({ $or: [{ username }, { email: userData.email }] });
   if (existingUser) throw new Error('Tên đăng nhập hoặc email đã tồn tại');
-  if (['user', 'manager'].includes(userData.role)) {
+  if (ROLES.filter(r => r !== 'admin').includes(userData.role)) {
     const supervisor = await User.findById(directSupervisor).select('isActive');
     if (!supervisor || !supervisor.isActive) throw new Error('Cấp trên không tồn tại hoặc không hoạt động');
   }
@@ -159,7 +161,7 @@ async function importUsersFromCSV(file, currentUser) {
       errors.push({ row, error: 'Thiếu directSupervisor cho user/manager' });
       continue;
     }
-    if (!['admin','manager','user'].includes(row.role)) {
+    if (!ROLES.includes(row.role)) {
       errors.push({ row, error: 'Vai trò không hợp lệ' });
       continue;
     }
@@ -186,7 +188,7 @@ async function importUsersFromCSV(file, currentUser) {
         errors.push({ row: userData, error: 'Username hoặc email đã tồn tại' });
         continue;
       }
-      if (['user','manager'].includes(userData.role)) {
+      if (ROLES.filter(r => r !== 'admin').includes(userData.role)) {
         if (!supervisorCache[userData.directSupervisor]) {
           const supervisor = await User.findById(userData.directSupervisor).select('isActive');
           if (!supervisor || !supervisor.isActive) {

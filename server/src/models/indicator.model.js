@@ -1,5 +1,7 @@
+"use strict";
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
+const { INDICATOR_STATUS } = require('../configs/enum');
 
 const indicatorSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -8,7 +10,7 @@ const indicatorSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
   status: { 
     type: String, 
-    enum: ['active', 'overdue', 'completed'], 
+    enum: INDICATOR_STATUS, 
     default: 'active' 
   },
   isOverdue: { type: Boolean, default: false }

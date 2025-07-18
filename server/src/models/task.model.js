@@ -1,11 +1,13 @@
+"use strict";
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
+const { TASK_STATUS, SUBTASK_STATUS, APPROVAL_STATUS, INDICATOR_STATUS, APPROVAL_ACTION } = require('../configs/enum');
 
 // Schema cho lịch sử duyệt
 const approvalHistorySchema = new mongoose.Schema({
   action: { 
     type: String, 
-    enum: ['approve', 'reject'], 
+    enum: APPROVAL_ACTION, 
     required: true 
   },
   comment: { type: String, required: true },
@@ -23,7 +25,7 @@ const submissionSchema = new mongoose.Schema({
   // Thông tin duyệt cho submission này
   approvalStatus: { 
     type: String, 
-    enum: ['pending', 'approved', 'rejected'], 
+    enum: APPROVAL_STATUS, 
     default: 'pending' 
   },
   approvalComment: { type: String }, // Lý do từ chối hoặc nhận xét khi duyệt
@@ -41,7 +43,7 @@ const subTaskSchema = new mongoose.Schema({
   notes: { type: String },
   status: { 
     type: String, 
-    enum: ['pending', 'submitted', 'approved', 'overdue'], 
+    enum: SUBTASK_STATUS, 
     default: 'pending' 
   },
   file: { type: String },
@@ -64,7 +66,7 @@ const taskSchema = new mongoose.Schema({
   notes: { type: String },
   status: { 
     type: String, 
-    enum: ['pending', 'submitted', 'approved', 'overdue'], 
+    enum: TASK_STATUS, 
     default: 'pending' 
   },
   file: { type: String },

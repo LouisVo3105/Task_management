@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { authFetch } from "../../utils/authFetch";
 
+const BASE_URL = import.meta.env.VITE_SERVER_BASE_URL
+
 export default function useOverdueTasksPageLogic() {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -11,7 +13,7 @@ export default function useOverdueTasksPageLogic() {
   const fetchTasks = async (page = 1) => {
     setLoading(true);
     try {
-      const res = await authFetch(`http://localhost:3056/api/tasks/overdue?page=${page}&limit=10`);
+      const res = await authFetch(`${BASE_URL}/api/tasks/overdue?page=${page}&limit=10`);
       const data = await res.json();
       if (data.docs) {
         setTasks(data.docs);

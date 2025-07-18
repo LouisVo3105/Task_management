@@ -1,3 +1,4 @@
+"use strict";
 const indicatorService = require('../services/indicator.service');
 const { validationResult } = require('express-validator');
 const { checkLeaderPermission, checkOverdueStatus } = require('../middlewares/indicator.middleware');

@@ -9,6 +9,10 @@ import ApproveTaskModal from "./ApproveTaskModal";
 import StatusDot from "../StatusDot";
 import { formatDate, formatDateTime } from "../../utils/formatDate";
 
+const BASE_URL = import.meta.env.VITE_SERVER_BASE_URL
+
+
+
 const SubtaskDetailModal = ({ open, handleOpen, subtaskId, parentTaskId }) => {
   const [subtask, setSubtask] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -25,7 +29,7 @@ const SubtaskDetailModal = ({ open, handleOpen, subtaskId, parentTaskId }) => {
     if (!subtaskId) return;
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:3056/api/tasks/${subtaskId}`, {
+      const res = await fetch(`${BASE_URL}/api/tasks/${subtaskId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -51,7 +55,7 @@ const SubtaskDetailModal = ({ open, handleOpen, subtaskId, parentTaskId }) => {
       if (!open || !parentTaskId || !subtaskId) return;
       setLoadingSubmissions(true);
       try {
-        const res = await fetch(`http://localhost:3056/api/tasks/${parentTaskId}/subtasks/${subtaskId}/submissions`, {
+        const res = await fetch(`${BASE_URL}/api/tasks/${parentTaskId}/subtasks/${subtaskId}/submissions`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -130,7 +134,7 @@ const SubtaskDetailModal = ({ open, handleOpen, subtaskId, parentTaskId }) => {
                             ) : s.file ? (
                               (typeof s.file === 'string' && (s.file.startsWith('http') || s.file.startsWith('/') || s.file.includes('uploads'))) ? (
                                 <a
-                                  href={s.file.startsWith('http') ? s.file : `http://localhost:3056/${s.file.replace(/\\/g, "/")}`}
+                                  href={s.file.startsWith('http') ? s.file : `${BASE_URL}/${s.file.replace(/\\/g, "/")}`}
                                   target="_blank"
                                   rel="noopener noreferrer"
                                   download={s.fileName || `nopbai_${idx + 1}`}

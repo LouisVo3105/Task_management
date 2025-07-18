@@ -1,3 +1,4 @@
+"use strict";
 const jwt = require('jsonwebtoken');
 const Task = require('../models/task.model');
 const mongoose = require('mongoose');
@@ -17,9 +18,6 @@ const verifyRefreshToken = (req, res, next) => {
 
 function roleMiddleware(roles) {
   return (req, res, next) => {
-    console.log('--- VÀO roleMiddleware ---');
-    console.log('roles:', roles);
-    console.log('req.user:', req.user);
     next();
   }
 }
@@ -60,9 +58,6 @@ const authMiddleware = (req, res, next) => {
 };
 
 const canManageTask = async (req, res, next) => {
-  console.log('--- VÀO canManageTask ---');
-  console.log('params:', req.params);
-  console.log('user:', req.user);
   try {
     const userId = req.user.id;
     const userRole = req.user.role;

@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 
+const BASE_URL = import.meta.env.VITE_SERVER_BASE_URL
+
+
 const EditIndicatorModal = ({ open, onClose, indicator, onUpdated }) => {
   const [name, setName] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -18,7 +21,7 @@ const EditIndicatorModal = ({ open, onClose, indicator, onUpdated }) => {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch(`http://localhost:3056/api/indicators/${indicator._id}`, {
+      const res = await fetch(`${BASE_URL}/api/indicators/${indicator._id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

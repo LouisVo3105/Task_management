@@ -8,6 +8,9 @@ import StatusDot from "../../components/StatusDot";
 import { formatDate, formatDateTime } from "../../utils/formatDate";
 import ApproveTaskModal from "../../components/modals/ApproveTaskModal";
 
+const BASE_URL = import.meta.env.VITE_SERVER_BASE_URL
+
+
 export default function TaskDetailPageUI({
   task, loading, openEdit, setOpenEdit, editingTask, setEditingTask, deleteLoading, openCreateSubtask, setOpenCreateSubtask, submissions, fetchData, navigate, handleDeleteTask
 }) {
@@ -34,7 +37,7 @@ export default function TaskDetailPageUI({
       label: "File đính kèm",
       value: (task.file && typeof task.file === 'string') ? (
         <a
-          href={`http://localhost:3056/${task.file.replace(/\\/g, "/")}`}
+          href={`${BASE_URL}/${task.file.replace(/\\/g, "/")}`}
           target="_blank"
           rel="noopener noreferrer"
           download={task.fileName || 'file_nop_bai'}
@@ -186,7 +189,7 @@ export default function TaskDetailPageUI({
                           {s.file ? (
                             (typeof s.file === 'string' && (s.file.startsWith('http') || s.file.startsWith('/') || s.file.includes('uploads'))) ? (
                               <a
-                                href={s.file.startsWith('http') ? s.file : `http://localhost:3056/${s.file.replace(/\\/g, "/")}`}
+                                href={s.file.startsWith('http') ? s.file : `${BASE_URL}/${s.file.replace(/\\/g, "/")}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 download={s.fileName || `nopbai_${idx + 1}`}

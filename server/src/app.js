@@ -1,3 +1,4 @@
+"use strict";
 require('dotenv').config();
 const cors = require('cors');
 const express = require('express');
@@ -10,7 +11,7 @@ const Task = require('./models/task.model');
 const Indicator = require('./models/indicator.model');
 const { registerSSE } = require('./services/sse.service');
 const lastNotified = {}; // { [userId_taskType_taskId]: lastNotifyDate }
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret';
+const JWT_SECRET = process.env.JWT_SECRET;
 const { updateOverdueStatus } = require('./middlewares/task.middleware');
 const rateLimit = require('express-rate-limit');
 
@@ -24,10 +25,12 @@ const commentRoute = require('./routes/comment.route');
 const notificationRoute = require('./routes/notification.route');
 const Database = require('./dbs/database');
 
+const CLIENT_URL = process.env.CLIENT;
+
 const db = Database.getInstance();
 
 app.use(cors({
-  origin:['http://localhost:5173', 'http://127.0.0.1:5173'],
+  origin:[CLIENT_URL],
   credentials: true
 }));
 

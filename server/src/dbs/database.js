@@ -1,4 +1,4 @@
-`use strict`
+"use strict";
 
 const mongoose = require('mongoose');
 
@@ -25,9 +25,9 @@ class Database {
           readPreference: 'primary',
           readConcern: { level: 'local' }
         });
-        console.log('Connected to MongoDB');
+        console.log('Đã kết nối thành công tới cơ sở dữ liệu');
       } catch (error) {
-        console.error('MongoDB connection error:', error);
+        console.error('Kết nối cơ sở dữ liệu thất bại', error);
         throw error;
       }
     }
@@ -45,7 +45,7 @@ class Database {
     if (this.connection) {
       this.connection.disconnect();
       this.connection = null;
-      console.log('Disconnected from MongoDB');
+      console.log('Đã ngắt kết nối tới cơ sở dữ liệu');
     }
   }
 }

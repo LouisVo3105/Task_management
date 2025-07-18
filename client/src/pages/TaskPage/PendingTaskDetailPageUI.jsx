@@ -6,6 +6,9 @@ import { useState } from "react";
 import { Input, Dialog, DialogHeader, DialogBody, DialogFooter } from "@material-tailwind/react";
 import IndicatorComments from "../../components/IndicatorComments";
 
+
+const BASE_URL = import.meta.env.VITE_SERVER_BASE_URL
+
 export default function PendingTaskDetailPageUI({ task, loading, handleFileDownload, navigate, handleApproveSubmission, handleRejectSubmission }) {
   const [openModal, setOpenModal] = useState(false);
   const [modalType, setModalType] = useState('approve');
@@ -113,7 +116,7 @@ export default function PendingTaskDetailPageUI({ task, loading, handleFileDownl
                       {s.file ? (
                         (typeof s.file === 'string' && (s.file.startsWith('http') || s.file.startsWith('/') || s.file.includes('uploads'))) ? (
                           <a
-                            href={s.file.startsWith('http') ? s.file : `http://localhost:3056/${s.file.replace(/\\/g, "/")}`}
+                            href={s.file.startsWith('http') ? s.file : `${BASE_URL}/${s.file.replace(/\\/g, "/")}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             download={s.fileName || `nopbai_${idx + 1}`}

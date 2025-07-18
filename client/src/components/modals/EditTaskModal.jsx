@@ -2,6 +2,10 @@ import React, { useEffect, useState } from "react";
 import ReactSelect from "react-select";
 import { authFetch } from "../../utils/authFetch";
 
+const BASE_URL = import.meta.env.VITE_SERVER_BASE_URL
+
+
+
 const EditTaskModal = ({ open, onClose, task, onUpdated }) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -29,11 +33,11 @@ const EditTaskModal = ({ open, onClose, task, onUpdated }) => {
   useEffect(() => {
     if (!open) return;
     // indicators
-    authFetch("http://localhost:3056/api/indicators")
+    authFetch(`${BASE_URL}/api/indicators`)
       .then(res => res.json())
       .then(data => setIndicators(data.data?.docs || []));
     // departments
-    authFetch("http://localhost:3056/api/departments")
+    authFetch(`${BASE_URL}/api/departments`)
       .then(res => res.json())
       .then(data => setDepartments(data.data || []));
   }, [open]);
@@ -68,13 +72,13 @@ const EditTaskModal = ({ open, onClose, task, onUpdated }) => {
       try {
         const token = sessionStorage.getItem("accessToken");
         // Lấy leader
-        const resLeader = await fetch(`http://localhost:3056/api/departments/${departmentId}/leaders`, {
+        const resLeader = await fetch(`${BASE_URL}/api/departments/${departmentId}/leaders`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const dataLeader = await resLeader.json();
         setLeaders(dataLeader.data || []);
         // Lấy supporters
-        const resSupporter = await fetch(`http://localhost:3056/api/departments/${departmentId}/supporters`, {
+        const resSupporter = await fetch(`${BASE_URL}/api/departments/${departmentId}/supporters`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const dataSupporter = await resSupporter.json();
@@ -120,7 +124,7 @@ const EditTaskModal = ({ open, onClose, task, onUpdated }) => {
       formData.append('notes', notes);
       supporterIds.forEach(id => formData.append('supporterIds', id));
       if (fileObj) formData.append('file', fileObj);
-      const res = await fetch(`http://localhost:3056/api/tasks/${task._id}`, {
+      const res = await fetch(`${BASE_URL}/api/tasks/${task._id}`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`,
@@ -134,7 +138,7 @@ const EditTaskModal = ({ open, onClose, task, onUpdated }) => {
       }
       onUpdated();
       onClose();
-    } catch (err) {
+    } catch {
       setError("Lỗi kết nối máy chủ. Vui lòng thử lại.");
     }
     setLoading(false);

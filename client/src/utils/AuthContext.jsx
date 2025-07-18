@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useState } from 'react';
 
-const API_URL = 'http://localhost:3056/api';
-const LOGOUT_API_URL = 'http://localhost:3056/api/auth/logout';
+const BASE_URL = import.meta.env.VITE_SERVER_BASE_URL
 
 const AuthContext = createContext();
 
@@ -18,7 +17,7 @@ export function AuthProvider({ children }) {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`${API_URL}/auth/login`, {
+      const res = await fetch(`${BASE_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
@@ -46,7 +45,7 @@ export function AuthProvider({ children }) {
     if (!token) return;
     setLoading(true);
     try {
-      const res = await fetch(`${API_URL}/users/me`, {
+      const res = await fetch(`${BASE_URL}/api/users/me`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) throw new Error('Không lấy được thông tin user');
@@ -66,7 +65,7 @@ export function AuthProvider({ children }) {
   const logout = async () => {
     try {
       if (accessToken) {
-        const res = await fetch(LOGOUT_API_URL, {
+        const res = await fetch(`${BASE_URL}/api/auth/logout`, {
           method: 'POST',
           headers: { Authorization: `Bearer ${accessToken}` },
         });
@@ -96,7 +95,7 @@ export function AuthProvider({ children }) {
   const fetchParticipatedIndicators = async (token = accessToken) => {
     if (!token) return;
     try {
-      const res = await fetch('http://localhost:3056/api/indicators/participated', {
+      const res = await fetch(`${BASE_URL}/api/indicators/participated`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (!res.ok) throw new Error('Không lấy được danh sách chỉ tiêu');

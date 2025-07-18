@@ -1,3 +1,5 @@
+"use strict";
+require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const Task = require('../models/task.model');
 const Indicator = require('../models/indicator.model');
@@ -19,7 +21,9 @@ function logToFile(message) {
 
 const sseClients = {}; // { userId: [res, ...] }
 const lastNotified = {}; // { [userId_taskType_taskId]: lastNotifyDate }
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret';
+const JWT_SECRET = process.env.JWT_SECRET;
+const CLIENT_URL = process.env.CLIENT;
+
 
 function registerSSE(app) {
   // SSE endpoint
@@ -37,7 +41,7 @@ function registerSSE(app) {
     }
 
     // Bổ sung các header CORS cho SSE
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
+    res.setHeader('Access-Control-Allow-Origin', CLIENT_URL);
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type');
     res.setHeader('Content-Type', 'text/event-stream');

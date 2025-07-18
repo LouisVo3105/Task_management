@@ -1,4 +1,7 @@
+"use strict";
 const Indicator = require('../models/indicator.model');
+const {ROLES, POSITIONS} =require('../configs/enum')
+
 
 const checkLeaderPermission = (req, res, nextOrCallback) => {
   const user = req.user;
@@ -6,7 +9,7 @@ const checkLeaderPermission = (req, res, nextOrCallback) => {
     return res.status(403).json({ success: false, message: 'Người dùng không có quyền truy cập' });
   }
   // Sửa lại điều kiện: chỉ chặn nếu KHÔNG phải admin VÀ cũng KHÔNG phải lãnh đạo
-  if (user.role !== 'admin' && !['Giam doc', 'Pho Giam doc'].includes(user.position)) {
+  if (user.role !== 'admin' && !POSITIONS.slice(0,2).includes(user.position)) {
     return res.status(403).json({ success: false, message: 'Chỉ lãnh đạo mới có quyền thực hiện hành động này' });
   }
   // Nếu truyền callback thì gọi callback, nếu không thì gọi next()

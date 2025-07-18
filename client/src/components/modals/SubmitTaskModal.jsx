@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import { Button, Input, Typography } from "@material-tailwind/react";
 
+const BASE_URL = import.meta.env.VITE_SERVER_BASE_URL
+
+
+
 const SubmitTaskModal = ({ open, onClose, onSubmitted, taskId }) => {
   const [submitNote, setSubmitNote] = useState("");
   const [loading, setLoading] = useState(false);
@@ -22,7 +26,7 @@ const SubmitTaskModal = ({ open, onClose, onSubmitted, taskId }) => {
       const formData = new FormData();
       formData.append('note', submitNote);
       if (fileObj) formData.append('file', fileObj);
-      const res = await fetch(`http://localhost:3056/api/tasks/${taskId}/submit`, {
+      const res = await fetch(`${BASE_URL}/api/tasks/${taskId}/submit`, {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -38,7 +42,7 @@ const SubmitTaskModal = ({ open, onClose, onSubmitted, taskId }) => {
       } else {
         setError(data.message || "Nộp nhiệm vụ thất bại");
       }
-    } catch (e) {
+    } catch{
       setError("Lỗi kết nối máy chủ");
     }
     setLoading(false);

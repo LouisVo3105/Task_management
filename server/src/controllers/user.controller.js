@@ -1,3 +1,4 @@
+"use strict";
 const User = require('../models/user.model');
 const Department = require('../models/department.model');
 const bcrypt = require('bcrypt');

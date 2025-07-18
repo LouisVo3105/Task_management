@@ -1,3 +1,5 @@
+const BASE_URL = import.meta.env.VITE_SERVER_BASE_URL
+
 export async function authFetch(url, options = {}) {
   let accessToken = sessionStorage.getItem('accessToken');
   let refreshToken = sessionStorage.getItem('refreshToken');
@@ -16,7 +18,7 @@ export async function authFetch(url, options = {}) {
 
   // Nếu 401, thử refresh token
   if (!refreshToken) throw new Error('No refresh token');
-  const refreshRes = await fetch('http://localhost:3056/api/auth/refresh-token', {
+  const refreshRes = await fetch(`${BASE_URL}/api/auth/refresh-token`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ refreshToken }),

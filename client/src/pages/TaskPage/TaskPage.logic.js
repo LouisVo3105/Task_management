@@ -5,6 +5,8 @@ import { Chart, ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Leg
 Chart.register(ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 import { authFetch } from '../../utils/authFetch';
 
+const BASE_URL = import.meta.env.VITE_SERVER_BASE_URL
+
 const TABLE_HEAD = ["Tiêu đề", "Ngày kết thúc", "Trạng thái", "Hành động"];
 
 export function useTaskPageLogic() {
@@ -30,7 +32,7 @@ export function useTaskPageLogic() {
     }
     setLoading(true);
     try {
-      const url = `http://localhost:3056/api/indicators/${indicatorId}/tasks`;
+      const url = `${BASE_URL}/api/indicators/${indicatorId}/tasks`;
       const res = await authFetch(url);
       const data = await res.json();
       setTasks(Array.isArray(data.data?.tasks) ? data.data.tasks : []);
@@ -50,7 +52,7 @@ export function useTaskPageLogic() {
         return;
       }
       setLoading(true);
-      authFetch(`http://localhost:3056/api/tasks/incomplete/${user._id}`)
+      authFetch(`${BASE_URL}/api/tasks/incomplete/${user._id}`)
         .then(res => res.json())
         .then(data => { return data; })
         .then(data => {
@@ -64,7 +66,7 @@ export function useTaskPageLogic() {
 
       // Sửa: luôn gọi API lấy nhiệm vụ chờ duyệt nếu đã đăng nhập
       setLoadingPending(true);
-      authFetch(`http://localhost:3056/api/tasks/pending`)
+      authFetch(`${BASE_URL}/api/tasks/pending`)
         .then(res => res.json())
         .then(data => {
           setPendingTasks(Array.isArray(data.data?.docs) ? data.data.docs : []);
@@ -91,7 +93,7 @@ export function useTaskPageLogic() {
         formData.append('file', file);
       }
       
-      const res = await authFetch(`http://localhost:3056/api/tasks/${submitTaskId}/submit`, {
+      const res = await authFetch(`${BASE_URL}/api/tasks/${submitTaskId}/submit`, {
         method: 'PATCH',
         body: formData,
       });
@@ -113,7 +115,7 @@ export function useTaskPageLogic() {
   // Hàm duyệt nhiệm vụ (approve)
   const approveTask = async (taskId) => {
     try {
-      const res = await authFetch(`http://localhost:3056/api/tasks/${taskId}/approve`, {
+      const res = await authFetch(`${BASE_URL}/api/tasks/${taskId}/approve`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -129,7 +131,7 @@ export function useTaskPageLogic() {
       // reload lại danh sách nhiệm vụ chờ duyệt
       // Gọi lại API lấy pendingTasks
       setLoadingPending(true);
-      authFetch(`http://localhost:3056/api/tasks/pending`)
+      authFetch(`${BASE_URL}/api/tasks/pending`)
         .then(res => res.json())
         .then(data => {
           setPendingTasks(Array.isArray(data.data?.docs) ? data.data.docs : []);

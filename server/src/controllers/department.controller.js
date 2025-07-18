@@ -1,3 +1,4 @@
+"use strict";
 const departmentService = require('../services/department.service');
 const { sendSseToastToUser } = require('../services/sse.service');
 

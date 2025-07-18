@@ -1,6 +1,8 @@
+"use strict";
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
+const {ROLES, POSITION, GENDERS} = require('../configs/enum')
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -44,8 +46,8 @@ function  forceSupporterIdsArray(req, res, next) {
 
 // Middleware kiểm tra quyền truy cập cho /all
 function hierarchyAccessMiddleware(req, res, next) {
-  const allowedRoles = ['admin', 'manager'];
-  const allowedPositions = ['Giam doc', 'Pho Giam doc', 'Truong phong'];
+  const allowedRoles = ROLES.filter(r => r !== 'user');
+  const allowedPositions = ROLES.filter(r => r !== 'Nhan vien');
   if (
     (req.user && allowedRoles.includes(req.user.role)) ||
     (req.user && allowedPositions.includes(req.user.position))

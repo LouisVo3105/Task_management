@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { Button, Input, Typography } from "@material-tailwind/react";
 
+const BASE_URL = import.meta.env.VITE_SERVER_BASE_URL
+
+
 const ApproveTaskModal = ({ open, onClose, onApproved, taskId, subTaskId }) => {
   const [mode, setMode] = useState("approve"); // approve or reject
   const [comment, setComment] = useState("");
@@ -13,8 +16,8 @@ const ApproveTaskModal = ({ open, onClose, onApproved, taskId, subTaskId }) => {
     try {
       const token = sessionStorage.getItem('accessToken');
       let url = subTaskId
-        ? `http://localhost:3056/api/tasks/${taskId}/subtasks/${subTaskId}/${mode === "approve" ? "approve" : "reject"}`
-        : `http://localhost:3056/api/tasks/${taskId}/${mode === "approve" ? "approve" : "reject"}`;
+        ? `${BASE_URL}/api/tasks/${taskId}/subtasks/${subTaskId}/${mode === "approve" ? "approve" : "reject"}`
+        : `${BASE_URL}/api/tasks/${taskId}/${mode === "approve" ? "approve" : "reject"}`;
       const res = await fetch(url, {
         method: "PATCH",
         headers: {
@@ -31,7 +34,7 @@ const ApproveTaskModal = ({ open, onClose, onApproved, taskId, subTaskId }) => {
       } else {
         setError(data.message || "Cập nhật trạng thái thất bại");
       }
-    } catch (e) {
+    } catch {
       setError("Lỗi kết nối máy chủ");
     }
     setLoading(false);

@@ -5,6 +5,10 @@ import {
 } from "@material-tailwind/react";
 import ReactSelect from "react-select";
 
+const BASE_URL = import.meta.env.VITE_SERVER_BASE_URL
+
+
+
 const CreateTaskModal = ({ open, onClose, onCreated, indicatorId }) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -26,7 +30,7 @@ const CreateTaskModal = ({ open, onClose, onCreated, indicatorId }) => {
     const fetchDepartments = async () => {
       try {
         const token = sessionStorage.getItem("accessToken");
-        const res = await fetch("http://localhost:3056/api/departments", {
+        const res = await fetch(`${BASE_URL}/api/departments`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -44,7 +48,7 @@ const CreateTaskModal = ({ open, onClose, onCreated, indicatorId }) => {
       const fetchSupporters = async () => {
         try {
           const token = sessionStorage.getItem("accessToken");
-          const res = await fetch("http://localhost:3056/api/users/leaders", {
+          const res = await fetch(`${BASE_URL}/api/users/leaders`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           const data = await res.json();
@@ -69,7 +73,7 @@ const CreateTaskModal = ({ open, onClose, onCreated, indicatorId }) => {
       try {
         const token = sessionStorage.getItem("accessToken");
         // Lấy leader
-        const resLeader = await fetch(`http://localhost:3056/api/departments/${departmentId}/leaders`, {
+        const resLeader = await fetch(`${BASE_URL}/api/departments/${departmentId}/leaders`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const dataLeader = await resLeader.json();
@@ -103,7 +107,7 @@ const CreateTaskModal = ({ open, onClose, onCreated, indicatorId }) => {
       formData.append('notes', notes);
       supporterIds.forEach(id => formData.append('supporterIds', id));
       if (fileObj) formData.append('file', fileObj);
-      const res = await fetch("http://localhost:3056/api/tasks", {
+      const res = await fetch(`${BASE_URL}/api/tasks`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`,

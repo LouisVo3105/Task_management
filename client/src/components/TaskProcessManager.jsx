@@ -3,6 +3,9 @@ import StatusDot from "./StatusDot";
 import authFetch from "../utils/authFetch";
 import { useSSEContext } from "@utils/SSEContext";
 
+const BASE_URL = import.meta.env.VITE_SERVER_BASE_URL
+
+
 function getIndicatorStatus(indicator) {
   if (!indicator.mainTasks || indicator.mainTasks.length === 0) return "pending";
   return indicator.mainTasks.every(task => task.status === "approved") ? "approved" : "pending";
@@ -73,7 +76,7 @@ export default function TaskProcessManager() {
   const fetchAllTasks = useCallback(() => {
     setLoading(true);
     setError(null);
-    authFetch("http://localhost:3056/api/tasks/all")
+    authFetch(`${BASE_URL}/api/tasks/all`)
       .then(res => res.json())
       .then(json => {
         if (json.success) setRows(buildRows(json.data));
@@ -117,7 +120,7 @@ export default function TaskProcessManager() {
   // Helper để render file link đúng host
   const renderFile = (file) => {
     if (!file) return "";
-    const url = file.startsWith("http") ? file : `http://localhost:3056/${file.replace(/^\\|\//, "")}`;
+    const url = file.startsWith("http") ? file : `${BASE_URL}/${file.replace(/^\\|\//, "")}`;
     return <a href={url} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">File</a>;
   };
 

@@ -4,7 +4,9 @@ import { io } from "socket.io-client";
 import authFetch from "../utils/authFetch";
 import { useAuth } from "../utils/useAuth";
 
-const socket = io("http://localhost:3056", { withCredentials: true });
+const BASE_URL = import.meta.env.VITE_SERVER_BASE_URL
+
+const socket = io(BASE_URL, { withCredentials: true });
 
 function buildCommentTree(comments) {
   const map = {};
@@ -37,7 +39,7 @@ const IndicatorComments = ({ indicatorId }) => {
   // Lấy danh sách comment ban đầu
   useEffect(() => {
     if (!indicatorId) return;
-    authFetch(`http://localhost:3056/api/comments/indicator/${indicatorId}`)
+    authFetch(`${BASE_URL}/api/comments/indicator/${indicatorId}`)
       .then(res => res.json())
       .then(data => setComments(data.data || []));
   }, [indicatorId, accessToken]);
@@ -56,7 +58,7 @@ const IndicatorComments = ({ indicatorId }) => {
   // Gửi comment mới
   const handleSend = async () => {
     if (!content.trim()) return;
-    const res = await authFetch("http://localhost:3056/api/comments", {
+    const res = await authFetch(`${BASE_URL}/api/comments`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -76,7 +78,7 @@ const IndicatorComments = ({ indicatorId }) => {
   // Xóa comment
   const handleDelete = async (commentId) => {
     if (!window.confirm("Bạn có chắc muốn xóa bình luận này?")) return;
-    const res = await authFetch(`http://localhost:3056/api/comments/${commentId}`, {
+    const res = await authFetch(`${BASE_URL}/api/comments/${commentId}`, {
       method: "DELETE"
     });
     const data = await res.json();
