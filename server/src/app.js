@@ -31,6 +31,8 @@ const db = Database.getInstance();
 
 app.use(cors({
   origin:[CLIENT_URL],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 }));
 
