@@ -1,5 +1,5 @@
 import { Typography } from "@material-tailwind/react";
-import Logo from '../../assets/logo.svg';
+import Logo from '../../assets/Logo.svg';
 
 function Footer() {
   return (
