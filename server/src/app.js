@@ -34,6 +34,8 @@ app.use(cors({
   credentials: true
 }));
 
+app.set('trust proxy', 1)
+
 // Middleware
 app.use(morgan('dev'));
 app.use(helmet());
