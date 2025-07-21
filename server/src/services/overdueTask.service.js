@@ -180,6 +180,10 @@ exports.cloneOverdueTask = async (taskId, newDeadline, user) => {
   if (originalTask.status !== 'overdue') throw new Error('Nhiệm vụ này không quá hạn');
   const isSubtask = !!originalTask.parentTask;
   const newDeadlineDate = new Date(newDeadline);
+  const now = new Date();
+  if (isNaN(newDeadlineDate.getTime()) || newDeadlineDate <= now) {
+    throw new Error('Deadline mới phải lớn hơn ngày hiện tại');
+  }
 
   if (isSubtask) {
     // Nếu là subtask, tạo lại subtask mới trong task chính
