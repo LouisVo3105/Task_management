@@ -31,7 +31,51 @@ const CreateSubtaskModal = ({ open, onClose, onCreated, parentTaskId, supporters
       const leader = (supporters || []).find(u => u._id === leaderId);
       // Lấy departmentId từ leader
       const departmentId = leader?.department?._id || leader?.department;
-      if (departmentId) {
+      // Xác định leader là Giám đốc, Phó Giám đốc, admin nếu không có departmentId
+      if (!departmentId) {
+        // Lấy tất cả departmentId của supporter (lọc trùng)
+        const allDepartmentIds = Array.from(
+          new Set(
+            (supporters || [])
+              .map(u => u.department?._id || u.department)
+              .filter(Boolean)
+          )
+        );
+        if (allDepartmentIds.length > 0) {
+          const fetchAll = async () => {
+            try {
+              const token = sessionStorage.getItem('accessToken');
+              // Fetch song song tất cả phòng ban
+              const results = await Promise.all(
+                allDepartmentIds.map(depId =>
+                  fetch(`${BASE_URL}/api/departments/${depId}/supporters`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                  })
+                    .then(res => res.json())
+                    .then(data => (data.success && Array.isArray(data.data)) ? data.data : [])
+                    .catch(() => [])
+                )
+              );
+              // Gộp tất cả supporter lại, loại trùng theo _id
+              const merged = Object.values(
+                results.flat().reduce((acc, cur) => {
+                  acc[cur._id] = cur;
+                  return acc;
+                }, {})
+              );
+              setDepartmentUsers(merged);
+            } catch {
+              setDepartmentUsers([]);
+            }
+            setAssigneeId("");
+          };
+          fetchAll();
+        } else {
+          setDepartmentUsers([]);
+          setAssigneeId("");
+        }
+      } else {
+        // Logic cũ: leader có phòng ban
         const fetchUsers = async () => {
           try {
             const res = await fetch(`${BASE_URL}/api/departments/${departmentId}/supporters`, {
@@ -46,18 +90,15 @@ const CreateSubtaskModal = ({ open, onClose, onCreated, parentTaskId, supporters
           } catch {
             setDepartmentUsers([]);
           }
+          setAssigneeId("");
         };
         fetchUsers();
-        setAssigneeId("");
-      } else {
-        setDepartmentUsers([]);
-        setAssigneeId("");
       }
     } else {
       setDepartmentUsers([]);
       setAssigneeId("");
     }
-  }, [leaderId]);
+  }, [leaderId, supporters]);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
