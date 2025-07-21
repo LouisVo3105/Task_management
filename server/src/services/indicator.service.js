@@ -70,18 +70,25 @@ const getIndicators = async (page = 1, limit = 10) => {
   const indicators = await Indicator.paginate({}, options);
   const indicatorsWithStatus = await Promise.all(
     indicators.docs.map(async (indicator) => {
-      const tasks = await Task.find({ indicator: indicator._id, parentTask: null }).select('status').lean();
+      // Lấy tất cả task của chỉ tiêu
+      const allTasks = await Task.find({ indicator: indicator._id }).select('status parentTask').lean();
+      const rootTasks = allTasks.filter(t => !t.parentTask);
+      const cloneTasks = allTasks.filter(t => t.parentTask);
+      const rootTaskIdsWithClone = new Set(cloneTasks.map(t => t.parentTask?.toString()));
+      const displayTasks = [
+        ...cloneTasks,
+        ...rootTasks.filter(t => !rootTaskIdsWithClone.has(t._id.toString()))
+      ];
       let completedTasks = 0;
-      let totalTasks = 0;
-      for (const task of tasks) {
-        totalTasks++;
+      let totalTasks = displayTasks.length;
+      for (const task of displayTasks) {
         if (task.status === 'approved') completedTasks++;
       }
       const completionPercentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
       let overallStatus = 'not_started';
       if (totalTasks === 0) overallStatus = 'no_tasks';
       else if (completedTasks === totalTasks) overallStatus = 'completed';
-      else if (completedTasks > 0) overallStatus = 'in_progress';
+      else if (totalTasks > 0) overallStatus = 'in_progress';
       return {
         ...indicator.toObject(),
         status: {
