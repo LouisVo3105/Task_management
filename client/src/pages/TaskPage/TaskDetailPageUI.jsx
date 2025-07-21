@@ -22,7 +22,7 @@ export default function TaskDetailPageUI({
   if (!task) {
     return <div className="p-6 text-center text-red-500">Không tìm thấy thông tin nhiệm vụ.</div>;
   }
-  const isSubtask = !!task?.parentTask;
+  const isSubtask = !!task?.parentTask && task.isRoot === false;
   const details = [
     { label: "Chỉ tiêu", value: task.indicator?.name, highlight: true },
     { label: "Tiêu đề", value: task.title, highlight: true },
@@ -91,7 +91,11 @@ export default function TaskDetailPageUI({
       />
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">
-          {isSubtask ? 'Chi tiết nhiệm vụ con' : 'Chi tiết nhiệm vụ chính'}
+          {isSubtask
+            ? 'Chi tiết nhiệm vụ con'
+            : (task.isRoot === false && !!task.parentTask)
+              ? 'Chi tiết nhiệm vụ đã tạo lại'
+              : 'Chi tiết nhiệm vụ chính'}
         </h1>
         <div className="flex gap-2">
           <Button variant="outlined" onClick={() => navigate(-1)}>Quay lại</Button>

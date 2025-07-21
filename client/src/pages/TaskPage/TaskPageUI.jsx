@@ -193,6 +193,15 @@ export default function TaskPageUI({
     "Hành động"
   ];
 
+  // Tối ưu hiển thị: chỉ hiển thị nhiệm vụ clone nếu đã có clone, nếu chưa có clone thì hiển thị nhiệm vụ gốc
+  const rootTasks = tasks.filter(t => t.isRoot);
+  const cloneTasks = tasks.filter(t => !t.isRoot);
+  const rootTaskIdsWithClone = new Set(cloneTasks.map(t => t.parentTask?.toString()));
+  const displayTasks = [
+    ...cloneTasks,
+    ...rootTasks.filter(t => !rootTaskIdsWithClone.has(t._id.toString()))
+  ];
+
   return (
     <div className="p-6 min-h-[650px]">
       <CreateTaskModal open={openCreate} onClose={() => setOpenCreate(false)} onCreated={fetchTasks} indicatorId={indicatorId} />
@@ -230,6 +239,7 @@ export default function TaskPageUI({
                     <Typography variant="small" color="blue-gray" className="font-normal leading-none opacity-70">{head}</Typography>
                   </th>
                 ))}
+                <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">Loại</th>
               </tr>
             </thead>
             <tbody>
@@ -247,7 +257,7 @@ export default function TaskPageUI({
           </table>
           <div className="my-2" style={{ height: '8px' }} />
         </div>
-      ) : tasks.length === 0 ? (
+      ) : displayTasks.length === 0 ? (
         <div className="text-center py-8 text-gray-500 min-h-[200px] flex items-center justify-center">Chỉ tiêu này chưa có nhiệm vụ nào.</div>
       ) : (
         <Card className="h-full w-full overflow-scroll">
@@ -259,10 +269,11 @@ export default function TaskPageUI({
                     <Typography variant="small" color="blue-gray" className="font-normal leading-none opacity-70">{head}</Typography>
                   </th>
                 ))}
+                <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-4">Loại</th>
               </tr>
             </thead>
             <tbody>
-              {tasks.map((item) => {
+              {displayTasks.map((item) => {
                 return (
                   <tr key={item._id}>
                     <td className="p-4 border-b border-blue-gray-50">{item.title}</td>
@@ -288,6 +299,11 @@ export default function TaskPageUI({
                       {isAdminOrManager && (item.status === 'submitted' || item.status === 'approved') && (
                         <TaskStatusBadge status={item.status} />
                       )}
+                    </td>
+                    <td className="p-4 border-b border-blue-gray-50">
+                      <span className={`text-xs font-semibold px-2 py-1 rounded ${item.isRoot ? 'bg-gray-200 text-gray-700' : 'bg-blue-100 text-blue-700'}`}>
+                        {item.isRoot ? 'Nhiệm vụ gốc' : 'Đã tạo lại'}
+                      </span>
                     </td>
                   </tr>
                 );

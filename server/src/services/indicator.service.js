@@ -117,10 +117,14 @@ const getIndicatorTasks = async (id) => {
     err.status = 404;
     throw err;
   }
-  const tasks = await Task.find({ indicator: id, parentTask: null })
-    .select('title endDate _id status subTasks department createdAt')
+  const tasks = await Task.find({ indicator: id })
+    .select('title endDate _id status subTasks department createdAt parentTask')
     .populate({ path: 'department', select: '_id name' })
     .lean();
+  // Thêm trường phân biệt nhiệm vụ gốc và nhiệm vụ clone
+  tasks.forEach(task => {
+    task.isRoot = !task.parentTask;
+  });
   let completedTasks = 0;
   let totalTasks = 0;
   for (const task of tasks) {

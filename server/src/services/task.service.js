@@ -525,22 +525,52 @@ const getOverdueTasks = async (query) => {
     ]
   };
   const tasks = await Task.paginate(overdueQuery, options);
+
+  // Lấy tất cả task để kiểm tra clone
+  const allTasks = await Task.find({});
+
   const result = tasks.docs.flatMap(task => {
     const overdueItems = [];
+    // Kiểm tra nhiệm vụ chính đã được clone chưa
+    let mainCloned = false;
+    // Nếu có task khác có parentTask là task này và không phải trạng thái 'overdue'
+    if (allTasks.some(t => t.parentTask && t.parentTask.toString() === task._id.toString() && t.status !== 'overdue')) {
+      mainCloned = true;
+    }
     if (['pending', 'submitted', 'overdue'].includes(task.status) && task.endDate < now) {
       overdueItems.push({
         _id: task._id, title: task.title, content: task.content, endDate: task.endDate, status: task.status, type: 'main', parentTask: null,
         indicator: task.indicator?.name, leader: task.leader?.fullName, department: task.department?.name,
-        daysOverdue: Math.ceil((now - task.endDate) / (1000 * 60 * 60 * 24))
+        daysOverdue: Math.ceil((now - task.endDate) / (1000 * 60 * 60 * 24)),
+        cloned: mainCloned
       });
     }
     if (task.subTasks && task.subTasks.length > 0) {
       task.subTasks.forEach(subTask => {
+        // Kiểm tra subtask đã được clone chưa
+        let subCloned = false;
+        // Nếu có subtask khác trong các task khác có title, content, assignee, parentTask giống và không phải trạng thái 'overdue'
+        for (const t of allTasks) {
+          if (t._id.toString() !== task._id.toString() && t.subTasks && t.subTasks.length > 0) {
+            for (const st of t.subTasks) {
+              if (
+                st.title === subTask.title &&
+                st.content === subTask.content &&
+                st.assignee?.toString() === subTask.assignee?._id?.toString() &&
+                t.parentTask && t.parentTask.toString() === task._id.toString() &&
+                st.status !== 'overdue'
+              ) {
+                subCloned = true;
+              }
+            }
+          }
+        }
         if (['pending', 'submitted', 'overdue'].includes(subTask.status) && subTask.endDate < now) {
           overdueItems.push({
             _id: subTask._id, title: subTask.title, content: subTask.content, endDate: subTask.endDate, status: subTask.status, type: 'sub',
             parentTask: task.title, indicator: task.indicator?.name, leader: task.leader?.fullName, department: task.department?.name,
-            assignee: subTask.assignee?.fullName, daysOverdue: Math.ceil((now - subTask.endDate) / (1000 * 60 * 60 * 24))
+            assignee: subTask.assignee?.fullName, daysOverdue: Math.ceil((now - subTask.endDate) / (1000 * 60 * 60 * 24)),
+            cloned: subCloned
           });
         }
       });

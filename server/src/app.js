@@ -17,6 +17,7 @@ const rateLimit = require('express-rate-limit');
 
 const userRoute = require('./routes/user.route');
 const taskRoute = require('./routes/task.route');
+const overdueTaskRoute = require('./routes/overdueTask.route');
 const authRoute = require('./routes/auth.route');
 const indicatorRoute = require('./routes/indicator.route');
 const analysisRoute = require('./routes/analysis.route');
@@ -31,7 +32,7 @@ const db = Database.getInstance();
 
 app.use(cors({
   origin:[CLIENT_URL],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS','PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 }));
@@ -71,12 +72,13 @@ const commentLimiter = rateLimit({
 // Khởi tạo routes
 app.use('/api/auth', userLimiter, authRoute);
 app.use('/api/users', userLimiter, userRoute);
+app.use('/api/notifications', notificationRoute);
 app.use('/api/tasks', taskIndicatorLimiter, taskRoute);
+app.use('/api/overdue-tasks', overdueTaskRoute);
 app.use('/api/indicators', taskIndicatorLimiter, indicatorRoute);
 app.use('/api/analysis', analysisRoute);
 app.use('/api/departments', departmentRoute);
 app.use('/api/comments', commentLimiter, commentRoute);
-app.use('/api/notifications', notificationRoute);
 
 // Đăng ký SSE
 registerSSE(app);

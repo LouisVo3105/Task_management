@@ -193,7 +193,8 @@ exports.cloneOverdueTask = async (taskId, newDeadline, user) => {
       notes: originalTask.notes,
       status: 'pending',
       file: originalTask.file,
-      fileName: originalTask.fileName
+      fileName: originalTask.fileName,
+      clonedFrom: originalTask._id // Thêm trường clonedFrom để đánh dấu subtask gốc
     };
     parentTask.subTasks.push(newSubtask);
     await parentTask.save();
@@ -214,7 +215,7 @@ exports.cloneOverdueTask = async (taskId, newDeadline, user) => {
         endDate: newDeadlineDate,
         indicator: originalTask.indicator,
         indicatorCreator: originalTask.indicatorCreator,
-        parentTask: originalTask.parentTask,
+        parentTask: originalTask._id, // Gán parentTask là _id của nhiệm vụ gốc
         department: originalTask.department,
         notes: originalTask.notes,
         status: 'pending',
@@ -238,7 +239,8 @@ exports.cloneOverdueTask = async (taskId, newDeadline, user) => {
             assignee: subTask.assignee,
             file: subTask.file,
             fileName: subTask.fileName,
-            endDate: newSubTaskDeadline <= newDeadlineDate ? newSubTaskDeadline : newDeadlineDate
+            endDate: newSubTaskDeadline <= newDeadlineDate ? newSubTaskDeadline : newDeadlineDate,
+            clonedFrom: subTask._id // Thêm trường clonedFrom để đánh dấu subtask gốc
           };
         });
       }

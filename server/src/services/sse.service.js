@@ -54,6 +54,9 @@ function registerSSE(app) {
 
     logToFile(`[SSE] User ${userId} connected at ${getVNDateString(new Date())}`);
 
+    // Gửi thông báo nhiệm vụ quá hạn cho user ngay khi kết nối
+    sendOverdueNotificationsForUser(userId);
+
     // Delay gửi notification tổng quan 3 giây sau khi user kết nối
     setTimeout(() => {
       sendIncompleteTasksCount(userId);
@@ -189,6 +192,60 @@ function sendTaskApprovalResult(userId, status, taskData) {
       if (res.flush) res.flush();
     });
     logToFile(`[SSE] ${event} to user ${userId}: ${message}`);
+  }
+}
+
+// Thêm hàm mới gửi thông báo quá hạn cho user khi kết nối SSE
+async function sendOverdueNotificationsForUser(userId) {
+  const now = new Date();
+  const Task = require('../models/task.model');
+  // Nhiệm vụ chính quá hạn, chưa thông báo
+  const mainTasks = await Task.find({
+    leader: userId,
+    status: 'overdue',
+    endDate: { $lt: now },
+    overdueNotified: { $ne: true }
+  });
+  for (const task of mainTasks) {
+    const notifyData = {
+      type: 'main_task_overdue',
+      taskId: task._id,
+      title: task.title,
+      deadline: task.endDate
+    };
+    broadcastSSE('main_task_overdue', notifyData);
+    // Đánh dấu đã gửi
+    task.overdueNotified = true;
+    await task.save();
+  }
+
+  // Subtask quá hạn, chưa thông báo
+  const tasks = await Task.find({
+    'subTasks.assignee': userId,
+    'subTasks.status': 'overdue',
+    'subTasks.endDate': { $lt: now }
+  });
+  for (const task of tasks) {
+    let updated = false;
+    for (const sub of task.subTasks) {
+      if (
+        sub.assignee?.toString() === userId &&
+        sub.status === 'overdue' &&
+        sub.endDate < now &&
+        !sub.overdueNotified
+      ) {
+        const notifyData = {
+          type: 'subtask_overdue',
+          subtaskId: sub._id,
+          title: sub.title,
+          deadline: sub.endDate
+        };
+        broadcastSSE('subtask_overdue', notifyData);
+        sub.overdueNotified = true;
+        updated = true;
+      }
+    }
+    if (updated) await task.save();
   }
 }
 
