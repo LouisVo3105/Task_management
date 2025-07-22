@@ -1,6 +1,6 @@
 import React from "react";
 import { Card, Typography, Button } from "@material-tailwind/react";
-import CreateTaskModal from "../../components/modals/CreateTaskModal";
+import CreateTaskModal from "../../components/CreateTaskModal/CreateTaskModal";
 import SubmitTaskMainModal from "../../components/modals/SubmitTaskMainModal";
 import StatusDot from "../../components/StatusDot";
 import { formatDate } from "../../utils/formatDate";

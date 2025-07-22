@@ -1,5 +1,6 @@
 username,password,email,fullName,position,phoneNumber,department,role,directSupervisor,gender
-user2345,Password123,user2345@example.com,Tran Thi B,Nhân viên,0987654321,Phòng Hành Chính,user,684fc4a0f60417dff0797c0f,Nữ
-user3456,Password123,user3456@example.com,Le Van C,Nhân viên,0911222333,Phòng Hành Chính,user,684fc4a0f60417dff0797c0f,Nam
-user4567,Password123,user4567@example.com,Pham Thi D,Nhân viên,0922333444,Phòng Hành Chính,user,684fc4a0f60417dff0797c0f,Nữ
-user5678,Password123,user5678@example.com,Hoang Van E,Nhân viên,0933444555,Phòng Hành Chính,user,684fc4a0f60417dff0797c0f,Nam
+user1234556,anhnhungprime, chelseafc@fbc.com,Nicolas Jackson, Nhân viên, 01245632178,686c917d88a656e6f8764557, user, 6870649fb5e9e89346b96425, Nam
+user1212121,caulanhprime, caulanh@fbc.com,Cole Palmer ,Nhân viên, 01245634128,686c917d88a656e6f8764557, user, 6870649fb5e9e89346b96425, Nam
+user4455667788,bovoprime, chelseafc@fbc.com,Enzo Fernandez, Nhân viên, 01245632178,686c917d88a656e6f8764557, user, 6870649fb5e9e89346b96425, Nam
+user112233445566778899,70%traidatlanuoc, chelseafc1@fbc.com,Moises Caceido, Chuyên viên, 01245639178,686c917d88a656e6f8764557, user, 6870649fb5e9e89346b96425, Nam
+userkakakakkakakaka,Mareskakaka@iuchelseavl.com, chelseafc@fbc.com,Enzo Maresca, Trưởng phòng, 01245632198,686c917d88a656e6f8764557, user, 6870649fb5e9e89346b96425, Nam

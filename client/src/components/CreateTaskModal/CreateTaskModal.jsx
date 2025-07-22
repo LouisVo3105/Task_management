@@ -4,137 +4,39 @@ import {
   Typography,
 } from "@material-tailwind/react";
 import ReactSelect from "react-select";
-
-const BASE_URL = import.meta.env.VITE_SERVER_BASE_URL
-
-
+import { useCreateTask } from "../../hooks/useCreateTask";
 
 const CreateTaskModal = ({ open, onClose, onCreated, indicatorId }) => {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [notes, setNotes] = useState("");
-  const [departmentId, setDepartmentId] = useState("");
-  const [departments, setDepartments] = useState([]);
-  const [leaderId, setLeaderId] = useState("");
-  const [leaders, setLeaders] = useState([]);
-  const [supporterIds, setSupporterIds] = useState([]);
-  const [supporters, setSupporters] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [fileObj, setFileObj] = useState(null);
-  const [fileName, setFileName] = useState("");
-
-  // Lấy danh sách phòng ban khi mở modal
-  useEffect(() => {
-    const fetchDepartments = async () => {
-      try {
-        const token = sessionStorage.getItem("accessToken");
-        const res = await fetch(`${BASE_URL}/api/departments`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const data = await res.json();
-        setDepartments(data.data || []);
-      } catch {
-        setDepartments([]);
-      }
-    };
-    if (open) fetchDepartments();
-  }, [open]);
-
-  // Thêm useEffect lấy supporter từ API /api/users/leaders khi open
-  useEffect(() => {
-    if (open) {
-      const fetchSupporters = async () => {
-        try {
-          const token = sessionStorage.getItem("accessToken");
-          const res = await fetch(`${BASE_URL}/api/users/leaders`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          const data = await res.json();
-          setSupporters(data.data || []);
-        } catch {
-          setSupporters([]);
-        }
-      };
-      fetchSupporters();
-    }
-  }, [open]);
-
-  // Trong useEffect phụ thuộc departmentId, bỏ fetch supporter ở đây (chỉ fetch leader)
-  useEffect(() => {
-    if (!departmentId) {
-      setLeaders([]);
-      setLeaderId("");
-      setSupporterIds([]);
-      return;
-    }
-    const fetchLeaders = async () => {
-      try {
-        const token = sessionStorage.getItem("accessToken");
-        // Lấy leader
-        const resLeader = await fetch(`${BASE_URL}/api/departments/${departmentId}/leaders`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const dataLeader = await resLeader.json();
-        setLeaders(dataLeader.data || []);
-      } catch {
-        setLeaders([]);
-      }
-    };
-    fetchLeaders();
-  }, [departmentId]);
-
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setFileName(file.name);
-      setFileObj(file);
-    }
-  };
-
-  const handleCreate = async () => {
-    setLoading(true);
-    setError("");
-    try {
-      const formData = new FormData();
-      formData.append('title', title);
-      formData.append('content', content);
-      formData.append('endDate', endDate);
-      formData.append('indicatorId', indicatorId);
-      formData.append('departmentId', departmentId);
-      formData.append('leaderId', leaderId);
-      formData.append('notes', notes);
-      supporterIds.forEach(id => formData.append('supporterIds', id));
-      if (fileObj) formData.append('file', fileObj);
-      const res = await fetch(`${BASE_URL}/api/tasks`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`,
-        },
-        body: formData,
-      });
-      const data = await res.json();
-      if (data.success) {
-        setTitle("");
-        setContent("");
-        setEndDate("");
-        setNotes("");
-        setDepartmentId("");
-        setLeaderId("");
-        setSupporterIds([]);
-        setFileObj(null);
-        setFileName("");
-        onCreated && onCreated();
-        onClose();
-      } else {
-        setError(data.message || "Tạo nhiệm vụ thất bại");
-      }
-    } catch (e) {
-      setError("Lỗi kết nối máy chủ. Vui lòng thử lại.");
-    }
-    setLoading(false);
-  };
+  const {
+    title,
+    setTitle,
+    content,
+    setContent,
+    endDate,
+    setEndDate,
+    notes,
+    setNotes,
+    departmentId,
+    setDepartmentId,
+    departments,
+    setDepartments,
+    leaderId,
+    setLeaderId,
+    leaders,
+    setLeaders,
+    supporterIds,
+    setSupporterIds,
+    supporters,
+    setSupporters,
+    loading,
+    error,
+    fileObj,
+    setFileObj,
+    fileName,
+    setFileName,
+    handleFileChange,
+    handleCreate
+  } = useCreateTask({ onClose, onCreated, indicatorId, open });
 
   if (!open) return null;
 

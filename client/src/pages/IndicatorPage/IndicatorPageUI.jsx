@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, Typography } from "@material-tailwind/react";
-import CreateIndicatorModal from "../../components/modals/CreateIndicatorModal";
-import EditIndicatorModal from "../../components/modals/EditIndicatorModal";
+import CreateIndicatorModal from "../../components/CreateIndicatorModal/CreateIndicatorModal";
+import EditIndicatorModal from "../../components/EditIndicatorModal/EditIndicatorModal";
 import { formatDate } from "../../utils/formatDate";
 import { useAuth } from "../../utils/useAuth";
 import StatusDot from "../../components/StatusDot";

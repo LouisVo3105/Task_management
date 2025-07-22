@@ -5,7 +5,7 @@ import {
 } from "@material-tailwind/react";
 import DetailList from "../DetailList/DetailList";
 import SubmitTaskModal from "./SubmitTaskModal";
-import ApproveTaskModal from "./ApproveTaskModal";
+import ApproveTaskModal from "../ApproveTaskModal/ApproveTaskModal";
 import StatusDot from "../StatusDot";
 import { formatDate, formatDateTime } from "../../utils/formatDate";
 

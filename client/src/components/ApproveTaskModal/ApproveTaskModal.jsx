@@ -1,44 +1,17 @@
-import React, { useState } from "react";
+import React from "react";
 import { Button, Input, Typography } from "@material-tailwind/react";
-
-const BASE_URL = import.meta.env.VITE_SERVER_BASE_URL
-
+import { useApproveTask } from "../../hooks/useApproveTask";
 
 const ApproveTaskModal = ({ open, onClose, onApproved, taskId, subTaskId }) => {
-  const [mode, setMode] = useState("approve"); // approve or reject
-  const [comment, setComment] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  const handleAction = async () => {
-    setLoading(true);
-    setError("");
-    try {
-      const token = sessionStorage.getItem('accessToken');
-      let url = subTaskId
-        ? `${BASE_URL}/api/tasks/${taskId}/subtasks/${subTaskId}/${mode === "approve" ? "approve" : "reject"}`
-        : `${BASE_URL}/api/tasks/${taskId}/${mode === "approve" ? "approve" : "reject"}`;
-      const res = await fetch(url, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ comment }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        setComment("");
-        onApproved && onApproved();
-        onClose();
-      } else {
-        setError(data.message || "Cập nhật trạng thái thất bại");
-      }
-    } catch {
-      setError("Lỗi kết nối máy chủ");
-    }
-    setLoading(false);
-  };
+  const {
+    mode,
+    setMode,
+    comment,
+    setComment,
+    loading,
+    error,
+    handleAction
+  } = useApproveTask({ onClose, onApproved, taskId, subTaskId });
 
   if (!open) return null;
 

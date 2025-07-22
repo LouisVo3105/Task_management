@@ -2,11 +2,11 @@ import React from "react";
 import { Card, Typography, Button } from "@material-tailwind/react";
 import DetailList from "../../components/DetailList/DetailList";
 import EditTaskModal from "../../components/modals/EditTaskModal";
-import CreateSubtaskModal from "../../components/modals/CreateSubtaskModal";
+import CreateSubtaskModal from "../../components/CreateSubtaskModal/CreateSubtaskModal";
 import SubmitTaskModal from '../../components/modals/SubmitTaskModal';
 import StatusDot from "../../components/StatusDot";
 import { formatDate, formatDateTime } from "../../utils/formatDate";
-import ApproveTaskModal from "../../components/modals/ApproveTaskModal";
+import ApproveTaskModal from "../../components/ApproveTaskModal/ApproveTaskModal";
 
 const BASE_URL = import.meta.env.VITE_SERVER_BASE_URL
 

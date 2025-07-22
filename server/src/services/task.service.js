@@ -161,7 +161,7 @@ const getTaskDetail = async (id) => {
     .populate('department', '_id name')
     .populate('approvalHistory.reviewer', 'fullName')
     .lean();
-  if (task) return { type: 'main', task };
+  if (task) return { type: 'main', task: { ...task, isRoot: true } };
   const parentTask = await Task.findOne({ 'subTasks._id': new mongoose.Types.ObjectId(id) })
     .populate('indicator', selectIndicatorFields)
     .populate('leader', selectUserFields)
@@ -194,7 +194,8 @@ const getTaskDetail = async (id) => {
         parentTask: { _id: parentTask._id, title: parentTask.title },
         indicator: parentTask.indicator,
         leader: subtaskLeader,
-        supporters: subtaskSupporters
+        supporters: subtaskSupporters,
+        isRoot: false
       };
       return { type: 'subtask', subTask: response };
     }

@@ -1,45 +1,16 @@
-import React, { useState, useEffect } from "react";
-
-const BASE_URL = import.meta.env.VITE_SERVER_BASE_URL
-
+import React, { useEffect, useState } from "react";
+import { useEditIndicator } from "../../hooks/useEditIndicator";
 
 const EditIndicatorModal = ({ open, onClose, indicator, onUpdated }) => {
-  const [name, setName] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    if (indicator) {
-      setName(indicator.name || "");
-      setEndDate(indicator.endDate ? indicator.endDate.slice(0, 10) : "");
-    }
-  }, [indicator]);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-    try {
-      const res = await fetch(`${BASE_URL}/api/indicators/${indicator._id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`,
-        },
-        body: JSON.stringify({ name, endDate }),
-      });
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.message || "Cập nhật thất bại");
-      }
-      onUpdated();
-      onClose();
-    } catch (err) {
-      setError(err.message);
-    }
-    setLoading(false);
-  };
+  const {
+    name,
+    setName,
+    endDate,
+    setEndDate,
+    loading,
+    error,
+    handleSubmit
+  } = useEditIndicator({ onClose, indicator, onUpdated });
 
   if (!open) return null;
 

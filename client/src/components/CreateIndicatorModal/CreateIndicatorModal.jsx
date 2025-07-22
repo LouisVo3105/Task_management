@@ -1,42 +1,18 @@
-import React, { useState } from "react";
+import React from "react";
 import { Button, Input, Typography } from "@material-tailwind/react";
 import ReactDOM from "react-dom";
-import authFetch from "../../utils/authFetch";
-
-const BASE_URL = import.meta.env.VITE_SERVER_BASE_URL
-
+import { useCreateIndicator } from "../../hooks/useCreateIndicator";
 
 const CreateIndicatorModal = ({ open, onClose, onCreated }) => {
-  const [name, setName] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  const handleCreate = async () => {
-    setLoading(true);
-    setError("");
-    try {
-      const res = await authFetch(`${BASE_URL}/api/indicators`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name, endDate }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        setName("");
-        setEndDate("");
-        onCreated && onCreated();
-        onClose();
-      } else {
-        setError(data.message || "Tạo chỉ tiêu thất bại");
-      }
-    } catch {
-      setError("Lỗi kết nối máy chủ");
-    }
-    setLoading(false);
-  };
+  const {
+    name,
+    setName,
+    endDate,
+    setEndDate,
+    loading,
+    error,
+    handleCreate
+  } = useCreateIndicator({ onClose, onCreated });
 
   if (!open) return null;
 

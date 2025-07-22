@@ -1344,3 +1344,109 @@
 [SSE] User 6870649fb5e9e89346b96425 connected at 13:57:45 21/7/2025
 [SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 5
 [SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] User 6870649fb5e9e89346b96425 connected at 07:42:51 22/7/2025
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 07:42:52 22/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 07:42:53 22/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 5
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 5
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 07:43:01 22/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 07:43:02 22/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 5
+[SSE] Toast to user 6870649fb5e9e89346b96425: success - Xóa nhiệm vụ thành công!
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 07:43:06 22/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 07:43:07 22/7/2025
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 4
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 07:43:22 22/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 07:43:22 22/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 4
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 07:43:26 22/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 07:43:27 22/7/2025
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 07:43:29 22/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 07:43:30 22/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 4
+[SSE] Toast to user 6870649fb5e9e89346b96425: error - Không tìm thấy nhiệm vụ
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 07:43:53 22/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 07:43:53 22/7/2025
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 07:43:55 22/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 07:43:55 22/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 4
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 4
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 07:50:32 22/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 07:50:32 22/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 4
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 07:52:00 22/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 07:52:00 22/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 4
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 07:52:04 22/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 07:52:04 22/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 4
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 07:52:35 22/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 07:52:35 22/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 4
+[SSE] Toast to user 6870649fb5e9e89346b96425: success - Xóa chỉ tiêu thành công!
+[SSE] Toast to user 6870649fb5e9e89346b96425: success - Nộp file thành công!
+[SSE] Toast to user 6870649fb5e9e89346b96425: success - Chấp thuận nhiệm vụ thành công!
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 08:14:15 22/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:14:16 22/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 08:22:25 22/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:22:26 22/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Toast to user 6870649fb5e9e89346b96425: success - Tạo chỉ tiêu thành công!
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 08:23:11 22/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:23:13 22/7/2025
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 08:23:18 22/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:23:19 22/7/2025
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Toast to user 6870649fb5e9e89346b96425: success - Tạo chỉ tiêu thành công!
+[SSE] Toast to user 6870649fb5e9e89346b96425: success - Xóa chỉ tiêu thành công!
+[SSE] Toast to user 6870649fb5e9e89346b96425: success - Xóa chỉ tiêu thành công!
+[SSE] Toast to user 6870649fb5e9e89346b96425: success - Nộp file thành công!
+[SSE] Toast to user 6870649fb5e9e89346b96425: success - Chấp thuận nhiệm vụ thành công!
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 08:37:59 22/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:37:59 22/7/2025
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Toast to user 6870649fb5e9e89346b96425: success - Xóa nhiệm vụ thành công!
+[SSE] Toast to user 6870649fb5e9e89346b96425: success - Tạo nhiệm vụ thành công!
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 08:44:41 22/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:44:42 22/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:48:32 22/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:49:59 22/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 08:50:09 22/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:50:10 22/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:57:35 22/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:57:37 22/7/2025
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 08:57:38 22/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 08:57:39 22/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
+[SSE] Toast to user 6870649fb5e9e89346b96425: success - Tạo nhiệm vụ thành công!
+[SSE] Toast to user 6870649fb5e9e89346b96425: success - Cập nhật chỉ tiêu thành công!

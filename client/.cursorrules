@@ -1,0 +1,95 @@
+# .cursorrules for Frontend Refactoring
+
+# 1. Separation of Logic and UI
+- Keep business logic and UI rendering separate.
+- Place business logic in separate files (e.g., services/, hooks/, or utils/).
+- UI components should only handle rendering and user interactions.
+- Use custom hooks for reusable logic (e.g., useAuth, useFetchData).
+- Example structure:
+  src/
+    components/
+      Button/
+        Button.jsx
+        Button.css
+    hooks/
+      useAuth.js
+      useFetchData.js
+    services/
+      api.js
+      auth.js
+
+# 2. Use authFetch Instead of fetch
+- Replace all fetch calls with authFetch to handle authentication headers and token management.
+- Ensure authFetch is imported from a centralized API service (e.g., src/services/api.js).
+- Example:
+  import { authFetch } from '../services/api';
+  const response = await authFetch('/api/data', { method: 'GET' });
+
+# 3. Directory Organization
+- Each component should reside in its own folder under src/components/.
+- Folder structure for a component:
+  src/components/ComponentName/
+    ComponentName.jsx
+    ComponentName.css
+    index.js (optional, for exporting)
+- Group related components into feature-based subfolders if needed (e.g., src/components/Auth/Login, src/components/Auth/Signup).
+- Avoid placing multiple components in a single flat folder like src/components/.
+- Example:
+  src/components/
+    Header/
+      Header.jsx
+      Header.css
+    Footer/
+      Footer.jsx
+      Footer.css
+    Auth/
+      Login/
+        Login.jsx
+        Login.css
+      Signup/
+        Signup.jsx
+        Signup.css
+
+# 4. Avoid Hardcoding
+- Use constants for static values (e.g., API endpoints, configuration values).
+- Store constants in src/config/ or src/constants/.
+- Use environment variables for sensitive data (e.g., API keys, base URLs).
+- Example:
+  src/constants/api.js:
+    export const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://api.example.com';
+  src/config/config.js:
+    export const CONFIG = {
+      defaultTimeout: 5000,
+      maxRetries: 3,
+    };
+
+# 5. Code Style and Naming Conventions
+- Follow Airbnb JavaScript/React style guide for consistency.
+- Use camelCase for variable and function names.
+- Use PascalCase for component names and classes.
+- Variable names should be descriptive, concise, and indicate purpose (e.g., userData instead of data, fetchUser instead of get).
+- Avoid abbreviations unless widely understood (e.g., id, auth instead of usrDta).
+- Use meaningful function names that describe actions (e.g., handleSubmit, fetchUserProfile).
+- Example:
+  // Good
+  const userProfile = await authFetch('/api/user');
+  const handleFormSubmit = () => { ... };
+  // Bad
+  const d = await fetch('/api/user');
+  const fn = () => { ... };
+
+# 6. General Best Practices
+- Use functional components with hooks instead of class components.
+- Keep components small and focused (Single Responsibility Principle).
+- Use PropTypes or TypeScript for type checking.
+- Write unit tests for components and logic in src/__tests__/.
+- Example test structure:
+  src/components/Button/__tests__/Button.test.js
+- Use ESLint and Prettier for consistent code formatting.
+- Ensure all files have proper JSDoc comments for functions and components.
+
+# 7. API Endpoint Construction
+- Always prepend BASE_URL to API paths when using authFetch, unless the path is already absolute.
+- Example:
+  const res = await authFetch(`${BASE_URL}/api/indicators`, { ... });
+
