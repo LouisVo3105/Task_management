@@ -8,3 +8,4 @@ add_admin.js
 mongodb_data
 run-*.js
 migrate-*.js
+.voidrules

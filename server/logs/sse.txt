@@ -1450,3 +1450,9 @@
 [SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 1
 [SSE] Toast to user 6870649fb5e9e89346b96425: success - Tạo nhiệm vụ thành công!
 [SSE] Toast to user 6870649fb5e9e89346b96425: success - Cập nhật chỉ tiêu thành công!
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 15:57:01 22/7/2025
+[SSE] User 6870649fb5e9e89346b96425 connected at 15:57:03 22/7/2025
+[SSE] Pending approval tasks count to user 6870649fb5e9e89346b96425: 0
+[SSE] Incomplete tasks count to user 6870649fb5e9e89346b96425: 2
+[SSE] Toast to user 6870649fb5e9e89346b96425: error - Không thể nộp nhiệm vụ chính khi còn nhiệm vụ con chưa nộp hoặc chưa hoàn thành
+[SSE] User 6870649fb5e9e89346b96425 disconnected at 16:05:59 22/7/2025
