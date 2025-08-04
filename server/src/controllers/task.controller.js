@@ -38,8 +38,8 @@ class TaskController {
       return this.#sendResponse(res, 400, false, 'Dữ liệu không hợp lệ', null, errors.array());
     }
     try {
-      const result = await taskService.updateTask(req.params.id, req.body);
-      if (result.type === 'subtask') {
+      const result = await taskService.updateTask(req.params.id, req.body, req.file);
+      if (result.parentTaskId) {
         broadcastSSE('subtask_updated', { parentTaskId: result.parentTaskId, subTask: result.subTask });
         sendSseToastToUser(req.user.id, 'success', 'Cập nhật nhiệm vụ con thành công!');
         return this.#sendResponse(res, 200, true, 'Cập nhật nhiệm vụ con thành công', result.subTask);

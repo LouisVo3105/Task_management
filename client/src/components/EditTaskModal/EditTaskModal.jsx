@@ -1,150 +1,51 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import ReactSelect from "react-select";
-import { authFetch } from "../../utils/authFetch";
-
-const BASE_URL = import.meta.env.VITE_SERVER_BASE_URL
-
-
+import { useEditTask } from "../../hooks/useEditTask";
 
 const EditTaskModal = ({ open, onClose, task, onUpdated }) => {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [indicatorId, setIndicatorId] = useState("");
-  const [notes, setNotes] = useState("");
-  const [fileBase64, setFileBase64] = useState("");
-  const [fileName, setFileName] = useState("");
-  const [currentFile, setCurrentFile] = useState("");
-  const [fileObj, setFileObj] = useState(null);
-
-  // New fields for department/leader/supporters
-  const [departmentId, setDepartmentId] = useState("");
-  const [departments, setDepartments] = useState([]);
-  const [leaderId, setLeaderId] = useState("");
-  const [leaders, setLeaders] = useState([]);
-  const [supporterIds, setSupporterIds] = useState([]);
-  const [supporters, setSupporters] = useState([]);
-
-  const [indicators, setIndicators] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  // Load indicators, departments on open
-  useEffect(() => {
-    if (!open) return;
-    // indicators
-    authFetch(`${BASE_URL}/api/indicators`)
-      .then(res => res.json())
-      .then(data => setIndicators(data.data?.docs || []));
-    // departments
-    authFetch(`${BASE_URL}/api/departments`)
-      .then(res => res.json())
-      .then(data => setDepartments(data.data || []));
-  }, [open]);
-
-  // Set default values from task
-  useEffect(() => {
-    if (!open || !task) return;
-    setTitle(task.title || "");
-    setContent(task.content || "");
-    setEndDate(task.endDate ? task.endDate.slice(0, 10) : "");
-    setIndicatorId(task.indicator?._id || "");
-    setNotes(task.notes || "");
-    setCurrentFile(task.file || "");
-    setFileBase64("");
-    setFileName("");
-    setFileObj(null); // Reset fileObj
-    setDepartmentId(task.department?._id || "");
-    setLeaderId(task.leader?._id || "");
-    setSupporterIds(Array.isArray(task.supporters) ? task.supporters.map(s => s._id) : []);
-  }, [open, task]);
-
-  // Load leaders/supporters when departmentId changes
-  useEffect(() => {
-    if (!departmentId) {
-      setLeaders([]);
-      setSupporters([]);
-      setLeaderId("");
-      setSupporterIds([]);
-      return;
-    }
-    const fetchLeadersAndSupporters = async () => {
-      try {
-        const token = sessionStorage.getItem("accessToken");
-        // Lấy leader
-        const resLeader = await fetch(`${BASE_URL}/api/departments/${departmentId}/leaders`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const dataLeader = await resLeader.json();
-        setLeaders(dataLeader.data || []);
-        // Lấy supporters
-        const resSupporter = await fetch(`${BASE_URL}/api/departments/${departmentId}/supporters`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const dataSupporter = await resSupporter.json();
-        setSupporters(dataSupporter.data || []);
-      } catch {
-        setLeaders([]);
-        setSupporters([]);
-      }
-    };
-    fetchLeadersAndSupporters();
-  }, [departmentId]);
-
-  // Khi đổi department, nếu leader/supporter không còn hợp lệ thì reset
-  useEffect(() => {
-    if (leaders.length > 0 && leaderId && !leaders.some(l => l._id === leaderId)) {
-      setLeaderId("");
-    }
-    if (supporters.length > 0 && supporterIds.length > 0) {
-      setSupporterIds(supporterIds.filter(id => supporters.some(s => s._id === id)));
-    }
-  }, [leaders, supporters]);
-
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setFileName(file.name);
-      setFileObj(file);
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-    try {
-      const formData = new FormData();
-      formData.append('title', title);
-      formData.append('content', content);
-      formData.append('endDate', endDate);
-      formData.append('indicatorId', indicatorId);
-      formData.append('departmentId', departmentId);
-      formData.append('leaderId', leaderId);
-      formData.append('notes', notes);
-      supporterIds.forEach(id => formData.append('supporterIds', id));
-      if (fileObj) formData.append('file', fileObj);
-      const res = await fetch(`${BASE_URL}/api/tasks/${task._id}`, {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`,
-        },
-        body: formData,
-      });
-      if (!res.ok) {
-        const data = await res.json();
-        setError(data.message || "Cập nhật thất bại");
-        return;
-      }
-      onUpdated();
-      onClose();
-    } catch {
-      setError("Lỗi kết nối máy chủ. Vui lòng thử lại.");
-    }
-    setLoading(false);
-  };
+  const {
+    title,
+    setTitle,
+    content,
+    setContent,
+    endDate,
+    setEndDate,
+    indicatorId,
+    setIndicatorId,
+    notes,
+    setNotes,
+    fileBase64,
+    setFileBase64,
+    fileName,
+    setFileName,
+    currentFile,
+    setCurrentFile,
+    fileObj,
+    setFileObj,
+    departmentId,
+    setDepartmentId,
+    departments,
+    setDepartments,
+    leaderId,
+    setLeaderId,
+    leaders,
+    setLeaders,
+    supporterIds,
+    setSupporterIds,
+    supporters,
+    setSupporters,
+    indicators,
+    setIndicators,
+    loading,
+    error,
+    handleFileChange,
+    handleSubmit
+  } = useEditTask({ onClose, task, onUpdated, open });
 
   if (!open || !task) return null;
+
+  // Check if this is a subtask
+  const isSubtask = !!task?.parentTask && task.isRoot === false;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -223,13 +124,21 @@ const EditTaskModal = ({ open, onClose, task, onUpdated }) => {
                 />
               </div>
               <div className="mb-3">
-                <label className="block mb-1 font-medium">Người hỗ trợ</label>
+                <label className="block mb-1 font-medium">
+                  {isSubtask ? "Người thực hiện" : "Người hỗ trợ"}
+                </label>
                 <ReactSelect
-                  isMulti
+                  isMulti={!isSubtask}
                   options={supporters.map(s => ({ value: s._id, label: s.fullName || s.username }))}
-                  value={supporters.filter(s => supporterIds.includes(s._id)).map(s => ({ value: s._id, label: s.fullName || s.username }))}
-                  onChange={opts => setSupporterIds(opts ? opts.map(o => o.value) : [])}
-                  placeholder="Chọn người hỗ trợ..."
+                  value={isSubtask
+                    ? (supporters.find(s => s._id === supporterIds[0]) ? { value: supporterIds[0], label: supporters.find(s => s._id === supporterIds[0]).fullName || supporters.find(s => s._id === supporterIds[0]).username } : null)
+                    : supporters.filter(s => supporterIds.includes(s._id)).map(s => ({ value: s._id, label: s.fullName || s.username }))
+                  }
+                  onChange={opts => setSupporterIds(isSubtask
+                    ? (opts ? [opts.value] : [])
+                    : (opts ? opts.map(o => o.value) : [])
+                  )}
+                  placeholder={isSubtask ? "Chọn người thực hiện..." : "Chọn người hỗ trợ..."}
                   classNamePrefix="react-select"
                   isDisabled={!departmentId}
                   styles={{ menu: base => ({ ...base, zIndex: 9999 }), control: base => ({ ...base, minHeight: 40 }) }}

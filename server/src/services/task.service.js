@@ -33,7 +33,7 @@ const createTask = async (data, fileObj) => {
       const assignee = await User.findById(assigneeId).select('_id');
       if (!assignee) { const err = new Error('Không tìm thấy người thực hiện'); err.status = 404; throw err; }
       const subTask = {
-        title, content, endDate, indicator: indicatorId, notes, department: departmentId,
+        title, content, endDate, indicator: indicatorId, notes,
         file: fileObj ? fileObj.path : undefined, fileName, assignee: assigneeId, status: 'pending'
       };
       parentTask.subTasks.push(subTask);
@@ -64,9 +64,9 @@ const createTask = async (data, fileObj) => {
   }
 };
 
-const updateTask = async (id, data) => {
+const updateTask = async (id, data, fileObj) => {
   try {
-    const { assigneeId, ...updateData } = data;
+    const { assigneeId, leaderId, supporterIds, departmentId, ...updateData } = data;
     let task = await Task.findById(id);
     if (!task) {
       const parentTask = await Task.findOne({ 'subTasks._id': new mongoose.Types.ObjectId(id) });
@@ -79,22 +79,74 @@ const updateTask = async (id, data) => {
         if (!assignee) { const err = new Error('Không tìm thấy người thực hiện'); err.status = 404; throw err; }
         subTask.assignee = assigneeId;
       }
+      
+      // Xử lý leaderId nếu có
+      if (leaderId) {
+        const leader = await User.findById(leaderId);
+        if (!leader) { const err = new Error('Không tìm thấy người chủ trì'); err.status = 404; throw err; }
+        subTask.leader = leaderId;
+      }
+      
+      // Xử lý file nếu có
+      if (fileObj) {
+        // Xóa file cũ nếu có
+        if (subTask.file) {
+          try { fs.unlinkSync(subTask.file); } catch (err) { logger.error('Lỗi xóa file cũ: ' + err.message); }
+        }
+        subTask.file = fileObj.path;
+        subTask.fileName = decodeFileName(fileObj.originalname);
+      }
       Object.assign(subTask, updateData);
       await parentTask.save();
       return { type: 'subtask', parentTaskId: parentTask._id, subTask };
     } else {
       if (task.status === 'approved') { const err = new Error('Không thể cập nhật nhiệm vụ đã duyệt'); err.status = 400; throw err; }
-      if (updateData.supporterIds) {
-        const supporters = await User.find({ _id: { $in: updateData.supporterIds } });
-        if (supporters.length !== updateData.supporterIds.length) {
+      
+      // Xử lý leaderId nếu có
+      if (leaderId) {
+        const leader = await User.findById(leaderId);
+        if (!leader) { const err = new Error('Không tìm thấy người chủ trì'); err.status = 404; throw err; }
+        task.leader = leaderId;
+      }
+      
+      // Xử lý supporterIds nếu có
+      if (supporterIds) {
+        const supporters = await User.find({ _id: { $in: supporterIds } });
+        if (supporters.length !== supporterIds.length) {
           const err = new Error('Một hoặc nhiều người hỗ trợ không tồn tại'); err.status = 404; throw err;
         }
-        task.supporters = updateData.supporterIds;
-        delete updateData.supporterIds;
+        task.supporters = supporterIds;
+      }
+      
+      // Xử lý departmentId nếu có
+      if (departmentId) {
+        const Department = require('../models/department.model');
+        const department = await Department.findById(departmentId);
+        if (!department) { const err = new Error('Không tìm thấy phòng ban'); err.status = 404; throw err; }
+        task.department = departmentId;
+      }
+      
+      // Xử lý file nếu có
+      if (fileObj) {
+        // Xóa file cũ nếu có
+        if (task.file) {
+          try { fs.unlinkSync(task.file); } catch (err) { logger.error('Lỗi xóa file cũ: ' + err.message); }
+        }
+        task.file = fileObj.path;
+        task.fileName = decodeFileName(fileObj.originalname);
       }
       Object.assign(task, updateData);
       await task.save();
-      return { type: 'main', taskId: task._id, task };
+      
+      // Populate lại task để trả về thông tin đầy đủ
+      const updatedTask = await Task.findById(task._id)
+        .populate('leader', 'fullName email')
+        .populate('supporters', 'fullName email')
+        .populate('department', 'name')
+        .populate('indicator', 'name')
+        .lean();
+      
+      return { type: 'main', taskId: task._id, task: updatedTask };
     }
   } catch (err) {
     logger.error('Lỗi nghiêm trọng khi cập nhật task: ' + err.message + '\n' + err.stack);
@@ -314,9 +366,9 @@ const getSubTaskSubmissions = async (taskId, subTaskId) => {
 const approveTask = async (params, body, reviewer) => {
   const { id, taskId, subTaskId, submissionId } = params;
   const { comment } = body;
-  if (!comment || comment.trim() === '') {
-    const err = new Error('Nhận xét là bắt buộc'); err.status = 400; throw err;
-  }
+  // if (!comment || comment.trim() === '') {
+  //   const err = new Error('Nhận xét là bắt buộc'); err.status = 400; throw err;
+  // }
   // Subtask
   if (taskId && subTaskId) {
     const parentTask = await Task.findById(taskId);
@@ -360,7 +412,7 @@ const approveTask = async (params, body, reviewer) => {
     const hasUnsubmittedSubtask = task.subTasks.some(st => st.status !== 'submitted' && st.status !== 'approved');
     if (hasUnsubmittedSubtask) { const err = new Error('Không thể duyệt nhiệm vụ chính khi còn nhiệm vụ con chưa nộp hoặc chưa hoàn thành'); err.status = 400; throw err; }
   }
-  if (reviewer.role !== 'admin' && reviewer.role !== 'manager' && reviewer.position !== 'Giam doc' && task.leader.toString() !== reviewer.id) {
+  if (reviewer.role !== 'admin' && reviewer.role !== 'manager' && reviewer.position !== 'Giam doc' &&reviewer.position !== 'Pho giam doc' && task.leader.toString() !== reviewer.id) {
     const err = new Error('Bạn không có quyền duyệt nhiệm vụ này'); err.status = 403; throw err;
   }
   let targetSubmission = null;
@@ -815,7 +867,7 @@ const createSubTask = async (parentTaskId, data, file, user) => {
     title, content, endDate, assignee: assigneeId, notes,
     leader: leaderId,
     file: file ? file.path : null, fileName: subTaskFileName, mimeType: file ? file.mimetype : null,
-    status: 'pending', department, supporters,
+    status: 'pending',
     creator: user.id // Lưu id người tạo subtask
   };
   parentTask.subTasks.push(subTaskData);

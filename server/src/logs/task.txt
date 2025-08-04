@@ -1,55 +1,71 @@
-2025-07-18 08:19:02 [ERROR] uncaughtException: CLIENT is not defined
-ReferenceError: CLIENT is not defined
-    at Object.<anonymous> (D:\TTNT\Task_management\server\src\app.js:27:1)
+2025-08-01 16:28:23 [ERROR] uncaughtException: HOST is not defined
+ReferenceError: HOST is not defined
+    at Object.<anonymous> (D:\TTNT\Task_management\server\src\app.js:34:11)
     at Module._compile (node:internal/modules/cjs/loader:1358:14)
     at Module._extensions..js (node:internal/modules/cjs/loader:1416:10)
     at Module.load (node:internal/modules/cjs/loader:1208:32)
     at Module._load (node:internal/modules/cjs/loader:1024:12)
     at Module.require (node:internal/modules/cjs/loader:1233:19)
     at require (node:internal/modules/helpers:179:18)
-    at Object.<anonymous> (D:\TTNT\Task_management\server\server.js:1:13)
+    at Object.<anonymous> (D:\TTNT\Task_management\server\server.js:2:13)
     at Module._compile (node:internal/modules/cjs/loader:1358:14)
     at Module._extensions..js (node:internal/modules/cjs/loader:1416:10)
-ReferenceError: CLIENT is not defined
-    at Object.<anonymous> (D:\TTNT\Task_management\server\src\app.js:27:1)
+    at Module.load (node:internal/modules/cjs/loader:1208:32)
+    at Module._load (node:internal/modules/cjs/loader:1024:12)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:174:12)
+    at node:internal/main/run_main_module:28:49
+ReferenceError: HOST is not defined
+    at Object.<anonymous> (D:\TTNT\Task_management\server\src\app.js:34:11)
     at Module._compile (node:internal/modules/cjs/loader:1358:14)
     at Module._extensions..js (node:internal/modules/cjs/loader:1416:10)
     at Module.load (node:internal/modules/cjs/loader:1208:32)
     at Module._load (node:internal/modules/cjs/loader:1024:12)
     at Module.require (node:internal/modules/cjs/loader:1233:19)
     at require (node:internal/modules/helpers:179:18)
-    at Object.<anonymous> (D:\TTNT\Task_management\server\server.js:1:13)
+    at Object.<anonymous> (D:\TTNT\Task_management\server\server.js:2:13)
     at Module._compile (node:internal/modules/cjs/loader:1358:14)
     at Module._extensions..js (node:internal/modules/cjs/loader:1416:10)
-2025-07-18 08:19:17 [ERROR] uncaughtException: CLIENT is not defined
-ReferenceError: CLIENT is not defined
-    at Object.<anonymous> (D:\TTNT\Task_management\server\src\app.js:32:11)
+    at Module.load (node:internal/modules/cjs/loader:1208:32)
+    at Module._load (node:internal/modules/cjs/loader:1024:12)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:174:12)
+    at node:internal/main/run_main_module:28:49
+2025-08-01 16:28:43 [ERROR] uncaughtException: HOST is not defined
+ReferenceError: HOST is not defined
+    at Object.<anonymous> (D:\TTNT\Task_management\server\src\app.js:34:11)
     at Module._compile (node:internal/modules/cjs/loader:1358:14)
     at Module._extensions..js (node:internal/modules/cjs/loader:1416:10)
     at Module.load (node:internal/modules/cjs/loader:1208:32)
     at Module._load (node:internal/modules/cjs/loader:1024:12)
     at Module.require (node:internal/modules/cjs/loader:1233:19)
     at require (node:internal/modules/helpers:179:18)
-    at Object.<anonymous> (D:\TTNT\Task_management\server\server.js:1:13)
+    at Object.<anonymous> (D:\TTNT\Task_management\server\server.js:2:13)
     at Module._compile (node:internal/modules/cjs/loader:1358:14)
     at Module._extensions..js (node:internal/modules/cjs/loader:1416:10)
-ReferenceError: CLIENT is not defined
-    at Object.<anonymous> (D:\TTNT\Task_management\server\src\app.js:32:11)
+    at Module.load (node:internal/modules/cjs/loader:1208:32)
+    at Module._load (node:internal/modules/cjs/loader:1024:12)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:174:12)
+    at node:internal/main/run_main_module:28:49
+ReferenceError: HOST is not defined
+    at Object.<anonymous> (D:\TTNT\Task_management\server\src\app.js:34:11)
     at Module._compile (node:internal/modules/cjs/loader:1358:14)
     at Module._extensions..js (node:internal/modules/cjs/loader:1416:10)
     at Module.load (node:internal/modules/cjs/loader:1208:32)
     at Module._load (node:internal/modules/cjs/loader:1024:12)
     at Module.require (node:internal/modules/cjs/loader:1233:19)
     at require (node:internal/modules/helpers:179:18)
-    at Object.<anonymous> (D:\TTNT\Task_management\server\server.js:1:13)
+    at Object.<anonymous> (D:\TTNT\Task_management\server\server.js:2:13)
     at Module._compile (node:internal/modules/cjs/loader:1358:14)
     at Module._extensions..js (node:internal/modules/cjs/loader:1416:10)
-2025-07-18 08:55:00 [ERROR] uncaughtException: Missing initializer in destructuring declaration
-D:\TTNT\Task_management\server\src\middlewares\indicator.middleware.js:2
-const {ROLE}
-      ^^^^^^
+    at Module.load (node:internal/modules/cjs/loader:1208:32)
+    at Module._load (node:internal/modules/cjs/loader:1024:12)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:174:12)
+    at node:internal/main/run_main_module:28:49
+2025-08-01 16:34:00 [ERROR] uncaughtException: Missing initializer in const declaration
+D:\TTNT\Task_management\server\src\services\auth.service.js:11
+async function login({ username, password }) {
+^^^^^
 
-SyntaxError: Missing initializer in destructuring declaration
+SyntaxError: Missing initializer in const declaration
     at wrapSafe (node:internal/modules/cjs/loader:1281:20)
     at Module._compile (node:internal/modules/cjs/loader:1321:27)
     at Module._extensions..js (node:internal/modules/cjs/loader:1416:10)
@@ -57,14 +73,20 @@ SyntaxError: Missing initializer in destructuring declaration
     at Module._load (node:internal/modules/cjs/loader:1024:12)
     at Module.require (node:internal/modules/cjs/loader:1233:19)
     at require (node:internal/modules/helpers:179:18)
-    at Object.<anonymous> (D:\TTNT\Task_management\server\src\controllers\indicator.controller.js:3:55)
+    at Object.<anonymous> (D:\TTNT\Task_management\server\src\controllers\auth.controller.js:7:21)
     at Module._compile (node:internal/modules/cjs/loader:1358:14)
     at Module._extensions..js (node:internal/modules/cjs/loader:1416:10)
-D:\TTNT\Task_management\server\src\middlewares\indicator.middleware.js:2
-const {ROLE}
-      ^^^^^^
+    at Module.load (node:internal/modules/cjs/loader:1208:32)
+    at Module._load (node:internal/modules/cjs/loader:1024:12)
+    at Module.require (node:internal/modules/cjs/loader:1233:19)
+    at require (node:internal/modules/helpers:179:18)
+    at Object.<anonymous> (D:\TTNT\Task_management\server\src\routes\auth.route.js:4:24)
+    at Module._compile (node:internal/modules/cjs/loader:1358:14)
+D:\TTNT\Task_management\server\src\services\auth.service.js:11
+async function login({ username, password }) {
+^^^^^
 
-SyntaxError: Missing initializer in destructuring declaration
+SyntaxError: Missing initializer in const declaration
     at wrapSafe (node:internal/modules/cjs/loader:1281:20)
     at Module._compile (node:internal/modules/cjs/loader:1321:27)
     at Module._extensions..js (node:internal/modules/cjs/loader:1416:10)
@@ -72,161 +94,12 @@ SyntaxError: Missing initializer in destructuring declaration
     at Module._load (node:internal/modules/cjs/loader:1024:12)
     at Module.require (node:internal/modules/cjs/loader:1233:19)
     at require (node:internal/modules/helpers:179:18)
-    at Object.<anonymous> (D:\TTNT\Task_management\server\src\controllers\indicator.controller.js:3:55)
+    at Object.<anonymous> (D:\TTNT\Task_management\server\src\controllers\auth.controller.js:7:21)
     at Module._compile (node:internal/modules/cjs/loader:1358:14)
-    at Module._extensions..js (node:internal/modules/cjs/loader:1416:10)
-2025-07-18 08:55:07 [ERROR] uncaughtException: Missing initializer in destructuring declaration
-D:\TTNT\Task_management\server\src\middlewares\indicator.middleware.js:2
-const {ROLES}
-      ^^^^^^^
-
-SyntaxError: Missing initializer in destructuring declaration
-    at wrapSafe (node:internal/modules/cjs/loader:1281:20)
-    at Module._compile (node:internal/modules/cjs/loader:1321:27)
     at Module._extensions..js (node:internal/modules/cjs/loader:1416:10)
     at Module.load (node:internal/modules/cjs/loader:1208:32)
     at Module._load (node:internal/modules/cjs/loader:1024:12)
     at Module.require (node:internal/modules/cjs/loader:1233:19)
     at require (node:internal/modules/helpers:179:18)
-    at Object.<anonymous> (D:\TTNT\Task_management\server\src\controllers\indicator.controller.js:3:55)
+    at Object.<anonymous> (D:\TTNT\Task_management\server\src\routes\auth.route.js:4:24)
     at Module._compile (node:internal/modules/cjs/loader:1358:14)
-    at Module._extensions..js (node:internal/modules/cjs/loader:1416:10)
-D:\TTNT\Task_management\server\src\middlewares\indicator.middleware.js:2
-const {ROLES}
-      ^^^^^^^
-
-SyntaxError: Missing initializer in destructuring declaration
-    at wrapSafe (node:internal/modules/cjs/loader:1281:20)
-    at Module._compile (node:internal/modules/cjs/loader:1321:27)
-    at Module._extensions..js (node:internal/modules/cjs/loader:1416:10)
-    at Module.load (node:internal/modules/cjs/loader:1208:32)
-    at Module._load (node:internal/modules/cjs/loader:1024:12)
-    at Module.require (node:internal/modules/cjs/loader:1233:19)
-    at require (node:internal/modules/helpers:179:18)
-    at Object.<anonymous> (D:\TTNT\Task_management\server\src\controllers\indicator.controller.js:3:55)
-    at Module._compile (node:internal/modules/cjs/loader:1358:14)
-    at Module._extensions..js (node:internal/modules/cjs/loader:1416:10)
-2025-07-18 08:55:10 [ERROR] uncaughtException: Missing initializer in destructuring declaration
-D:\TTNT\Task_management\server\src\middlewares\indicator.middleware.js:2
-const {ROLES, POSIT}
-      ^^^^^^^^^^^^^^
-
-SyntaxError: Missing initializer in destructuring declaration
-    at wrapSafe (node:internal/modules/cjs/loader:1281:20)
-    at Module._compile (node:internal/modules/cjs/loader:1321:27)
-    at Module._extensions..js (node:internal/modules/cjs/loader:1416:10)
-    at Module.load (node:internal/modules/cjs/loader:1208:32)
-    at Module._load (node:internal/modules/cjs/loader:1024:12)
-    at Module.require (node:internal/modules/cjs/loader:1233:19)
-    at require (node:internal/modules/helpers:179:18)
-    at Object.<anonymous> (D:\TTNT\Task_management\server\src\controllers\indicator.controller.js:3:55)
-    at Module._compile (node:internal/modules/cjs/loader:1358:14)
-    at Module._extensions..js (node:internal/modules/cjs/loader:1416:10)
-D:\TTNT\Task_management\server\src\middlewares\indicator.middleware.js:2
-const {ROLES, POSIT}
-      ^^^^^^^^^^^^^^
-
-SyntaxError: Missing initializer in destructuring declaration
-    at wrapSafe (node:internal/modules/cjs/loader:1281:20)
-    at Module._compile (node:internal/modules/cjs/loader:1321:27)
-    at Module._extensions..js (node:internal/modules/cjs/loader:1416:10)
-    at Module.load (node:internal/modules/cjs/loader:1208:32)
-    at Module._load (node:internal/modules/cjs/loader:1024:12)
-    at Module.require (node:internal/modules/cjs/loader:1233:19)
-    at require (node:internal/modules/helpers:179:18)
-    at Object.<anonymous> (D:\TTNT\Task_management\server\src\controllers\indicator.controller.js:3:55)
-    at Module._compile (node:internal/modules/cjs/loader:1358:14)
-    at Module._extensions..js (node:internal/modules/cjs/loader:1416:10)
-2025-07-18 08:55:16 [ERROR] uncaughtException: Missing initializer in destructuring declaration
-D:\TTNT\Task_management\server\src\middlewares\indicator.middleware.js:2
-const {ROLES, POSIT}
-      ^^^^^^^^^^^^^^
-
-SyntaxError: Missing initializer in destructuring declaration
-    at wrapSafe (node:internal/modules/cjs/loader:1281:20)
-    at Module._compile (node:internal/modules/cjs/loader:1321:27)
-    at Module._extensions..js (node:internal/modules/cjs/loader:1416:10)
-    at Module.load (node:internal/modules/cjs/loader:1208:32)
-    at Module._load (node:internal/modules/cjs/loader:1024:12)
-    at Module.require (node:internal/modules/cjs/loader:1233:19)
-    at require (node:internal/modules/helpers:179:18)
-    at Object.<anonymous> (D:\TTNT\Task_management\server\src\controllers\indicator.controller.js:3:55)
-    at Module._compile (node:internal/modules/cjs/loader:1358:14)
-    at Module._extensions..js (node:internal/modules/cjs/loader:1416:10)
-D:\TTNT\Task_management\server\src\middlewares\indicator.middleware.js:2
-const {ROLES, POSIT}
-      ^^^^^^^^^^^^^^
-
-SyntaxError: Missing initializer in destructuring declaration
-    at wrapSafe (node:internal/modules/cjs/loader:1281:20)
-    at Module._compile (node:internal/modules/cjs/loader:1321:27)
-    at Module._extensions..js (node:internal/modules/cjs/loader:1416:10)
-    at Module.load (node:internal/modules/cjs/loader:1208:32)
-    at Module._load (node:internal/modules/cjs/loader:1024:12)
-    at Module.require (node:internal/modules/cjs/loader:1233:19)
-    at require (node:internal/modules/helpers:179:18)
-    at Object.<anonymous> (D:\TTNT\Task_management\server\src\controllers\indicator.controller.js:3:55)
-    at Module._compile (node:internal/modules/cjs/loader:1358:14)
-    at Module._extensions..js (node:internal/modules/cjs/loader:1416:10)
-2025-07-18 08:55:19 [ERROR] uncaughtException: Missing initializer in destructuring declaration
-D:\TTNT\Task_management\server\src\middlewares\indicator.middleware.js:2
-const {ROLES, POSITION, GENDERS}
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-SyntaxError: Missing initializer in destructuring declaration
-    at wrapSafe (node:internal/modules/cjs/loader:1281:20)
-    at Module._compile (node:internal/modules/cjs/loader:1321:27)
-    at Module._extensions..js (node:internal/modules/cjs/loader:1416:10)
-    at Module.load (node:internal/modules/cjs/loader:1208:32)
-    at Module._load (node:internal/modules/cjs/loader:1024:12)
-    at Module.require (node:internal/modules/cjs/loader:1233:19)
-    at require (node:internal/modules/helpers:179:18)
-    at Object.<anonymous> (D:\TTNT\Task_management\server\src\controllers\indicator.controller.js:3:55)
-    at Module._compile (node:internal/modules/cjs/loader:1358:14)
-    at Module._extensions..js (node:internal/modules/cjs/loader:1416:10)
-D:\TTNT\Task_management\server\src\middlewares\indicator.middleware.js:2
-const {ROLES, POSITION, GENDERS}
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-SyntaxError: Missing initializer in destructuring declaration
-    at wrapSafe (node:internal/modules/cjs/loader:1281:20)
-    at Module._compile (node:internal/modules/cjs/loader:1321:27)
-    at Module._extensions..js (node:internal/modules/cjs/loader:1416:10)
-    at Module.load (node:internal/modules/cjs/loader:1208:32)
-    at Module._load (node:internal/modules/cjs/loader:1024:12)
-    at Module.require (node:internal/modules/cjs/loader:1233:19)
-    at require (node:internal/modules/helpers:179:18)
-    at Object.<anonymous> (D:\TTNT\Task_management\server\src\controllers\indicator.controller.js:3:55)
-    at Module._compile (node:internal/modules/cjs/loader:1358:14)
-    at Module._extensions..js (node:internal/modules/cjs/loader:1416:10)
-2025-07-21 08:42:45 [ERROR] uncaughtException: Unexpected token ','
-D:\TTNT\Task_management\server\src\routes\overdueTask.route.js:10
-router.post('/:taskId/clone',, overdueTaskController.cloneOverdueTask);
-                             ^
-
-SyntaxError: Unexpected token ','
-    at wrapSafe (node:internal/modules/cjs/loader:1281:20)
-    at Module._compile (node:internal/modules/cjs/loader:1321:27)
-    at Module._extensions..js (node:internal/modules/cjs/loader:1416:10)
-    at Module.load (node:internal/modules/cjs/loader:1208:32)
-    at Module._load (node:internal/modules/cjs/loader:1024:12)
-    at Module.require (node:internal/modules/cjs/loader:1233:19)
-    at require (node:internal/modules/helpers:179:18)
-    at Object.<anonymous> (D:\TTNT\Task_management\server\src\app.js:20:26)
-    at Module._compile (node:internal/modules/cjs/loader:1358:14)
-    at Module._extensions..js (node:internal/modules/cjs/loader:1416:10)
-D:\TTNT\Task_management\server\src\routes\overdueTask.route.js:10
-router.post('/:taskId/clone',, overdueTaskController.cloneOverdueTask);
-                             ^
-
-SyntaxError: Unexpected token ','
-    at wrapSafe (node:internal/modules/cjs/loader:1281:20)
-    at Module._compile (node:internal/modules/cjs/loader:1321:27)
-    at Module._extensions..js (node:internal/modules/cjs/loader:1416:10)
-    at Module.load (node:internal/modules/cjs/loader:1208:32)
-    at Module._load (node:internal/modules/cjs/loader:1024:12)
-    at Module.require (node:internal/modules/cjs/loader:1233:19)
-    at require (node:internal/modules/helpers:179:18)
-    at Object.<anonymous> (D:\TTNT\Task_management\server\src\app.js:20:26)
-    at Module._compile (node:internal/modules/cjs/loader:1358:14)
-    at Module._extensions..js (node:internal/modules/cjs/loader:1416:10)

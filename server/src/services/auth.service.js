@@ -6,7 +6,8 @@ const { tokenBlacklist } = require('../middlewares/auth.middleware');
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
-
+const ACCESS_TOKEN_EXPIRE_TIME = process.env.JWT_EXPIRES_IN;
+const REFRESH_TOKEN_EXPIRE_TIME = process.env.REFRESH_TOKEN_EXPIRES_IN;
 async function login({ username, password }) {
   const user = await User.findOne({ username }).select('password isActive role department').lean();
   if (!user || !(await bcrypt.compare(password, user.password))) {
@@ -20,12 +21,12 @@ async function login({ username, password }) {
   const accessToken = jwt.sign(
     { id: user._id, role: user.role, department: user.department },
     JWT_SECRET,
-    { expiresIn: '1h' }
+    { expiresIn: ACCESS_TOKEN_EXPIRE_TIME }
   );
   const refreshToken = jwt.sign(
     { id: user._id },
     REFRESH_TOKEN_SECRET,
-    { expiresIn: '7d' }
+    { expiresIn: REFRESH_TOKEN_EXPIRE_TIME }
   );
   return {
     accessToken,

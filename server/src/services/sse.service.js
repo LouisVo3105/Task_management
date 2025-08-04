@@ -9,6 +9,39 @@ const path = require('path');
 const logDir = path.join(__dirname, '../../logs');
 const logFile = path.join(logDir, 'sse.txt');
 const mongoose = require('mongoose');
+
+
+/**
+ * SSE (Server-Sent Events) Service
+ * 
+ * This service manages real-time notifications for users via SSE.
+ * 
+ * Key responsibilities:
+ * - Handles client connections for SSE and manages a list of connected clients per user.
+ * - Authenticates users using JWT tokens from headers or cookies.
+ * - Sends real-time notifications, such as overdue task alerts, to connected users.
+ * - Logs connection events and notification activities to a log file.
+ * - Integrates with the notification service to create and dispatch notifications.
+ * 
+ * Exposed API:
+ * - registerSSE(app): Registers the SSE endpoint on the provided Express app.
+ * 
+ * Internal utilities:
+ * - getVNDateString(date): Formats a date string in Vietnamese locale.
+ * - logToFile(message): Appends log messages to a file.
+ * 
+ * Data structures:
+ * - sseClients: Keeps track of active SSE connections per user.
+ * - lastNotified: Tracks the last notification time for each user-task combination to avoid spamming.
+ * 
+ * Environment variables:
+ * - JWT_SECRET: Used to verify JWT tokens.
+ * - CLIENT_URL: Allowed origin for CORS headers.
+ */
+
+
+
+
 function getVNDateString(date) {
   return date.toLocaleString('vi-VN', { hour12: false });
 }

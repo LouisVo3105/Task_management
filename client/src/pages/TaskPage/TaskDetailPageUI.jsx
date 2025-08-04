@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, Typography, Button } from "@material-tailwind/react";
 import DetailList from "../../components/DetailList/DetailList";
-import EditTaskModal from "../../components/modals/EditTaskModal";
+import EditTaskModal from "../../components/EditTaskModal/EditTaskModal";
 import CreateSubtaskModal from "../../components/CreateSubtaskModal/CreateSubtaskModal";
 import SubmitTaskModal from '../../components/modals/SubmitTaskModal';
 import StatusDot from "../../components/StatusDot";

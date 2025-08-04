@@ -15,4 +15,13 @@ router.get('/warnings', overdueTaskController.getOverdueWarnings);
 // Xuất file Excel/CSV danh sách nhân viên bị cảnh cáo
 router.get('/warnings/export', overdueTaskController.exportOverdueWarnings);
 
+// Lấy danh sách chỉ tiêu quá hạn
+router.get('/indicators', overdueTaskController.getOverdueIndicators);
+
+// Xuất file Excel/CSV danh sách chỉ tiêu quá hạn
+router.get('/indicators/export', overdueTaskController.exportOverdueIndicators);
+
+// Tạo lại chỉ tiêu quá hạn
+router.post('/indicators/:indicatorId/clone', authMiddleware, overdueTaskController.cloneOverdueIndicator);
+
 module.exports = router; 

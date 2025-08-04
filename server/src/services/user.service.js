@@ -8,14 +8,27 @@ const { mapPosition, getStandardPositions, getPositionKeywords } = require('../u
 const { ROLES } = require('../configs/enum');
 
 async function createUser(data, currentUser) {
+  /*
+  // Function to create a new user.
+  // Params:
+  //   data: {
+  //     username: String - required, unique username for the user,
+  //     password: String - required, plain text password,
+  //     directSupervisor: ObjectId - required for non-admin roles, the user's supervisor,
+  //     ...userData: other user fields (fullName, email, position, department, role, etc.)
+  //   }
+  //   currentUser: the user object performing the creation (should have .role, .department, .id)
+  // Returns: the created user object (without password)
+  // Note: Add extra validation or side effects (e.g., sending emails) here if needed.
+  */
   const { username, password, directSupervisor, ...userData } = data;
-  if (currentUser.role === 'user') throw new Error('Không có quyền tạo người dùng');
+  if (currentUser.role === 'user') throw new Error('Mày cút, đi đâu dô trang này mày không có quyền thằng ngu');
   if (currentUser.role === 'manager' && userData.department !== currentUser.department) throw new Error('Chỉ được tạo người dùng trong cùng phòng ban');
   const existingUser = await User.findOne({ $or: [{ username }, { email: userData.email }] });
   if (existingUser) throw new Error('Tên đăng nhập hoặc email đã tồn tại');
   if (ROLES.filter(r => r !== 'admin').includes(userData.role)) {
     const supervisor = await User.findById(directSupervisor).select('isActive');
-    if (!supervisor || !supervisor.isActive) throw new Error('Cấp trên không tồn tại hoặc không hoạt động');
+    if (!supervisor || !supervisor.isActive) throw new Error('Sai mã cấp trên hoặc người dùng không hoạt động');
   }
   if (userData.position) userData.position = mapPosition(userData.position);
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -27,6 +40,14 @@ async function createUser(data, currentUser) {
 }
 
 async function getUserProfile(userId) {
+  /**
+   * Lấy thông tin hồ sơ người dùng theo userId.
+   * - Trả về thông tin người dùng (không bao gồm mật khẩu).
+   * - Populate thông tin cấp trên trực tiếp (fullName, position) và phòng ban (name, description).
+   * - Nếu không tìm thấy user sẽ throw lỗi 'User not found'.
+   * @param {string} userId - ID của người dùng cần lấy hồ sơ
+   * @returns {Promise<Object>} Thông tin người dùng đã populate
+   */
   const user = await User.findById(userId)
     .select('-password')
     .populate('directSupervisor', 'fullName position')
@@ -36,6 +57,16 @@ async function getUserProfile(userId) {
 }
 
 async function getAllUsers(query, currentUser) {
+  /**
+   * Lấy danh sách người dùng với các bộ lọc và phân trang.
+   * - Nếu là manager, chỉ lấy người dùng trong phòng ban của mình.
+   * - Có thể lọc theo phòng ban, vai trò, trạng thái hoạt động, tìm kiếm theo tên hoặc email.
+   * - Kết quả trả về không bao gồm mật khẩu.
+   * - Nếu currentUser không nằm trong danh sách trả về (do phân trang), sẽ tự động thêm vào cuối danh sách.
+   * @param {Object} query - Các tham số truy vấn (department, role, search, includeInactive, page, limit)
+   * @param {Object} currentUser - Thông tin người dùng hiện tại (để kiểm tra quyền và bổ sung vào danh sách nếu cần)
+   * @returns {Promise<Array>} Danh sách người dùng đã populate thông tin cấp trên và phòng ban
+   */
   const { department, role, search, includeInactive, page = 1, limit = 50 } = query;
   const filter = {};
   if (!includeInactive) filter.isActive = true;
@@ -69,6 +100,19 @@ async function getAllUsers(query, currentUser) {
 }
 
 async function updateUser(id, updateData, currentUser) {
+  /**
+   * Cập nhật thông tin người dùng.
+   * - Chỉ cho phép user tự cập nhật hoặc manager cập nhật user trong phòng ban của mình, admin cập nhật bất kỳ ai.
+   * - Không cho phép cập nhật username.
+   * - Nếu cập nhật mật khẩu, sẽ tự động hash lại mật khẩu mới.
+   * - Nếu cập nhật vị trí (position), sẽ chuẩn hóa lại tên vị trí.
+   * - Trả về thông tin người dùng đã cập nhật (không bao gồm mật khẩu).
+   * @param {string} id - ID người dùng cần cập nhật
+   * @param {Object} updateData - Dữ liệu cập nhật
+   * @param {Object} currentUser - Thông tin người dùng hiện tại (để kiểm tra quyền)
+   * @returns {Promise<Object>} Thông tin người dùng đã cập nhật
+   * @throws {Error} Nếu không có quyền hoặc không tìm thấy người dùng
+   */
   if (currentUser.role === 'user' && currentUser.id !== id) throw new Error('Permission denied');
   if (currentUser.role === 'manager') {
     const userToUpdate = await User.findById(id).select('department');
@@ -101,6 +145,14 @@ async function deleteUser(id, currentUser) {
 }
 
 async function getSubordinates(currentUser) {
+  /**
+   * Lấy danh sách cấp dưới của người dùng hiện tại.
+   * - Nếu là admin: trả về tất cả user đang hoạt động (isActive: true).
+   * - Nếu không phải admin: trả về các user có directSupervisor là currentUser.
+   * - Chỉ lấy các trường: _id, fullName, role, department.
+   * @param {Object} currentUser - Thông tin người dùng hiện tại (để xác định quyền)
+   * @returns {Promise<Array>} Danh sách cấp dưới (user)
+   */
   let subordinates;
   if (currentUser.role === 'admin') {
     subordinates = await User.find({ isActive: true })
@@ -123,6 +175,21 @@ async function deleteUserPermanently(id) {
 }
 
 async function importUsersFromCSV(file, currentUser) {
+  /**
+   * Import users from a CSV or XLSX file.
+   * - Hỗ trợ import từ file .csv hoặc .xlsx.
+   * - Các trường bắt buộc: username, password, email, fullName, position, phoneNumber, department, role.
+   * - Nếu role là 'user' hoặc 'manager' thì trường directSupervisor là bắt buộc.
+   * - Kiểm tra hợp lệ các trường, validate role, validate supervisor, validate department.
+   * - Nếu có lỗi ở từng dòng sẽ trả về danh sách lỗi, các dòng hợp lệ sẽ được import vào hệ thống.
+   * - Chỉ admin mới được phép import user.
+   * @param {Object} file - File upload (multer object, có .path)
+   * @param {Object} currentUser - Người thực hiện import (phải là admin)
+   * @returns {Promise<{success: number, errors: Array, imported: Array}>}
+   *   - success: số lượng user import thành công
+   *   - errors: danh sách lỗi theo từng dòng
+   *   - imported: danh sách user đã import thành công
+   */
   if (!file) throw new Error('Không có file được upload');
   const results = [];
   const errors = [];
@@ -211,6 +278,19 @@ async function importUsersFromCSV(file, currentUser) {
 }
 
 async function exportUsers(query) {
+  /**
+   * Export user data to CSV or XLSX format.
+   * @param {object} query - Query parameters for export (type, page, limit, etc.)
+   * @returns {Promise<{type: string, buffer?: Buffer, csv?: string}>}
+   * @throws {Error} If no user data is found.
+   * 
+   * - type: 'csv' (default) or 'xlsx'
+   * - page, limit: for pagination (default: page=1, limit=1000)
+   * 
+   * The exported fields include: username, email, fullName, position, phoneNumber, department, role, directSupervisor, isActive, createdAt.
+   * - For XLSX: returns a buffer.
+   * - For CSV: returns a CSV string.
+   */
   const type = (query.type || 'csv').toLowerCase();
   const { page = 1, limit = 1000 } = query;
   const skip = (parseInt(page) - 1) * parseInt(limit);

@@ -23,9 +23,9 @@ const validateUpdateTask = [
   body('title').optional().trim().notEmpty().withMessage('Tên nhiệm vụ là bắt buộc'),
   body('content').optional().trim().notEmpty().withMessage('Nội dung nhiệm vụ là bắt buộc'),
   body('endDate').optional().isDate().withMessage('Deadline không hợp lệ'),
-  body('indicatorId').optional().isMongoId().withMessage('ID chỉ tiêu không hợp lệ'),
-  body('departmentId').optional().isMongoId().withMessage('Phòng ban không hợp lệ'),
-  body('leaderId').optional().isMongoId().withMessage('Người chủ trì không hợp lệ'),
+  // body('indicatorId').optional().isMongoId().withMessage('ID chỉ tiêu không hợp lệ'),
+  body('departmentId').optional().isMongoId().withMessage('ID phòng ban không hợp lệ'),
+  body('leaderId').optional().isMongoId().withMessage('ID người chủ trì không hợp lệ'),
   body('supporterIds').optional().custom((value) => {
     if (value !== undefined && !Array.isArray(value)) {
       throw new Error('supporterIds phải là mảng');

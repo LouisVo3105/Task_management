@@ -27,11 +27,12 @@ const notificationRoute = require('./routes/notification.route');
 const Database = require('./dbs/database');
 
 const CLIENT_URL = process.env.CLIENT;
+const HOST = process.env.HOST;
 
 const db = Database.getInstance();
 
 app.use(cors({
-  origin:[CLIENT_URL],
+  origin:[HOST,CLIENT_URL],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS','PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
