@@ -15,12 +15,9 @@ function AppContent() {
   const auth = useAuth();
   const { showNotification } = useNotification();
   useSSEContext((event) => {
-    console.log('SSE EVENT:', event); // Log event SSE nhận được
-    // Lắng nghe các sự kiện thành công/thất bại/info/warning từ SSE
-    if (
-      ["success", "error", "info", "warning"].includes(event.type) ||
-      (event.type === 'toast' && ["success", "error", "info", "warning"].includes(event.toastType))
-    ) {
+    console.log('SSE EVENT:', event);
+    if (["success", "error", "info", "warning"].includes(event.type) ||
+        (event.type === 'toast' && ["success", "error", "info", "warning"].includes(event.toastType))) {
       showNotification({
         type: event.type === 'toast' ? event.toastType || event.level || 'info' : event.type,
         title: event.title || (event.toastType === 'success' ? 'Thành công' : event.toastType === 'error' ? 'Lỗi' : 'Thông báo'),
@@ -29,15 +26,14 @@ function AppContent() {
     }
   });
   useEffect(() => {
+    console.log('Auth state:', auth);
     auth.init();
   }, []);
 
-  // Show loading spinner if loading
-  if (auth.loading) {
+  if (auth.loading === undefined || auth.loading) {
     return <div className="w-full h-screen flex items-center justify-center text-xl">Đang tải...</div>;
   }
 
-  // Nếu chưa đăng nhập, chỉ render DefaultLayout và login form
   if (!auth.accessToken) {
     return (
       <DefaultLayout>
@@ -46,7 +42,6 @@ function AppContent() {
     );
   }
 
-  // Nếu đã đăng nhập, render các routes được bảo vệ
   return (
     <Routes>
       {routes.map((route, index) => {
@@ -56,15 +51,10 @@ function AppContent() {
           <Route
             key={index}
             path={route.path}
-            element={
-              <Layout>
-                <Page />
-              </Layout>
-            }
+            element={<Layout><Page /></Layout>}
           />
         );
       })}
-      {/* Redirect về trang chủ nếu không khớp route nào */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
@@ -72,6 +62,21 @@ function AppContent() {
 
 function App() {
   const [showLogin, setShowLogin] = useState(false);
+
+  const handleLoginSuccess = async () => {
+    // Do nothing here, modal will close automatically when user is ready
+  };
+
+  return (
+    <BrowserRouter>
+      <AuthProvider>
+        <InnerApp showLogin={showLogin} setShowLogin={setShowLogin} handleLoginSuccess={handleLoginSuccess} />
+      </AuthProvider>
+    </BrowserRouter>
+  );
+}
+
+function InnerApp({ showLogin, setShowLogin, handleLoginSuccess }) {
   const auth = useAuth();
   // Only close modal when user is ready
   useEffect(() => {
@@ -80,21 +85,16 @@ function App() {
     }
   }, [showLogin, auth.loading, auth.user]);
 
-  const handleLoginSuccess = async () => {
-    // Do nothing here, modal will close automatically when user is ready
-  };
   return (
-    <BrowserRouter>
-      <AuthProvider>
-        <Header onLoginClick={() => setShowLogin(true)} />
-        <AppContent />
-        {showLogin && (
-          <div className="fixed inset-0 flex justify-center items-center z-50 pointer-events-auto">
-            <LoginForm onLoginSuccess={handleLoginSuccess} />
-          </div>
-        )}
-      </AuthProvider>
-    </BrowserRouter>
+    <>
+      <Header onLoginClick={() => setShowLogin(true)} />
+      <AppContent />
+      {showLogin && (
+        <div className="fixed inset-0 flex justify-center items-center z-50 pointer-events-auto">
+          <LoginForm onLoginSuccess={handleLoginSuccess} />
+        </div>
+      )}
+    </>
   );
 }
 
