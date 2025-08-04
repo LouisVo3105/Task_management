@@ -32,6 +32,11 @@ function AppContent() {
     auth.init();
   }, []);
 
+  // Show loading spinner if loading
+  if (auth.loading) {
+    return <div className="w-full h-screen flex items-center justify-center text-xl">Đang tải...</div>;
+  }
+
   // Nếu chưa đăng nhập, chỉ render DefaultLayout và login form
   if (!auth.accessToken) {
     return (
@@ -67,8 +72,16 @@ function AppContent() {
 
 function App() {
   const [showLogin, setShowLogin] = useState(false);
+  const auth = useAuth();
+  // Only close modal when user is ready
+  useEffect(() => {
+    if (showLogin && !auth.loading && auth.user) {
+      setShowLogin(false);
+    }
+  }, [showLogin, auth.loading, auth.user]);
+
   const handleLoginSuccess = async () => {
-    setShowLogin(false);
+    // Do nothing here, modal will close automatically when user is ready
   };
   return (
     <BrowserRouter>
